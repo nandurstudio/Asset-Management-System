@@ -30,18 +30,20 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         public TextView asset_rfid;
         public TextView asset_desc;
         public TextView asset_pic;
+        public TextView asset_location;
         public TextView asset_status;
         public TextView dot;
         public TextView timestamp;
 
         public AssetViewHolder(View view) {
             super(view);
+            dot = view.findViewById(R.id.dot);
             asset_code = view.findViewById(R.id.assetCode);
             asset_rfid = view.findViewById(R.id.assetRfid);
             asset_desc = view.findViewById(R.id.assetDesc);
             asset_pic = view.findViewById(R.id.assetPic);
+            asset_location = view.findViewById(R.id.assetLocation);
             asset_status = view.findViewById(R.id.assetStatus);
-            dot = view.findViewById(R.id.dot);
             timestamp = view.findViewById(R.id.timestamp);
         }
     }
@@ -69,6 +71,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         holder.asset_rfid.setText(asset.getAsset_rfid());
         holder.asset_desc.setText(asset.getAsset_desc());
         holder.asset_pic.setText(asset.getAsset_pic());
+        holder.asset_location.setText(asset.getAsset_location());
         holder.asset_status.setText(asset.getAsset_status());
 
         // Displaying dot from HTML character code

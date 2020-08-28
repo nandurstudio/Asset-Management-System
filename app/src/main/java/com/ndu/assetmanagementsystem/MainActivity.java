@@ -1,13 +1,6 @@
 package com.ndu.assetmanagementsystem;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,19 +15,48 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.cipherlab.rfid.DeviceEvent;
 import com.cipherlab.rfid.GeneralString;
 import com.cipherlab.rfidapi.RfidManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
 import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
 import com.ndu.assetmanagementsystem.sqlite.utils.MyDividerItemDecoration;
 import com.ndu.assetmanagementsystem.sqlite.utils.RecyclerTouchListener;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapter;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "rfid";
@@ -47,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper db;
     //RFID
     RfidManager mRfidManager = null;
+    HashMap<String, String> asset = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +84,43 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
 
-        assetList.addAll(db.getAllAssets());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Toast.makeText(MainActivity.this, "Storage Granted", Toast.LENGTH_SHORT).show();
+                        //loadAssetList();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Toast.makeText(MainActivity.this, "Storage Denied", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAssetDialog(false, null, -1);
+                loadAssetList();
+
+                assetList.addAll(db.getAllAssets());
+                mAdapter.notifyDataSetChanged();
+                toggleEmptyAssets();
+                //showAssetDialog(false, null, -1);
             }
         });
 
         //RFID
 
+        assetList.addAll(db.getAllAssets());
         mRfidManager = RfidManager.InitInstance(this);
 
         IntentFilter filter = new IntentFilter();
@@ -356,5 +404,73 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private void loadAssetList() {
+        /*https://www.tutlane.com/tutorial/android/android-xml-parsing-using-sax-parser*/
+        /*https://stackoverflow.com/questions/15967896/how-to-parse-xml-file-from-sdcard-in-android*/
+        try {
+            ArrayList<HashMap<String, String>> userList = new ArrayList<>();
+//            InputStream istream = getAssets().open("userdetails.xml");
+            File file = new File("mnt/sdcard/Asset/AssetUpdate.xml");
+            InputStream inputStreamSd = new FileInputStream(file.getPath());
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(inputStreamSd);
+            NodeList nList = doc.getElementsByTagName("asset");
+            HashMap<String, String> user = null;
+            for (int i = 0; i < nList.getLength(); i++) {
+                if (nList.item(0).getNodeType() == Node.ELEMENT_NODE) {
+                    user = new HashMap<>();
+                    Element elm = (Element) nList.item(i);
+                    user.put(Asset.COLUMN_ASSET_CODE, getNodeValue(Asset.COLUMN_ASSET_CODE, elm));
+                    user.put(Asset.COLUMN_ASSET_RFID, getNodeValue(Asset.COLUMN_ASSET_RFID, elm));
+                    user.put(Asset.COLUMN_ASSET_DESC, getNodeValue(Asset.COLUMN_ASSET_DESC, elm));
+                    user.put(Asset.COLUMN_ASSET_PIC, getNodeValue(Asset.COLUMN_ASSET_PIC, elm));
+                    user.put(Asset.COLUMN_ASSET_LOCATION, getNodeValue(Asset.COLUMN_ASSET_LOCATION, elm));
+                    userList.add(user);
+                    //scan get position
+                    if (db.checkIsItemCodeInDb(user.put(Asset.COLUMN_ASSET_CODE, getNodeValue(Asset.COLUMN_ASSET_CODE, elm)))) {
+                        Log.d(TAG, "onReceive: Exist");
+                    } else {
+                        // Inserting record
+                        Log.d(TAG, "onReceive: Data No Exist");
+                        db.inputDataFromDom(Objects.requireNonNull(user));
+                    }
+                }
+
+            }
+            Log.d(TAG, "loadAssetList: " + userList);
+            Log.d(TAG, "loadAsset: " + user);
+
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected String getNodeValue(String tag, Element element) {
+        NodeList nodeList = element.getElementsByTagName(tag);
+        Node node = nodeList.item(0);
+        if (node != null) {
+            if (node.hasChildNodes()) {
+                Node child = node.getFirstChild();
+                while (child != null) {
+                    if (child.getNodeType() == Node.TEXT_NODE) {
+                        return child.getNodeValue();
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+
+        unregisterReceiver(myDataReceiver);
+
+        mRfidManager.Release();
+    }
 
 }

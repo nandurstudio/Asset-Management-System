@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/assetCode"
         android:layout_toEndOf="@id/dot"
+        android:textColor="#FF0000"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
@@ -59,6 +60,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetDesc"
+        android:layout_toEndOf="@id/dot"
+        android:textSize="@dimen/note_list_text" />
+
+    <TextView
+        android:id="@+id/assetLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/assetPic"
         android:layout_toEndOf="@id/dot"
         android:textSize="@dimen/note_list_text" />
 

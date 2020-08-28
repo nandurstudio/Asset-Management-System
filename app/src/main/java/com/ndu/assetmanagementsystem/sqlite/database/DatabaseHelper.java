@@ -12,11 +12,10 @@ import androidx.annotation.Nullable;
 import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -35,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        // create notes table
+        // create assets table
         sqLiteDatabase.execSQL(Asset.CREATE_TABLE);
     }
 
@@ -57,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         // `id` and `timestamp` will be inserted automatically.
         // no need to add them
-        values.put(Asset.COLUMN_ASSET_CODE, asset);
+        values.put(Asset.COLUMN_ASSET_RFID, asset);
 
         // insert row
         long id = db.insert(Asset.TABLE_NAME, null, values);
@@ -74,20 +73,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(Asset.TABLE_NAME,
-                new String[]{COLUMN_ID, Asset.COLUMN_ASSET_CODE, Asset.COLUMN_ASSET_RFID, Asset.COLUMN_ASSET_DESC, Asset.COLUMN_ASSET_PIC, Asset.COLUMN_ASSET_STATUS, Asset.COLUMN_TIMESTAMP},
+                new String[]{COLUMN_ID, Asset.COLUMN_ASSET_CODE, Asset.COLUMN_ASSET_RFID, Asset.COLUMN_ASSET_DESC, Asset.COLUMN_ASSET_PIC, Asset.COLUMN_ASSET_LOCATION, Asset.COLUMN_ASSET_STATUS, Asset.COLUMN_TIMESTAMP},
                 COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
 
-        // prepare note object
+        // prepare asset object
         Asset asset = new Asset(
                 Objects.requireNonNull(cursor).getInt(cursor.getColumnIndex(COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_CODE)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_RFID)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_DESC)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_PIC)),
+                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_LOCATION)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_STATUS)),
                 cursor.getString(cursor.getColumnIndex(Asset.COLUMN_TIMESTAMP)));
 
@@ -116,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 asset.setAsset_rfid(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_RFID)));
                 asset.setAsset_desc(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_DESC)));
                 asset.setAsset_pic(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_PIC)));
+                asset.setAsset_location(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_LOCATION)));
                 asset.setAsset_status(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_STATUS)));
                 asset.setTimestamp(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_TIMESTAMP)));
 
@@ -126,7 +127,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // close db connection
         db.close();
 
-        // return notes list
+        // return assets list
         return assets;
     }
 
@@ -146,7 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Asset.COLUMN_ASSET_CODE, asset.getAsset_code());
+        values.put(Asset.COLUMN_ASSET_RFID, asset.getAsset_code());
 
         // updating row
         return db.update(Asset.TABLE_NAME, values, COLUMN_ID + " = ?",
@@ -167,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         // `id` and `timestamp` will be inserted automatically.
         // no need to add them
-        values.put(Asset.COLUMN_ASSET_CODE, asset);
+        values.put(Asset.COLUMN_ASSET_RFID, asset);
 
         // insert row
         long id = db.insert(Asset.TABLE_NAME, null, values);
@@ -181,9 +182,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*https://stackoverflow.com/questions/20415309/android-sqlite-how-to-check-if-a-record-exists*/
     /*https://stackoverflow.com/questions/20838233/sqliteexception-unrecognized-token-when-reading-from-database*/
-    public boolean CheckIsDataAlreadyInDBorNot(String epc) {
+    public boolean CheckIsDataAlreadyInDBorNot(String rfid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_CODE + " = " + "'" + epc + "'";
+        String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_RFID + " = " + "'" + rfid + "'";
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor.getCount() <= 0) {
             cursor.close();
@@ -191,6 +192,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return true;
+    }
+
+    public boolean checkIsItemCodeInDb(String itemCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_CODE + " = " + "'" + itemCode + "'";
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    public void inputDataFromDom(HashMap<String, String> Vi) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(Asset.COLUMN_ASSET_CODE, Vi.get(Asset.COLUMN_ASSET_CODE));
+        values.put(Asset.COLUMN_ASSET_RFID, Vi.get(Asset.COLUMN_ASSET_RFID));
+        values.put(Asset.COLUMN_ASSET_DESC, Vi.get(Asset.COLUMN_ASSET_DESC));
+        values.put(Asset.COLUMN_ASSET_PIC, Vi.get(Asset.COLUMN_ASSET_PIC));
+        values.put(Asset.COLUMN_ASSET_LOCATION, Vi.get(Asset.COLUMN_ASSET_LOCATION));
+        values.put(Asset.COLUMN_ASSET_STATUS, Vi.get(Asset.COLUMN_ASSET_STATUS));
+        //etc
+        database.insert(Asset.TABLE_NAME, null, values);
+        database.close();
     }
 
 }

@@ -9,6 +9,7 @@ public class Asset {
     public static final String COLUMN_ASSET_RFID = "asset_rfid";
     public static final String COLUMN_ASSET_DESC = "asset_desc";
     public static final String COLUMN_ASSET_PIC = "asset_pic";
+    public static final String COLUMN_ASSET_LOCATION = "asset_location";
     public static final String COLUMN_ASSET_STATUS = "asset_status";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
@@ -17,6 +18,7 @@ public class Asset {
     private String asset_rfid;
     private String asset_desc;
     private String asset_pic;
+    private String asset_location;
     private String asset_status;
     private String timestamp;
 
@@ -29,6 +31,7 @@ public class Asset {
                     + COLUMN_ASSET_RFID + " TEXT,"
                     + COLUMN_ASSET_DESC + " TEXT,"
                     + COLUMN_ASSET_PIC + " TEXT,"
+                    + COLUMN_ASSET_LOCATION + " TEXT,"
                     + COLUMN_ASSET_STATUS + " TEXT,"
                     + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                     + ")";
@@ -36,12 +39,13 @@ public class Asset {
     public Asset() {
     }
 
-    public Asset(int id, String asset_code, String asset_rfid, String asset_desc, String asset_pic, String asset_status, String timestamp) {
+    public Asset(int id, String asset_code, String asset_rfid, String asset_desc, String asset_pic, String asset_location, String asset_status, String timestamp) {
         this.id = id;
         this.asset_code = asset_code;
         this.asset_rfid = asset_rfid;
         this.asset_desc = asset_desc;
         this.asset_pic = asset_pic;
+        this.asset_location = asset_location;
         this.asset_status = asset_status;
         this.timestamp = timestamp;
     }
@@ -75,6 +79,11 @@ public class Asset {
     public static String getColumnTimestamp() {
         return COLUMN_TIMESTAMP;
     }
+
+    public static String getColumnAssetLocation() {
+        return COLUMN_ASSET_LOCATION;
+    }
+
 
     public int getId() {
         return id;
@@ -114,6 +123,14 @@ public class Asset {
 
     public void setAsset_pic(String asset_pic) {
         this.asset_pic = asset_pic;
+    }
+
+    public String getAsset_location() {
+        return asset_location;
+    }
+
+    public void setAsset_location(String asset_location) {
+        this.asset_location = asset_location;
     }
 
     public String getAsset_status() {
