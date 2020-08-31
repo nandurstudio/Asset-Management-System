@@ -226,6 +226,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         toggleEmptyAssets();
     }
 
+    private void updateStatusAsset(String rfid, int position) {
+        Asset a = assetList.get(position);
+        // updating asset text
+        a.setAsset_status(rfid);
+
+        // updating asset in db
+        db.updateStatusByRfid(a, rfid);
+
+        // refreshing the list
+        assetList.set(position, a);
+        mAdapter.notifyItemChanged(position);
+
+        toggleEmptyAssets();
+    }
 
     /**
      * Deleting aaset from SQLite and removing the
@@ -278,12 +292,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
-        final EditText inputAsset = view.findViewById(R.id.assetRfid);
+        final EditText inputRfidAsset = view.findViewById(R.id.assetRfid);
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_asset_title) : getString(R.string.lbl_edit_asset_title));
 
         if (shouldUpdate && asset != null) {
-            inputAsset.setText(asset.getAsset_rfid());
+            inputRfidAsset.setText(asset.getAsset_rfid());
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -306,8 +320,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onClick(View v) {
                 // Show toast message when no text is entered
-                if (TextUtils.isEmpty(inputAsset.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Enter asset!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(inputRfidAsset.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     alertDialog.dismiss();
@@ -316,10 +330,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 // check if user updating asset
                 if (shouldUpdate && asset != null) {
                     // update asset by it's id
-                    updateAsset(inputAsset.getText().toString(), position);
+                    updateAsset(inputRfidAsset.getText().toString(), position);
                 } else {
                     // create new asset
-                    createAsset(inputAsset.getText().toString());
+                    createAsset(inputRfidAsset.getText().toString());
                 }
             }
         });
@@ -386,16 +400,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 //scan get position
                 if (db.checkIsRfidInDB(EPC)) {
                     Log.d(TAG, "RFID Tag Exist: " + EPC);
-                    int tagPos = mAdapter.getRfidPosition(EPC)+1;
+                    int tagPos = mAdapter.getRfidPosition(EPC) + 1;
+                    Log.d(TAG, "Asset Desc bfr: " + mAdapter.getAssetDesc(tagPos));
+                    Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
                     Log.d(TAG, "Rfid Tag Position: " + tagPos);
-                    db.updatebyRfid(EPC);
 
-                    mAdapter.notifyItemChanged(tagPos);
+                    updateStatusAsset("Asset Ada", tagPos - 1);
+                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos - 1));
+                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos - 1));
                     recyclerView.scrollToPosition(tagPos);
-
-                    toggleEmptyAssets();
-                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
-                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
 //                    View v = Objects.requireNonNull(recyclerView.getLayoutManager()).findViewByPosition(tagPos);
 //                    TextView tv = Objects.requireNonNull(v).findViewById(R.id.assetDesc);
 //                    String assetDesc = tv.getText().toString();
@@ -406,6 +419,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     Log.d(TAG, "onReceive: Data No Exist");
                     //createAsset(EPC);
                 }
+                mAdapter.notifyDataSetChanged();
+                toggleEmptyAssets();
             }
 
             //Intent_RFIDSERVICE_EVENT

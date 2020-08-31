@@ -160,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{asset.getAsset_code()});
     }
 
-    public int updatebyRfid(String rfid) {
+    public int updateStatusByRfid(Asset asset, String rfid) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

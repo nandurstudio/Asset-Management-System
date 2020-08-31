@@ -2,6 +2,7 @@ package com.ndu.assetmanagementsystem.sqlite.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     }
 
     @Override
-    public void onBindViewHolder(AssetViewHolder holder, int position) {
+    public void onBindViewHolder(AssetViewHolder holder, final int position) {
         Asset asset = assetList.get(position);
 
         holder.id.setText(String.valueOf(position + 1));
@@ -82,6 +83,12 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
 
         // Formatting and displaying timestamp
         holder.timestamp.setText(formatDate(asset.getTimestamp()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG", "onClick: " + position);
+            }
+        });
     }
 
     @Override
