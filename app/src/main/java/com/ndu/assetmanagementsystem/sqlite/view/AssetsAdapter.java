@@ -68,8 +68,8 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     public void onBindViewHolder(AssetViewHolder holder, int position) {
         Asset asset = assetList.get(position);
 
-        //holder.id.setText(String.valueOf(position + 1));
-        holder.id.setText(String.valueOf(asset.getId()));
+        holder.id.setText(String.valueOf(position + 1));
+        //holder.id.setText(String.valueOf(asset.getId()));
         holder.asset_code.setText(asset.getAsset_code());
         holder.asset_rfid.setText(asset.getAsset_rfid());
         holder.asset_desc.setText(asset.getAsset_desc());

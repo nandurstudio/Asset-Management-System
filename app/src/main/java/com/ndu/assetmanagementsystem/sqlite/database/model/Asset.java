@@ -4,7 +4,7 @@ package com.ndu.assetmanagementsystem.sqlite.database.model;
 public class Asset {
     public static final String TABLE_NAME = "Asset";
 
-    public static final String COLUMN_ID = "id";
+    //public static final String COLUMN_ID = "id";
     public static final String COLUMN_ASSET_CODE = "asset_code";
     public static final String COLUMN_ASSET_RFID = "asset_rfid";
     public static final String COLUMN_ASSET_DESC = "asset_desc";
@@ -13,7 +13,7 @@ public class Asset {
     public static final String COLUMN_ASSET_STATUS = "asset_status";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
-    private int id;
+    //private int id;
     private String asset_code;
     private String asset_rfid;
     private String asset_desc;
@@ -26,8 +26,8 @@ public class Asset {
     // Create table SQL query
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
-                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_ASSET_CODE + " TEXT,"
+                    //+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_ASSET_CODE + " TEXT PRIMARY KEY,"
                     + COLUMN_ASSET_RFID + " TEXT,"
                     + COLUMN_ASSET_DESC + " TEXT,"
                     + COLUMN_ASSET_PIC + " TEXT,"
@@ -39,8 +39,8 @@ public class Asset {
     public Asset() {
     }
 
-    public Asset(int id, String asset_code, String asset_rfid, String asset_desc, String asset_pic, String asset_location, String asset_status, String timestamp) {
-        this.id = id;
+    public Asset(/*int id, */String asset_code, String asset_rfid, String asset_desc, String asset_pic, String asset_location, String asset_status, String timestamp) {
+        //this.id = id;
         this.asset_code = asset_code;
         this.asset_rfid = asset_rfid;
         this.asset_desc = asset_desc;
@@ -52,9 +52,9 @@ public class Asset {
 
     /**/
 
-    public static String getColumnId() {
+    /*public static String getColumnId() {
         return COLUMN_ID;
-    }
+    }*/
 
     public static String getColumnAssetCode() {
         return COLUMN_ASSET_CODE;
@@ -85,13 +85,13 @@ public class Asset {
     }
 
 
-    public int getId() {
+/*    public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
+    }*/
 
     public String getAsset_code() {
         return asset_code;
