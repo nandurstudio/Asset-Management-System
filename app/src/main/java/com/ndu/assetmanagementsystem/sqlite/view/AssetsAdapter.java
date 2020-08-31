@@ -2,7 +2,6 @@ package com.ndu.assetmanagementsystem.sqlite.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +25,20 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     private List<Asset> assetList;
 
     public class AssetViewHolder extends RecyclerView.ViewHolder {
+        public TextView id;
         public TextView asset_code;
         public TextView asset_rfid;
         public TextView asset_desc;
         public TextView asset_pic;
         public TextView asset_location;
         public TextView asset_status;
-        public TextView dot;
+        //public TextView dot;
         public TextView timestamp;
 
         public AssetViewHolder(View view) {
             super(view);
-            dot = view.findViewById(R.id.dot);
+            //dot = view.findViewById(R.id.dot);
+            id = view.findViewById(R.id.assetId);
             asset_code = view.findViewById(R.id.assetCode);
             asset_rfid = view.findViewById(R.id.assetRfid);
             asset_desc = view.findViewById(R.id.assetDesc);
@@ -67,6 +68,8 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     public void onBindViewHolder(AssetViewHolder holder, int position) {
         Asset asset = assetList.get(position);
 
+        //holder.id.setText(String.valueOf(position + 1));
+        holder.id.setText(String.valueOf(asset.getId()));
         holder.asset_code.setText(asset.getAsset_code());
         holder.asset_rfid.setText(asset.getAsset_rfid());
         holder.asset_desc.setText(asset.getAsset_desc());
@@ -75,7 +78,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         holder.asset_status.setText(asset.getAsset_status());
 
         // Displaying dot from HTML character code
-        holder.dot.setText(Html.fromHtml("&#8226;"));
+        //holder.dot.setText(Html.fromHtml("&#8226;"));
 
         // Formatting and displaying timestamp
         holder.timestamp.setText(formatDate(asset.getTimestamp()));
@@ -103,4 +106,24 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
 
         return "";
     }
+
+    /*https://stackoverflow.com/questions/42363135/get-position-of-specific-cardview-in-recyclerview-without-clicking-scrolling*/
+    public int getRfidPosition(String rfid) {
+        for (int i = 0; i < assetList.size(); i++) {
+            if (assetList.get(i).getAsset_rfid().equals(rfid)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public String getAssetDesc(int position) {
+        return assetList.get(position).getAsset_desc();
+    }
+
+    public String getAssetStatus(int position) {
+        return assetList.get(position).getAsset_status();
+    }
+
+
 }

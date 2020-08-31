@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -102,7 +103,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Select All Query
         String selectQuery = "SELECT  * FROM " + Asset.TABLE_NAME + " ORDER BY " +
-                Asset.COLUMN_TIMESTAMP + " DESC";
+//                Asset.COLUMN_TIMESTAMP + " DESC";
+                COLUMN_ID + " ASC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
@@ -147,11 +149,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Asset.COLUMN_ASSET_RFID, asset.getAsset_code());
+        values.put(Asset.COLUMN_ASSET_RFID, asset.getAsset_rfid());
 
         // updating row
         return db.update(Asset.TABLE_NAME, values, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(asset.getId())});
+    }
+
+    public int updatebyRfid(String rfid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Asset.COLUMN_ASSET_STATUS, /*asset.getAsset_status()*/"Asset Ada");
+
+        // updating row
+        return db.update(Asset.TABLE_NAME, values, COLUMN_ASSET_RFID + " = ?",
+                new String[]{rfid});
     }
 
     public void deleteAsset(Asset asset) {
@@ -182,7 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*https://stackoverflow.com/questions/20415309/android-sqlite-how-to-check-if-a-record-exists*/
     /*https://stackoverflow.com/questions/20838233/sqliteexception-unrecognized-token-when-reading-from-database*/
-    public boolean CheckIsDataAlreadyInDBorNot(String rfid) {
+    public boolean checkIsRfidInDB(String rfid) {
         SQLiteDatabase db = this.getReadableDatabase();
         String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_RFID + " = " + "'" + rfid + "'";
         Cursor cursor = db.rawQuery(Query, null);

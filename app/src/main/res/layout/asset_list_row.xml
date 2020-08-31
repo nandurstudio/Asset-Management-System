@@ -14,20 +14,20 @@
     tools:targetApi="m">
 
     <TextView
-        android:id="@+id/dot"
+        android:id="@+id/assetId"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dot_height"
         android:layout_marginTop="@dimen/dimen_10"
         android:layout_marginEnd="@dimen/dot_margin_right"
         android:includeFontPadding="false"
         android:lineSpacingExtra="0dp"
-        android:textSize="@dimen/dot_text_size" />
+        android:textSize="@dimen/timestamp" />
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/timestamp" />
 
     <TextView
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/timestamp"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetCode"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textColor="#FF0000"
         android:textSize="@dimen/note_list_text" />
 
@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetRfid"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetDesc"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
@@ -68,15 +68,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetPic"
-        android:layout_toEndOf="@id/dot"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
         android:id="@+id/assetStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/assetPic"
-        android:layout_toEndOf="@id/dot"
+        android:layout_below="@id/assetLocation"
+        android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
 </RelativeLayout>

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -58,7 +61,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private AssetsAdapter mAdapter;
     private List<Asset> assetList = new ArrayList<>();
@@ -70,6 +73,28 @@ public class MainActivity extends AppCompatActivity {
     //RFID
     RfidManager mRfidManager = null;
     HashMap<String, String> asset = new HashMap<>();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        // Here is where we are going to implement the filter logic
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
      * Updating asset in db and updating
      * item in the list by its position
      */
-    private void updateAsset(String asset, int position) {
+    private void updateAsset(String rfid, int position) {
         Asset a = assetList.get(position);
         // updating asset text
-        a.setAsset_code(asset);
+        a.setAsset_rfid(rfid);
 
         // updating asset in db
         db.updateAsset(a);
@@ -253,12 +278,12 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
-        final EditText inputAsset = view.findViewById(R.id.assetCode);
+        final EditText inputAsset = view.findViewById(R.id.assetRfid);
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_asset_title) : getString(R.string.lbl_edit_asset_title));
 
         if (shouldUpdate && asset != null) {
-            inputAsset.setText(asset.getAsset_code());
+            inputAsset.setText(asset.getAsset_rfid());
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -350,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
 //                Log.w(TAG, "++++ [Intent_RFIDSERVICE_TAG_DATA] ++++");
 //                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] type=" + type + ", response=" + response + ", data_rssi=" + data_rssi);
 //                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] PC=" + PC);
-                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] EPC=" + EPC);
+//                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] EPC=" + EPC);
 //                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] EPC_length=" + EPC_length);
 //                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] TID=" + TID);
 //                Log.d(TAG, "[Intent_RFIDSERVICE_TAG_DATA] TID_length=" + TID_length);
@@ -359,12 +384,27 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //scan get position
-                if (db.CheckIsDataAlreadyInDBorNot(EPC)) {
-                    Log.d(TAG, "onReceive: Exist");
+                if (db.checkIsRfidInDB(EPC)) {
+                    Log.d(TAG, "RFID Tag Exist: " + EPC);
+                    int tagPos = mAdapter.getRfidPosition(EPC)+1;
+                    Log.d(TAG, "Rfid Tag Position: " + tagPos);
+                    db.updatebyRfid(EPC);
+
+                    mAdapter.notifyItemChanged(tagPos);
+                    recyclerView.scrollToPosition(tagPos);
+
+                    toggleEmptyAssets();
+                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
+                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
+//                    View v = Objects.requireNonNull(recyclerView.getLayoutManager()).findViewByPosition(tagPos);
+//                    TextView tv = Objects.requireNonNull(v).findViewById(R.id.assetDesc);
+//                    String assetDesc = tv.getText().toString();
+//                    Log.d(TAG, "Asset Desc: " + title);
+
                 } else {
                     // Inserting record
                     Log.d(TAG, "onReceive: Data No Exist");
-                    createAsset(EPC);
+                    //createAsset(EPC);
                 }
             }
 
@@ -431,6 +471,7 @@ public class MainActivity extends AppCompatActivity {
                     //scan get position
                     if (db.checkIsItemCodeInDb(user.put(Asset.COLUMN_ASSET_CODE, getNodeValue(Asset.COLUMN_ASSET_CODE, elm)))) {
                         Log.d(TAG, "onReceive: Exist");
+                        Log.d(TAG, "loadAssetList: ");
                     } else {
                         // Inserting record
                         Log.d(TAG, "onReceive: Data No Exist");
@@ -439,8 +480,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-            Log.d(TAG, "loadAssetList: " + userList);
-            Log.d(TAG, "loadAsset: " + user);
 
         } catch (IOException | ParserConfigurationException | SAXException e) {
             e.printStackTrace();
@@ -473,4 +512,8 @@ public class MainActivity extends AppCompatActivity {
         mRfidManager.Release();
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
 }
