@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <ImageView
+        android:id="@+id/imageViewKalbe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="55dp"
+        android:paddingTop="15dp"
+        app:srcCompat="@drawable/kalbe_nutritionals_logo"
+        android:contentDescription="TODO" />
 
-    <TextView
-        android:id="@+id/empty_assets_view"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/buttonAms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/fab_margin"
+            android:text="AMS"
+            android:textColor="@color/design_default_color_background" />
+
+        <TextView
+            android:id="@+id/textViewAMS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:text="@string/ams_name" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageViewVbn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_top_no_notes"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/app_name"
-        android:textSize="@dimen/msg_no_notes" />
-
-</RelativeLayout>
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="5dp"
+        app:srcCompat="@drawable/vbn_logo"
+        android:contentDescription="TODO" />
+</LinearLayout>

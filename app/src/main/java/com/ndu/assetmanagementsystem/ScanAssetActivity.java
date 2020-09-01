@@ -61,11 +61,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private AssetsAdapter mAdapter;
     private List<Asset> assetList = new ArrayList<>();
-    private CoordinatorLayout coordinatorLayout;
     private RecyclerView recyclerView;
     private TextView noAssetView;
 
@@ -73,10 +72,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     //RFID
     RfidManager mRfidManager = null;
     HashMap<String, String> asset = new HashMap<>();
+    private String assetLocation;
+    private String rfid;
+    private int position;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.scan_asset_menu, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
@@ -97,13 +99,51 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_settings:
+                goToSetting();
+                return true;
+//      case R.id.action_text_to_qr:
+//        goToShareToQR();
+//        return true;
+            case R.id.action_delete_database:
+                deleteAssetDatabase();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void goToSetting() {
+        Intent settingsIntent = new
+                Intent(ScanAssetActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
+    private void deleteAssetDatabase() {
+        Log.d(TAG, "deleteAssetDatabase: true");
+        db.dropTable();
+        assetList.clear();
+        mAdapter.notifyDataSetChanged();
+        toggleEmptyAssets();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_scan_asset);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        coordinatorLayout = findViewById(R.id.coordinator_layout);
+        assetLocation = "%General";
+
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         recyclerView = findViewById(R.id.recycler_view);
         noAssetView = findViewById(R.id.empty_assets_view);
 
@@ -115,13 +155,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        Toast.makeText(MainActivity.this, "Storage Granted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ScanAssetActivity.this, "Storage Granted", Toast.LENGTH_SHORT).show();
                         //loadAssetList();
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Toast.makeText(MainActivity.this, "Storage Denied", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ScanAssetActivity.this, "Storage Denied", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -131,20 +171,21 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 }).check();
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadAssetList();
+        fab.setOnClickListener(view -> {
+            loadAssetList();
 
-                assetList.addAll(db.getAllAssets());
-                mAdapter.notifyDataSetChanged();
-                toggleEmptyAssets();
-                //showAssetDialog(false, null, -1);
-            }
+            assetList.addAll(db.getAllAssets());
+            mAdapter.notifyDataSetChanged();
+            toggleEmptyAssets();
+            //showAssetDialog(false, null, -1);
         });
 
         //RFID
-
+        try {
+            db.createTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         assetList.addAll(db.getAllAssets());
         mRfidManager = RfidManager.InitInstance(this);
 
@@ -226,16 +267,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         toggleEmptyAssets();
     }
 
-    private void updateStatusAsset(String rfid, int position) {
-        Asset a = assetList.get(position);
+    private void updateStatusAsset(String assetStatus, int position, String rfid) {
+        Asset asset = assetList.get(position);
         // updating asset text
-        a.setAsset_status(rfid);
+        asset.setAsset_status(assetStatus);
 
         // updating asset in db
-        db.updateStatusByRfid(a, rfid);
+        db.updateStatusByRfid(asset, rfid);
 
         // refreshing the list
-        assetList.set(position, a);
+        assetList.set(position, asset);
         mAdapter.notifyItemChanged(position);
 
         toggleEmptyAssets();
@@ -289,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         View view = layoutInflaterAndroid.inflate(R.layout.asset_dialog, null);
 
-        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(ScanAssetActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
         final EditText inputRfidAsset = view.findViewById(R.id.assetRfid);
@@ -321,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onClick(View v) {
                 // Show toast message when no text is entered
                 if (TextUtils.isEmpty(inputRfidAsset.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ScanAssetActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     alertDialog.dismiss();
@@ -364,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 String api_ver = mRfidManager.GetAPIVersion();
 //                tv1.setText(PackageName + "," + ver + " , " + api_ver);
 
-                Toast.makeText(MainActivity.this, "Intent_RFIDSERVICE_CONNECTED", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanAssetActivity.this, "Intent_RFIDSERVICE_CONNECTED", Toast.LENGTH_SHORT).show();
             } else if (intent.getAction().equals(GeneralString.Intent_RFIDSERVICE_TAG_DATA)) {
                 /*
                  * type :0=Normal scan (Press Trigger Key to receive the data) ; 1=Inventory EPC ; 2=Inventory ECP TID ; 3=Reader tag ; 5=Write tag
@@ -399,16 +440,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                 //scan get position
                 if (db.checkIsRfidInDB(EPC)) {
+                    Log.d(TAG, "start =============================================== ");
                     Log.d(TAG, "RFID Tag Exist: " + EPC);
-                    int tagPos = mAdapter.getRfidPosition(EPC) + 1;
+                    int tagPos = mAdapter.getRfidPosition(EPC);
                     Log.d(TAG, "Asset Desc bfr: " + mAdapter.getAssetDesc(tagPos));
                     Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
                     Log.d(TAG, "Rfid Tag Position: " + tagPos);
 
-                    updateStatusAsset("Asset Ada", tagPos - 1);
-                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos - 1));
-                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos - 1));
+                    updateStatusAsset("Asset Ada", tagPos, EPC);
                     recyclerView.scrollToPosition(tagPos);
+                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
+                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
+                    Log.d(TAG, "end =============================================== ");
 //                    View v = Objects.requireNonNull(recyclerView.getLayoutManager()).findViewByPosition(tagPos);
 //                    TextView tv = Objects.requireNonNull(v).findViewById(R.id.assetDesc);
 //                    String assetDesc = tv.getText().toString();
@@ -443,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 mse = intent.getStringExtra(GeneralString.FWUpdate_ErrorMessage);
                 if (mse != null) {
                     Log.d(TAG, mse);
-                    Toast.makeText(MainActivity.this, mse, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ScanAssetActivity.this, mse, Toast.LENGTH_SHORT).show();
                 }
                 Log.d(TAG, "Intent_FWUpdate_ErrorMessage");
             } else if (intent.getAction().equals(GeneralString.Intent_FWUpdate_Percent)) {
@@ -454,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 Log.d(TAG, "Intent_FWUpdate_Percent");
             } else if (intent.getAction().equals(GeneralString.Intent_FWUpdate_Finish)) {
                 Log.d(TAG, "Intent_FWUpdate_Finish");
-                Toast.makeText(MainActivity.this, "Intent_FWUpdate_Finish", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanAssetActivity.this, "Intent_FWUpdate_Finish", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -472,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(inputStreamSd);
             NodeList nList = doc.getElementsByTagName("asset");
-            HashMap<String, String> user = null;
+            HashMap<String, String> user;
             for (int i = 0; i < nList.getLength(); i++) {
                 if (nList.item(0).getNodeType() == Node.ELEMENT_NODE) {
                     user = new HashMap<>();
@@ -498,7 +541,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         } catch (IOException | ParserConfigurationException | SAXException e) {
             e.printStackTrace();
+            displayExceptionMessage(e.getMessage());
         }
+    }
+
+    /*https://stackoverflow.com/a/8018905/7772358*/
+    public void displayExceptionMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     protected String getNodeValue(String tag, Element element) {

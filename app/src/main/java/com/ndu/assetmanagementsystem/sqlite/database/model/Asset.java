@@ -4,6 +4,8 @@ package com.ndu.assetmanagementsystem.sqlite.database.model;
 public class Asset {
     public static final String TABLE_NAME = "Asset";
 
+    public static final String ASSET_EXIST = "Asset Ada";
+
     //public static final String COLUMN_ID = "id";
     public static final String COLUMN_ASSET_CODE = "asset_code";
     public static final String COLUMN_ASSET_RFID = "asset_rfid";
