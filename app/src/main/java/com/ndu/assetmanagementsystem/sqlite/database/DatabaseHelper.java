@@ -16,10 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.*;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 //import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
@@ -40,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         // create assets table
-        sqLiteDatabase.execSQL(Asset.CREATE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE);
     }
 
     // Upgrading db
@@ -48,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
 
         // Drop older table if existed
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Asset.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 
         // Create tables again
         onCreate(sqLiteDatabase);
@@ -61,10 +64,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         // `id` and `timestamp` will be inserted automatically.
         // no need to add them
-        values.put(Asset.COLUMN_ASSET_RFID, asset);
+        values.put(COLUMN_ASSET_RFID, asset);
 
         // insert row
-        long id = db.insert(Asset.TABLE_NAME, null, values);
+        long id = db.insert(TABLE_NAME, null, values);
 
         // close db connection
         db.close();
@@ -84,8 +87,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(Asset.TABLE_NAME,
-                new String[]{/*COLUMN_ID, */Asset.COLUMN_ASSET_CODE, Asset.COLUMN_ASSET_RFID, Asset.COLUMN_ASSET_DESC, Asset.COLUMN_ASSET_PIC, COLUMN_ASSET_LOCATION, Asset.COLUMN_ASSET_STATUS, Asset.COLUMN_TIMESTAMP},
+        Cursor cursor = db.query(TABLE_NAME,
+                new String[]{/*COLUMN_ID, */COLUMN_ASSET_CODE, COLUMN_ASSET_RFID, COLUMN_ASSET_DESC, COLUMN_ASSET_PIC, COLUMN_ASSET_LOCATION, COLUMN_ASSET_STATUS, COLUMN_TIMESTAMP},
                 /*COLUMN_ID + "=?",*/
                 COLUMN_ASSET_CODE,
                 new String[]{String.valueOf(code)}, null, null, null, null);
@@ -96,13 +99,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // prepare asset object
         Asset asset = new Asset(
 //                Objects.requireNonNull(cursor).getInt(cursor.getColumnIndex(COLUMN_ID)),
-                Objects.requireNonNull(cursor).getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_CODE)),
-                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_RFID)),
-                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_DESC)),
-                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_PIC)),
+                Objects.requireNonNull(cursor).getString(cursor.getColumnIndex(COLUMN_ASSET_CODE)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_RFID)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_DESC)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_PIC)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_LOCATION)),
-                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_STATUS)),
-                cursor.getString(cursor.getColumnIndex(Asset.COLUMN_TIMESTAMP)));
+                cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_STATUS)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
         // close the db connection
         cursor.close();
@@ -114,7 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Asset> assets = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + Asset.TABLE_NAME + " ORDER BY " +
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " +
 //                Asset.COLUMN_TIMESTAMP + " DESC";
                 /*COLUMN_ID*/COLUMN_ASSET_LOCATION + " ASC";
 
@@ -126,13 +129,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Asset asset = new Asset();
 //                asset.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
-                asset.setAsset_code(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_CODE)));
-                asset.setAsset_rfid(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_RFID)));
-                asset.setAsset_desc(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_DESC)));
-                asset.setAsset_pic(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_PIC)));
+                asset.setAsset_code(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_CODE)));
+                asset.setAsset_rfid(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_RFID)));
+                asset.setAsset_desc(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_DESC)));
+                asset.setAsset_pic(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_PIC)));
                 asset.setAsset_location(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_LOCATION)));
-                asset.setAsset_status(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_STATUS)));
-                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_TIMESTAMP)));
+                asset.setAsset_status(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_STATUS)));
+                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
                 assets.add(asset);
             } while (cursor.moveToNext());
@@ -149,7 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Asset> assets = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + Asset.TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "' " + " ORDER BY " +
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "' " + " ORDER BY " +
 //                Asset.COLUMN_TIMESTAMP + " DESC";
                 /*COLUMN_ID*/COLUMN_ASSET_PIC + " ASC";
 
@@ -161,13 +164,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Asset asset = new Asset();
 //                asset.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
-                asset.setAsset_code(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_CODE)));
-                asset.setAsset_rfid(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_RFID)));
-                asset.setAsset_desc(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_DESC)));
-                asset.setAsset_pic(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_PIC)));
-                asset.setAsset_location(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_LOCATION)));
-                asset.setAsset_status(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_ASSET_STATUS)));
-                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(Asset.COLUMN_TIMESTAMP)));
+                asset.setAsset_code(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_CODE)));
+                asset.setAsset_rfid(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_RFID)));
+                asset.setAsset_desc(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_DESC)));
+                asset.setAsset_pic(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_PIC)));
+                asset.setAsset_location(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_LOCATION)));
+                asset.setAsset_status(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_STATUS)));
+                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
                 assets.add(asset);
             } while (cursor.moveToNext());
@@ -181,7 +184,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int getAssetsCount() {
-        String countQuery = "SELECT  * FROM " + Asset.TABLE_NAME;
+        String countQuery = "SELECT  * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 
@@ -192,14 +195,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public int getScannedAssetsCount() {
+        String countQuery = "SELECT  COUNT (*) FROM " + TABLE_NAME +
+                " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + ASSET_EXIST + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+//    SELECT COUNT(*) FROM Asset WHERE asset_rfid IS NOT NULL and asset_status = 'Asset Ada';
+
     public int updateAsset(Asset asset) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Asset.COLUMN_ASSET_RFID, asset.getAsset_rfid());
+        values.put(COLUMN_ASSET_RFID, asset.getAsset_rfid());
 
         // updating row
-        return db.update(Asset.TABLE_NAME, values, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
+        return db.update(TABLE_NAME, values, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
                 /*new String[]{String.valueOf(asset.getId())});*/
                 new String[]{asset.getAsset_code()});
     }
@@ -208,16 +226,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Asset.COLUMN_ASSET_STATUS, asset.getAsset_status());
+        values.put(COLUMN_ASSET_STATUS, asset.getAsset_status());
 
         // updating row
-        return db.update(Asset.TABLE_NAME, values, COLUMN_ASSET_RFID + " = ?",
+        return db.update(TABLE_NAME, values, COLUMN_ASSET_RFID + " = ?",
                 new String[]{rfid});
     }
 
     public void deleteAsset(Asset asset) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Asset.TABLE_NAME, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
+        db.delete(TABLE_NAME, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
 //                new String[]{String.valueOf(asset.getId())});
                 new String[]{asset.getAsset_code()});
         db.close();
@@ -230,10 +248,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         // `id` and `timestamp` will be inserted automatically.
         // no need to add them
-        values.put(Asset.COLUMN_ASSET_RFID, asset);
+        values.put(COLUMN_ASSET_RFID, asset);
 
         // insert row
-        long id = db.insert(Asset.TABLE_NAME, null, values);
+        long id = db.insert(TABLE_NAME, null, values);
 
         // close db connection
         db.close();
@@ -246,7 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*https://stackoverflow.com/questions/20838233/sqliteexception-unrecognized-token-when-reading-from-database*/
     public boolean checkIsRfidInDB(String rfid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_RFID + " = " + "'" + rfid + "'";
+        String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_RFID + " = " + "'" + rfid + "'";
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor.getCount() <= 0) {
             cursor.close();
@@ -258,7 +276,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean checkIsItemCodeInDb(String itemCode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String Query = "Select * from " + Asset.TABLE_NAME + " where " + Asset.COLUMN_ASSET_CODE + " = " + "'" + itemCode + "'";
+        String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_CODE + " = " + "'" + itemCode + "'";
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor.getCount() <= 0) {
             cursor.close();
@@ -272,14 +290,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(Asset.COLUMN_ASSET_CODE, Vi.get(Asset.COLUMN_ASSET_CODE));
-        values.put(Asset.COLUMN_ASSET_RFID, Vi.get(Asset.COLUMN_ASSET_RFID));
-        values.put(Asset.COLUMN_ASSET_DESC, Vi.get(Asset.COLUMN_ASSET_DESC));
-        values.put(Asset.COLUMN_ASSET_PIC, Vi.get(Asset.COLUMN_ASSET_PIC));
+        values.put(COLUMN_ASSET_CODE, Vi.get(COLUMN_ASSET_CODE));
+        values.put(COLUMN_ASSET_RFID, Vi.get(COLUMN_ASSET_RFID));
+        values.put(COLUMN_ASSET_DESC, Vi.get(COLUMN_ASSET_DESC));
+        values.put(COLUMN_ASSET_PIC, Vi.get(COLUMN_ASSET_PIC));
         values.put(COLUMN_ASSET_LOCATION, Vi.get(COLUMN_ASSET_LOCATION));
-        values.put(Asset.COLUMN_ASSET_STATUS, Vi.get(Asset.COLUMN_ASSET_STATUS));
+        values.put(COLUMN_ASSET_STATUS, Vi.get(COLUMN_ASSET_STATUS));
         //etc
-        database.insert(Asset.TABLE_NAME, null, values);
+        database.insert(TABLE_NAME, null, values);
         database.close();
     }
 

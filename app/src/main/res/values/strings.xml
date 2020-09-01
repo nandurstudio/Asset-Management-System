@@ -22,4 +22,6 @@
     <string name="action_delete_database">Delete Database</string>
     <string name="assets_list">Assets List</string>
     <string name="assets_exist">Asset Ada</string>
+    <string name="action_sort_by_location">Sort Assets By Location</string>
+    <string name="action_sort_show_all">Show All Assets</string>
 </resources>

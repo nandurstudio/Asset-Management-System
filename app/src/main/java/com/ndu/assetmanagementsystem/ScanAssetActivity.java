@@ -115,6 +115,23 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             case R.id.action_delete_database:
                 deleteAssetDatabase();
                 return true;
+
+            case R.id.action_sort_by_location:
+                assetList.clear();
+                assetList.addAll(db.getAllAssetsByDept(assetLocation));
+                mAdapter.notifyDataSetChanged();
+                toggleEmptyAssets();
+                Log.d(TAG, "onOptionsItemSelected: sortLoc");
+                return true;
+
+
+            case R.id.action_sort_show_all:
+                assetList.clear();
+                assetList.addAll(db.getAllAssets());
+                mAdapter.notifyDataSetChanged();
+                toggleEmptyAssets();
+                Log.d(TAG, "onOptionsItemSelected: showAll");
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
