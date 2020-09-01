@@ -29,6 +29,10 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     api files('libs/RfidAPI_V1_0_13.jar')
+    api files('libs/opencsv-2.4.jar')
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation group: 'org.apache.poi', name: 'poi', version: '3.8'
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'

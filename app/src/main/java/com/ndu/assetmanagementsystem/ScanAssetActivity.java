@@ -1,12 +1,17 @@
 package com.ndu.assetmanagementsystem;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,14 +47,22 @@ import com.ndu.assetmanagementsystem.sqlite.utils.MyDividerItemDecoration;
 import com.ndu.assetmanagementsystem.sqlite.utils.RecyclerTouchListener;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapter;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -60,6 +73,16 @@ import java.util.Objects;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import au.com.bytecode.opencsv.CSVWriter;
+
+import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
@@ -75,6 +98,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private String assetLocation;
     private String rfid;
     private int position;
+    private File file;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,6 +156,10 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 toggleEmptyAssets();
                 Log.d(TAG, "onOptionsItemSelected: showAll");
                 return true;
+
+            case R.id.action_export_csv:
+                ExportDatabaseCSVTask task = new ExportDatabaseCSVTask();
+                task.execute();
         }
 
         return super.onOptionsItemSelected(item);
@@ -537,14 +565,14 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 if (nList.item(0).getNodeType() == Node.ELEMENT_NODE) {
                     user = new HashMap<>();
                     Element elm = (Element) nList.item(i);
-                    user.put(Asset.COLUMN_ASSET_CODE, getNodeValue(Asset.COLUMN_ASSET_CODE, elm));
-                    user.put(Asset.COLUMN_ASSET_RFID, getNodeValue(Asset.COLUMN_ASSET_RFID, elm));
-                    user.put(Asset.COLUMN_ASSET_DESC, getNodeValue(Asset.COLUMN_ASSET_DESC, elm));
-                    user.put(Asset.COLUMN_ASSET_PIC, getNodeValue(Asset.COLUMN_ASSET_PIC, elm));
-                    user.put(Asset.COLUMN_ASSET_LOCATION, getNodeValue(Asset.COLUMN_ASSET_LOCATION, elm));
+                    user.put(COLUMN_ASSET_CODE, getNodeValue(COLUMN_ASSET_CODE, elm));
+                    user.put(COLUMN_ASSET_RFID, getNodeValue(COLUMN_ASSET_RFID, elm));
+                    user.put(COLUMN_ASSET_DESC, getNodeValue(COLUMN_ASSET_DESC, elm));
+                    user.put(COLUMN_ASSET_PIC, getNodeValue(COLUMN_ASSET_PIC, elm));
+                    user.put(COLUMN_ASSET_LOCATION, getNodeValue(COLUMN_ASSET_LOCATION, elm));
                     userList.add(user);
                     //scan get position
-                    if (db.checkIsItemCodeInDb(user.put(Asset.COLUMN_ASSET_CODE, getNodeValue(Asset.COLUMN_ASSET_CODE, elm)))) {
+                    if (db.checkIsItemCodeInDb(user.put(COLUMN_ASSET_CODE, getNodeValue(COLUMN_ASSET_CODE, elm)))) {
                         Log.d(TAG, "onReceive: Exist");
                         Log.d(TAG, "loadAssetList: ");
                     } else {
@@ -596,5 +624,228 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    //CSV https://stackoverflow.com/a/34893170/7772358
+    /*private class ExportDatabaseCSVTask extends AsyncTask<String, String, String> {
+        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        protected String doInBackground(final String... args) {
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+
+            File file = new File(exportDir, "Assets.csv");
+            try {
+
+                file.createNewFile();
+                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+
+                //data
+                ArrayList<String> assetList = new ArrayList<>();
+                assetList.add("Aniket");
+                assetList.add("Shinde");
+                assetList.add("pune");
+                assetList.add("anything@anything");
+                //Headers
+                String[] arrStr1 = {COLUMN_ASSET_CODE, COLUMN_ASSET_RFID, COLUMN_ASSET_DESC, COLUMN_ASSET_PIC, COLUMN_ASSET_LOCATION, COLUMN_ASSET_STATUS, COLUMN_TIMESTAMP};
+                csvWrite.writeNext(arrStr1);
+
+                String[] arrStr = {assetList.get(0), assetList.get(1), assetList.get(2), assetList.get(3), assetList.get(4), assetList.get(5), assetList.get(6)};
+                csvWrite.writeNext(arrStr);
+
+                csvWrite.close();
+                return "";
+            } catch (IOException e) {
+                Log.e("MainActivity", e.getMessage(), e);
+                return "";
+            }
+        }
+
+        @SuppressLint("NewApi")
+        @Override
+        protected void onPostExecute(final String success) {
+
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success.isEmpty()) {
+                Toast.makeText(ScanAssetActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ScanAssetActivity.this, "Export failed!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+    public class ExportDatabaseCSVTask extends AsyncTask<String, Void, Boolean> {
+        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        protected Boolean doInBackground(final String... args) {
+
+            File dbFile = getDatabasePath(DATABASE_NAME);
+            //AABDatabaseManager dbhelper = new AABDatabaseManager(getApplicationContext());
+            DatabaseHelper db = new DatabaseHelper(ScanAssetActivity.this);
+            System.out.println(dbFile);  // displays the data base path in your logcat
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+
+            File file = new File(exportDir, "Asset.csv");
+            try {
+                if (file.createNewFile()) {
+                    System.out.println("File is created!");
+                    System.out.println("myfile.csv " + file.getAbsolutePath());
+                } else {
+                    System.out.println("File already exists.");
+                }
+                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+                //SQLiteDatabase db = dbhelper.getWritableDatabase();
+                Cursor curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                csvWrite.writeNext(curCSV.getColumnNames());
+                while (curCSV.moveToNext()) {
+                    String[] arrStr = {
+                            curCSV.getString(0), curCSV.getString(1), curCSV.getString(2),
+                            curCSV.getString(3), curCSV.getString(4),
+                            curCSV.getString(5), curCSV.getString(6)};
+                    /*curCSV.getString(3),curCSV.getString(4)};*/
+                    csvWrite.writeNext(arrStr);
+                }
+                csvWrite.close();
+                curCSV.close();
+        /*String data="";
+        data=readSavedData();
+        data= data.replace(",", ";");
+        writeData(data);*/
+                return true;
+            } catch (SQLException | IOException sqlEx) {
+                Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+                return false;
+            }
+        }
+
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success) {
+                Toast.makeText(ScanAssetActivity.this, "Export succeed", Toast.LENGTH_SHORT).show();
+                CSVToExcelConverter task = new CSVToExcelConverter();
+                task.execute();
+            } else {
+                Toast.makeText(ScanAssetActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //    CSV to XLS
+    public class CSVToExcelConverter extends AsyncTask<String, Void, Boolean> {
+
+
+        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting to excel...");
+            this.dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            ArrayList arList = null;
+            ArrayList al = null;
+
+            //File dbFile= new File(getDatabasePath("database_name").toString());
+            File dbFile = getDatabasePath(DATABASE_NAME);
+            String yes = dbFile.getAbsolutePath();
+
+            String inFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.csv";
+            String outFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.xls";
+            String thisLine;
+            int count = 0;
+
+            try {
+
+                FileInputStream fis = new FileInputStream(inFilePath);
+                DataInputStream myInput = new DataInputStream(fis);
+                int i = 0;
+                arList = new ArrayList();
+                while ((thisLine = myInput.readLine()) != null) {
+                    al = new ArrayList();
+                    String strar[] = thisLine.split(",");
+                    for (int j = 0; j < strar.length; j++) {
+                        al.add(strar[j]);
+                    }
+                    arList.add(al);
+                    System.out.println();
+                    i++;
+                }
+            } catch (Exception e) {
+                System.out.println("shit");
+            }
+
+            try {
+                HSSFWorkbook hwb = new HSSFWorkbook();
+                HSSFSheet sheet = hwb.createSheet("new sheet");
+                for (int k = 0; k < arList.size(); k++) {
+                    ArrayList ardata = (ArrayList) arList.get(k);
+                    HSSFRow row = sheet.createRow((short) 0 + k);
+                    for (int p = 0; p < ardata.size(); p++) {
+                        HSSFCell cell = row.createCell((short) p);
+                        String data = ardata.get(p).toString();
+                        if (data.startsWith("=")) {
+                            cell.setCellType(Cell.CELL_TYPE_STRING);
+                            data = data.replaceAll("\"", "");
+                            data = data.replaceAll("=", "");
+                            cell.setCellValue(data);
+                        } else if (data.startsWith("\"")) {
+                            data = data.replaceAll("\"", "");
+                            cell.setCellType(Cell.CELL_TYPE_STRING);
+                            cell.setCellValue(data);
+                        } else {
+                            data = data.replaceAll("\"", "");
+                            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                            cell.setCellValue(data);
+                        }
+                        //*/
+                        // cell.setCellValue(ardata.get(p).toString());
+                    }
+                    System.out.println();
+                }
+                FileOutputStream fileOut = new FileOutputStream(outFilePath);
+                hwb.write(fileOut);
+                fileOut.close();
+                System.out.println("Your excel file has been generated");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } //main method ends
+            return true;
+        }
+
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success) {
+                Toast.makeText(ScanAssetActivity.this, "file is built!", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(ScanAssetActivity.this, "file fail to build", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
