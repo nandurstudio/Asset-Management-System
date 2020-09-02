@@ -26,7 +26,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -188,7 +187,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         assetLocation = "%General";
 
-        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
+        //CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         recyclerView = findViewById(R.id.recycler_view);
         noAssetView = findViewById(R.id.empty_assets_view);
 
@@ -252,11 +251,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         toggleEmptyAssets();
 
-        /**
-         * On long press on RecyclerView item, open alert dialog
-         * with options to choose
-         * Edit and Delete
-         * */
+        /*
+          On long press on RecyclerView item, open alert dialog
+          with options to choose
+          Edit and Delete
+         */
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
                 recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
@@ -348,18 +347,15 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Delete - 0
      */
     private void showActionsDialog(final int position) {
-        CharSequence colors[] = new CharSequence[]{"Edit", "Delete"};
+        CharSequence[] colors = new CharSequence[]{"Edit", "Delete"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose option");
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    showAssetDialog(true, assetList.get(position), position);
-                } else {
-                    deleteAsset(position);
-                }
+        builder.setItems(colors, (dialog, which) -> {
+            if (which == 0) {
+                showAssetDialog(true, assetList.get(position), position);
+            } else {
+                deleteAsset(position);
             }
         });
         builder.show();
@@ -387,10 +383,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(shouldUpdate ? "update" : "save", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogBox, int id) {
+                .setPositiveButton(shouldUpdate ? "update" : "save", (dialogBox, id) -> {
 
-                    }
                 })
                 .setNegativeButton("cancel",
                         new DialogInterface.OnClickListener() {
@@ -402,25 +396,22 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
         alertDialog.show();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show toast message when no text is entered
-                if (TextUtils.isEmpty(inputRfidAsset.getText().toString())) {
-                    Toast.makeText(ScanAssetActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    alertDialog.dismiss();
-                }
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Show toast message when no text is entered
+            if (TextUtils.isEmpty(inputRfidAsset.getText().toString())) {
+                Toast.makeText(ScanAssetActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                alertDialog.dismiss();
+            }
 
-                // check if user updating asset
-                if (shouldUpdate && asset != null) {
-                    // update asset by it's id
-                    updateAsset(inputRfidAsset.getText().toString(), position);
-                } else {
-                    // create new asset
-                    createAsset(inputRfidAsset.getText().toString());
-                }
+            // check if user updating asset
+            if (shouldUpdate && asset != null) {
+                // update asset by it's id
+                updateAsset(inputRfidAsset.getText().toString(), position);
+            } else {
+                // create new asset
+                createAsset(inputRfidAsset.getText().toString());
             }
         });
     }
@@ -626,64 +617,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
     }
 
-    //CSV https://stackoverflow.com/a/34893170/7772358
-    /*private class ExportDatabaseCSVTask extends AsyncTask<String, String, String> {
-        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database...");
-            this.dialog.show();
-        }
-
-        protected String doInBackground(final String... args) {
-            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-            if (!exportDir.exists()) {
-                exportDir.mkdirs();
-            }
-
-            File file = new File(exportDir, "Assets.csv");
-            try {
-
-                file.createNewFile();
-                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-
-                //data
-                ArrayList<String> assetList = new ArrayList<>();
-                assetList.add("Aniket");
-                assetList.add("Shinde");
-                assetList.add("pune");
-                assetList.add("anything@anything");
-                //Headers
-                String[] arrStr1 = {COLUMN_ASSET_CODE, COLUMN_ASSET_RFID, COLUMN_ASSET_DESC, COLUMN_ASSET_PIC, COLUMN_ASSET_LOCATION, COLUMN_ASSET_STATUS, COLUMN_TIMESTAMP};
-                csvWrite.writeNext(arrStr1);
-
-                String[] arrStr = {assetList.get(0), assetList.get(1), assetList.get(2), assetList.get(3), assetList.get(4), assetList.get(5), assetList.get(6)};
-                csvWrite.writeNext(arrStr);
-
-                csvWrite.close();
-                return "";
-            } catch (IOException e) {
-                Log.e("MainActivity", e.getMessage(), e);
-                return "";
-            }
-        }
-
-        @SuppressLint("NewApi")
-        @Override
-        protected void onPostExecute(final String success) {
-
-            if (this.dialog.isShowing()) {
-                this.dialog.dismiss();
-            }
-            if (success.isEmpty()) {
-                Toast.makeText(ScanAssetActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(ScanAssetActivity.this, "Export failed!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }*/
-
     public class ExportDatabaseCSVTask extends AsyncTask<String, Void, Boolean> {
         private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
 
@@ -787,7 +720,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 arList = new ArrayList();
                 while ((thisLine = myInput.readLine()) != null) {
                     al = new ArrayList();
-                    String strar[] = thisLine.split(",");
+                    String[] strar = thisLine.split(",");
                     for (int j = 0; j < strar.length; j++) {
                         al.add(strar[j]);
                     }

@@ -9,43 +9,81 @@
         android:id="@+id/imageViewKalbe"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:contentDescription="TODO"
         android:paddingTop="15dp"
-        app:srcCompat="@drawable/kalbe_nutritionals_logo"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/kalbe_nutritionals_logo" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <Button
-            android:id="@+id/buttonAms"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/colorPrimary"
-            android:padding="@dimen/fab_margin"
-            android:text="AMS"
-            android:textColor="@color/design_default_color_background" />
+            android:gravity="top"
+            android:orientation="vertical"
+            android:padding="25dp">
 
-        <TextView
-            android:id="@+id/textViewAMS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="@string/ams_name" />
+            <TextView
+                android:id="@+id/textViewDivision"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/choose_division"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <Spinner
+                android:id="@+id/spinnerShp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp" />
+
+            <TextView
+                android:id="@+id/textViewDept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/choose_dept"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_dynamic"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp" />
+
+            <Button
+                android:id="@+id/buttonAms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/colorPrimary"
+                android:text="Start AMS"
+                android:textColor="@color/design_default_color_background" />
+
+            <TextView
+                android:id="@+id/textViewAMS"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:text="@string/ams_name"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <ImageView
         android:id="@+id/imageViewVbn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:contentDescription="TODO"
         android:padding="5dp"
-        app:srcCompat="@drawable/vbn_logo"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/vbn_logo" />
 </LinearLayout>

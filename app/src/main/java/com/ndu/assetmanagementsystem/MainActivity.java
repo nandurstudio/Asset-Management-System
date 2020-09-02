@@ -10,7 +10,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences sharedPrefs;
     private SharedPreferences.Editor editor;
     private Button buttAms;
+    private String TAG = "MainActivity";
+    private Spinner spinnerDynamic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-/*        FloatingActionButton fab = findViewById(R.id.fab);
+        /*        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());*/
         drawer = findViewById(R.id.drawer_layout);
@@ -55,13 +61,71 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Spinner https://stackoverflow.com/a/29778386/7772358
+        Spinner spinnerShp = findViewById(R.id.spinnerShp);
+        spinnerDynamic = findViewById(R.id.spinner_dynamic);
+
+        // Create an ArrayAdapter using the string array and a default spinner
+        ArrayAdapter<CharSequence> arrayAdapterShp = ArrayAdapter
+                .createFromResource(this, R.array.shp_array,
+//                        android.R.layout.simple_spinner_item
+                        R.layout.spinner_row);
+
+        ArrayAdapter<CharSequence> arrayAdapterPlant = ArrayAdapter
+                .createFromResource(this, R.array.plant_array,
+                        R.layout.spinner_row);
+
+
+        ArrayAdapter<CharSequence> arrayAdapterKN = ArrayAdapter
+                .createFromResource(this, R.array.kn_array,
+                        R.layout.spinner_row);
+
+        // Specify the layout to use when the list of choices appears
+        arrayAdapterShp
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+/*        String[] items = new String[]{"Chai Latte", "Green Tea", "Black Tea"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, items);*/
+
+        // Apply the adapter to the spinner
+        spinnerShp.setAdapter(arrayAdapterShp);
+        spinnerShp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (adapterView.getItemAtPosition(i).equals("Plant")) {
+                    Log.d(TAG, "onItemSelected: " + "Plant");
+                    spinnerDynamic.setAdapter(arrayAdapterPlant);
+                } else {
+                    spinnerDynamic.setAdapter(arrayAdapterKN);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spinnerDynamic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
         //getVersionName
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             versName = pInfo.versionName;
             versCode = pInfo.versionCode;
             Log.d("MyApp", "Version Name : " + versName + "\n Version Code : " + versCode);
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (
+                PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             Log.d("MyApp", "PackageManager Catch : " + e.toString());
         }
@@ -73,7 +137,9 @@ public class MainActivity extends AppCompatActivity
         // set new title to the MenuItem
         nav_appversion.setTitle(versName);
 
-        buttAms.setOnClickListener(view -> goToAms());
+        buttAms.setOnClickListener(view ->
+
+                goToAms());
     }
 
     private void shareApp() {

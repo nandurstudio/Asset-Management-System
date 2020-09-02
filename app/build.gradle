@@ -12,6 +12,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationIdSuffix 'ams'
+        versionNameSuffix 'beta'
     }
 
     buildTypes {
@@ -26,11 +28,25 @@ android {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+    }
+}
+
+repositories {
+    jcenter()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     api files('libs/RfidAPI_V1_0_13.jar')
     api files('libs/opencsv-2.4.jar')
     // https://mvnrepository.com/artifact/org.apache.poi/poi
+    //noinspection GradleDependency
     implementation group: 'org.apache.poi', name: 'poi', version: '3.8'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -41,6 +57,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -49,5 +67,7 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    // For control over item selection of both touch and mouse driven selection
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc01'
 
 }

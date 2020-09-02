@@ -13,11 +13,9 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="version_title">Version</string>
     <string name="menu_send">Send</string>
     <string name="build_title">Build</string>
     <string name="menu_share">Share</string>
-    <string name="version_summary">1.0.0</string>
     <string name="menu_title_communicate">Communicate</string>
     <string name="action_delete_database">Delete Database</string>
     <string name="assets_list">Assets List</string>
@@ -25,4 +23,48 @@
     <string name="action_sort_by_location">Sort Assets By Location</string>
     <string name="action_sort_show_all">Show All Assets</string>
     <string name="action_export_csv">Export To Excel</string>
+    <string name="choose_division">Choose Division</string>
+    <string name="choose_dept">Choose Department</string>
+
+
+    <!-- Version Preferences -->
+    <string name="version_title">Version</string>
+    <string name="version_summary" translatable="false">1.0.0</string>
+    <string name="update_summary">Tap here to check for updates</string>
+    <string name="feedback_summary">Report technical issues or suggest new features</string>
+
+    <!-- Feedback Preferences -->
+    <string name="feedback_title">Feedback</string>
+    <string name="choose_email_client">Choose mailing client</string>
+    <string name="feedback_body">Feedback for</string>
+    <string name="update_xml_resource" translatable="false">https://raw.githubusercontent.com/nandur93/QR-Barcode-Scanner-And-Generator/master/update-changelog.xml</string>
+    <string name="pattern_mailbody">\n\n-----------------------------\nPlease do not delete this section\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
+
+    <!-- Preference Titles -->
+    <string name="about_header">About</string>
+    <string name="update_header">Update</string>
+    <string name="help_header">Help</string>
+
+    <!-- About Preferences -->
+    <string name="about_summary">QR Barcode Scanner And Generator is the application that makes your work easier.\nWith the features of QR Scanner, QR Generator and OCR as well as share text to QR make this application more complete than ordinary QR scanners.\nDeveloped by Nandur93 Studio - Karawang, Indonesia.</string>
+
+    <!-- Update Preferences -->
+    <string name="update_title">Check for update</string>
+
+    <string-array name="shp_array">
+        <item>Plant</item>
+        <item>KN</item>
+    </string-array>
+    <string-array name="plant_array">
+        <item>General</item>
+        <item>Production</item>
+        <item>Quality Assurance</item>
+        <item>PPC &amp; Preparation</item>
+        <item>Engineering Maintenace</item>
+        <item>HRGA</item>
+    </string-array>
+    <string-array name="kn_array">
+        <item>MS</item>
+        <item>IT</item>
+    </string-array>
 </resources>

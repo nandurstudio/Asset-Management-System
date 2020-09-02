@@ -1,0 +1,91 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--<PreferenceCategory
+        android:title="Scanner"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/auto_scan"
+            android:summary="Buka scanner ketika aplikasi dijalankan"
+            android:title="Otomatis Scan"
+            app:iconSpaceReserved="false" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/enable_sound"
+            android:summary="Perangkat berbunyi &quot;Beep&quot; jika scan berhasil"
+            android:title="Aktifkan Suara"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Camera Source"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            android:defaultValue="@string/back_camera"
+            android:entries="@array/camera_list_entries"
+            android:entryValues="@array/camera_list_entries_values"
+            android:key="@string/camera_list"
+            android:summary="%s"
+            android:title="Select camera source"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>-->
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/about_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about"
+            app:summary="@string/about_summary"
+            app:title="@string/about_header" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/update_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="current_version"
+            app:summary="@string/version_summary"
+            app:title="@string/version_title" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="check_update"
+            app:summary="@string/update_summary"
+            app:title="@string/update_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="help_category"
+        app:title="@string/help_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="feedback"
+            app:summary="@string/feedback_summary"
+            app:title="@string/feedback_title" />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
