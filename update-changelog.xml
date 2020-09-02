@@ -1,0 +1,11 @@
+<AppUpdater>
+  <update>
+    <latestVersion>1.0</latestVersion>
+    <latestVersionCode>1</latestVersionCode>
+    <url>https://bit.ly/AMS100</url>
+    <releaseNotes> Version 1.0?
+      + Migrated to AndroidX
+      + Add charger detector
+    </releaseNotes>
+  </update>
+</AppUpdater>
