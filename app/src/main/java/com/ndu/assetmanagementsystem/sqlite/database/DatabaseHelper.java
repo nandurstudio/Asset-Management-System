@@ -195,6 +195,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public int getAssetsCountByLocation(String assetLocation) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    public int getAssetsCountByExist(String assetLocation, String assetExist) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "' AND " + COLUMN_ASSET_STATUS + " LIKE '" + assetExist + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    public int getAssetsCountByStatusNull(String assetLocation) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'" + " & " + COLUMN_ASSET_STATUS + " IS NULL ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
     public int getScannedAssetsCount() {
         String countQuery = "SELECT  COUNT (*) FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + ASSET_EXIST + "'";

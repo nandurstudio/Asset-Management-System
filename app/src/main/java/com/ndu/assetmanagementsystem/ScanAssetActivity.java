@@ -286,6 +286,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private void goToResult() {
         Intent intent = new
                 Intent(ScanAssetActivity.this, ScanResultActivity.class);
+        intent.putExtra(DEPT_NAME, assetLocation);
         startActivity(intent);
     }
 
