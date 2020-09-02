@@ -30,6 +30,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG_ADMOB = "Admob";
+    static final String DEPT_NAME = "dept_name";
+    private static final String DEPT_GENERAL = "General";
+    private static final String DEPT_PRD = "Production";
+    private static final String DEPT_QA = "QA";
+    private static final String DEPT_PPC_PREP = "Preparation";
+    private static final String DEPT_EM = "EM";
+    private static final String DEPT_HRGA = "HRGA";
+    private static final String DIV_PLANT = "Plant";
+    private static final String DIV_KN = "KN";
     public static String versName;
     public static int versCode;
     private DrawerLayout drawer;
@@ -39,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private Button buttAms;
     private String TAG = "MainActivity";
     private Spinner spinnerDynamic;
+    private String deptName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +102,8 @@ public class MainActivity extends AppCompatActivity
         spinnerShp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (adapterView.getItemAtPosition(i).equals("Plant")) {
-                    Log.d(TAG, "onItemSelected: " + "Plant");
+                if (adapterView.getItemAtPosition(i).equals(DIV_PLANT)) {
+                    Log.d(TAG, "onItemSelected: " + DIV_PLANT);
                     spinnerDynamic.setAdapter(arrayAdapterPlant);
                 } else {
                     spinnerDynamic.setAdapter(arrayAdapterKN);
@@ -111,6 +121,21 @@ public class MainActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
+                if (parent.getItemAtPosition(position).equals("General")) {
+                    deptName = DEPT_GENERAL;
+                } else if (parent.getItemAtPosition(position).equals("Production")) {
+                    deptName = DEPT_PRD;
+                } else if (parent.getItemAtPosition(position).equals("Quality Assurance")) {
+                    deptName = DEPT_QA;
+                } else if (parent.getItemAtPosition(position).equals("PPC & Preparation")) {
+                    deptName = DEPT_PPC_PREP;
+                } else if (parent.getItemAtPosition(position).equals("Engineering Maintenace")) {
+                    deptName = DEPT_EM;
+                } else if (parent.getItemAtPosition(position).equals("HRGA")) {
+                    deptName = DEPT_HRGA;
+                } else {
+                    deptName = "";
+                }
             }
 
             @Override
@@ -171,7 +196,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -199,6 +224,7 @@ public class MainActivity extends AppCompatActivity
     private void goToAms() {
         Intent intent = new
                 Intent(MainActivity.this, ScanAssetActivity.class);
+        intent.putExtra(DEPT_NAME, deptName);
         startActivity(intent);
     }
 

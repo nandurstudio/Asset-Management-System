@@ -18,10 +18,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -33,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cipherlab.rfid.DeviceEvent;
 import com.cipherlab.rfid.GeneralString;
 import com.cipherlab.rfidapi.RfidManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -75,6 +76,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
@@ -98,6 +100,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private String rfid;
     private int position;
     private File file;
+    private Button buttResult;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,18 +109,19 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
-
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
         // Here is where we are going to implement the filter logic
+        mAdapter.filter(query, db, assetLocation);
         return false;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        mAdapter.filter(query, db, assetLocation);
         return false;
     }
 
@@ -139,21 +143,18 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 deleteAssetDatabase();
                 return true;
 
-            case R.id.action_sort_by_location:
-                assetList.clear();
-                assetList.addAll(db.getAllAssetsByDept(assetLocation));
+            case R.id.action_pull_assets:
+                loadAssetList();
+                assetList.addAll(db.getAllAssets());
                 mAdapter.notifyDataSetChanged();
                 toggleEmptyAssets();
-                Log.d(TAG, "onOptionsItemSelected: sortLoc");
                 return true;
-
 
             case R.id.action_sort_show_all:
                 assetList.clear();
                 assetList.addAll(db.getAllAssets());
                 mAdapter.notifyDataSetChanged();
                 toggleEmptyAssets();
-                Log.d(TAG, "onOptionsItemSelected: showAll");
                 return true;
 
             case R.id.action_export_csv:
@@ -183,14 +184,31 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_asset);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.assets_list);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(view -> finish());
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
 
-        assetLocation = "%General";
+        if (bundle != null) {
+            String dept = (String) bundle.get(DEPT_NAME);
+            assetLocation = "%" + dept;
+            toolbar.setTitle(getResources().getString(R.string.assets_list) + " " + dept);
+            Log.d(TAG, "onCreate: " + assetLocation);
+        }
 
         //CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         recyclerView = findViewById(R.id.recycler_view);
         noAssetView = findViewById(R.id.empty_assets_view);
-
+        buttResult = findViewById(R.id.button_result);
+        buttResult.setOnClickListener(view -> {
+            goToResult();
+        });
         db = new DatabaseHelper(this);
 
 
@@ -214,15 +232,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     }
                 }).check();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+/*        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            loadAssetList();
 
-            assetList.addAll(db.getAllAssets());
-            mAdapter.notifyDataSetChanged();
-            toggleEmptyAssets();
             //showAssetDialog(false, null, -1);
-        });
+        });*/
 
         //RFID
         try {
@@ -230,7 +244,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assetList.addAll(db.getAllAssets());
+        assetList.addAll(db.getAllAssetsByDept(assetLocation));
         mRfidManager = RfidManager.InitInstance(this);
 
         IntentFilter filter = new IntentFilter();
@@ -267,6 +281,12 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 showActionsDialog(position);
             }
         }));
+    }
+
+    private void goToResult() {
+        Intent intent = new
+                Intent(ScanAssetActivity.this, ScanResultActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -766,7 +786,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 System.out.println("Your excel file has been generated");
             } catch (Exception ex) {
                 ex.printStackTrace();
-            } //main method ends
+            } //menu method ends
             return true;
         }
 

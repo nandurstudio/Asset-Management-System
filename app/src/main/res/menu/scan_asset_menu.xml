@@ -2,48 +2,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.tpmshpplant.assetmanagement.rfid.RfidModuleActivity">
+    <!--https://stackoverflow.com/questions/28715765/what-is-orderincategory-in-actionbar-menu-item-why-it-is-use-for-->
 
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_baseline_search_24_white"
+        android:orderInCategory="10"
         android:title="@string/action_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_export_csv"
         android:icon="@drawable/ic_baseline_import_export_24"
-        android:orderInCategory="100"
+        android:orderInCategory="11"
         android:title="@string/action_export_csv"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_delete_database"
         android:icon="@drawable/ic_baseline_delete_24"
-        android:orderInCategory="100"
+        android:orderInCategory="12"
         android:title="@string/action_delete_database"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_sort_by_location"
-        android:icon="@drawable/ic_baseline_filter_list_24"
-        android:orderInCategory="100"
-        android:title="@string/action_sort_by_location"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_pull_assets"
+        android:icon="@drawable/ic_baseline_sync_24"
+        android:orderInCategory="13"
+        android:title="@string/action_pull_assets"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_sort_show_all"
         android:icon="@drawable/ic_baseline_filter_list_24"
-        android:orderInCategory="100"
+        android:orderInCategory="14"
         android:title="@string/action_sort_show_all"
         app:showAsAction="ifRoom" />
 
 
-    <item
+<!--    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_baseline_settings_24"
-        android:orderInCategory="100"
+        android:orderInCategory="15"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
 </menu>

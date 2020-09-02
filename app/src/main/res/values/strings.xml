@@ -50,6 +50,15 @@
 
     <!-- Update Preferences -->
     <string name="update_title">Check for update</string>
+    <string name="total_asset">Total Asset</string>
+    <string name="units">Units</string>
+    <string name="asset_readable">Readable</string>
+    <string name="asset_unreadable">Unreadable</string>
+    <string name="asset_result">Result</string>
+    <string name="percentage">%</string>
+    <string name="assets_result">Result</string>
+    <string name="asset_empty">No Asset</string>
+    <string name="action_pull_assets">Pull Data Assets</string>
 
     <string-array name="shp_array">
         <item>Plant</item>

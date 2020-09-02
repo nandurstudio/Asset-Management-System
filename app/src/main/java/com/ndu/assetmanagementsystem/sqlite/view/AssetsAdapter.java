@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ndu.assetmanagementsystem.R;
+import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
 import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
 
 import java.text.ParseException;
@@ -132,5 +133,28 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         return assetList.get(position).getAsset_status();
     }
 
-
+    /*https://stackoverflow.com/a/37562572/7772358*/
+    public void filter(String text, DatabaseHelper db, String assetLocation) {
+        assetList.clear();
+        if (text.isEmpty()) {
+            assetList.addAll(db.getAllAssetsByDept(assetLocation));
+        } else {
+            text = text.toLowerCase();
+            try {
+                for (Asset asset : db.getAllAssetsByDept(assetLocation)) {
+                    if (asset.getAsset_pic().toLowerCase().contains(text) ||
+                            asset.getAsset_desc().toLowerCase().contains(text) ||
+                            asset.getAsset_code().toLowerCase().contains(text) ||
+                            asset.getAsset_rfid().toLowerCase().contains(text) ||
+                            asset.getAsset_location().toLowerCase().contains(text) ||
+                            asset.getTimestamp().toLowerCase().contains(text)) {
+                        assetList.add(asset);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        notifyDataSetChanged();
+    }
 }
