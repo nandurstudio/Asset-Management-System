@@ -56,6 +56,7 @@
     <string name="asset_empty">No Asset</string>
     <string name="action_pull_assets">Pull Data Assets</string>
     <string name="copyright_title">Copyright</string>
+    <string name="action_refresh_assets">Refresh Asset List</string>
 
     <string-array name="shp_array">
         <item>Plant</item>

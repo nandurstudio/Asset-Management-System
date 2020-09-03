@@ -8,13 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,22 +47,14 @@ import com.ndu.assetmanagementsystem.sqlite.utils.MyDividerItemDecoration;
 import com.ndu.assetmanagementsystem.sqlite.utils.RecyclerTouchListener;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapter;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -79,19 +68,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
-import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
@@ -258,7 +243,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             case R.id.action_settings:
                 goToSetting();
                 return true;
-
+                /*
             case R.id.action_delete_database:
                 String title = getResources().getString(R.string.action_delete_database) + "?";
                 String msg = "Ini akan menghapus data asset!";
@@ -274,12 +259,12 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                             }
                             dialog.cancel();
                         });
-                return true;
+                return true;*/
 
             case R.id.action_pull_assets:
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
                 nduDialog(this,
-                        getResources().getString(R.string.action_pull_assets) + "?",
+                        getResources().getString(R.string.action_refresh_assets) + "?",
                         "Ini akan merefresh list dan semua data scan yang belum terexport akan hilang!",
                         true,
                         dialogIcon,
@@ -288,7 +273,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
                                 dialog.cancel();
-
+                                deleteAssetDatabase();
                                 pullDataAsyncTask task = new pullDataAsyncTask();
                                 task.execute();
                                 //progressDialog.dismiss();
@@ -300,10 +285,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             case R.id.action_sort_show_all:
                 showAllAssetsInDb();
                 return true;
-
-            case R.id.action_export_csv:
-                ExportDatabaseCSVTask task = new ExportDatabaseCSVTask();
-                task.execute();
         }
 
         return super.onOptionsItemSelected(item);
@@ -663,6 +644,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     /**
      * sub-class of AsyncTask
      */
+    @SuppressLint("StaticFieldLeak")
     protected class pullDataAsyncTask extends AsyncTask<Context, Integer, String> {
         /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
         private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
@@ -784,171 +766,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 Toast.makeText(ScanAssetActivity.this, "Import failed", Toast.LENGTH_SHORT).show();
             }
             refreshAssetList();
-        }
-    }
-
-    public class ExportDatabaseCSVTask extends AsyncTask<String, Void, Boolean> {
-        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database...");
-            this.dialog.show();
-        }
-
-        protected Boolean doInBackground(final String... args) {
-
-            File dbFile = getDatabasePath(DATABASE_NAME);
-            //AABDatabaseManager dbhelper = new AABDatabaseManager(getApplicationContext());
-            DatabaseHelper db = new DatabaseHelper(ScanAssetActivity.this);
-            System.out.println(dbFile);  // displays the data base path in your logcat
-
-            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-
-            if (!exportDir.exists()) {
-                exportDir.mkdirs();
-            }
-
-            File file = new File(exportDir, "Asset.csv");
-            try {
-                if (file.createNewFile()) {
-                    System.out.println("File is created!");
-                    System.out.println("myfile.csv " + file.getAbsolutePath());
-                } else {
-                    System.out.println("File already exists.");
-                }
-                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-                //SQLiteDatabase db = dbhelper.getWritableDatabase();
-                Cursor curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
-                csvWrite.writeNext(curCSV.getColumnNames());
-                while (curCSV.moveToNext()) {
-                    String[] arrStr = {
-                            curCSV.getString(0), curCSV.getString(1), curCSV.getString(2),
-                            curCSV.getString(3), curCSV.getString(4),
-                            curCSV.getString(5), curCSV.getString(6)};
-                    /*curCSV.getString(3),curCSV.getString(4)};*/
-                    csvWrite.writeNext(arrStr);
-                }
-                csvWrite.close();
-                curCSV.close();
-        /*String data="";
-        data=readSavedData();
-        data= data.replace(",", ";");
-        writeData(data);*/
-                return true;
-            } catch (SQLException | IOException sqlEx) {
-                Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-                return false;
-            }
-        }
-
-        protected void onPostExecute(final Boolean success) {
-            if (this.dialog.isShowing()) {
-                this.dialog.dismiss();
-            }
-            if (success) {
-                Toast.makeText(ScanAssetActivity.this, "Export succeed", Toast.LENGTH_SHORT).show();
-                CSVToExcelConverter task = new CSVToExcelConverter();
-                task.execute();
-            } else {
-                Toast.makeText(ScanAssetActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    //    CSV to XLS
-    public class CSVToExcelConverter extends AsyncTask<String, Void, Boolean> {
-
-
-        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage("Exporting to excel...");
-            this.dialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            ArrayList arList = null;
-            ArrayList al = null;
-
-            //File dbFile= new File(getDatabasePath("database_name").toString());
-            File dbFile = getDatabasePath(DATABASE_NAME);
-            String yes = dbFile.getAbsolutePath();
-
-            String inFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.csv";
-            String outFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.xls";
-            String thisLine;
-            int count = 0;
-
-            try {
-
-                FileInputStream fis = new FileInputStream(inFilePath);
-                DataInputStream myInput = new DataInputStream(fis);
-                int i = 0;
-                arList = new ArrayList();
-                while ((thisLine = myInput.readLine()) != null) {
-                    al = new ArrayList();
-                    String[] strar = thisLine.split(",");
-                    for (int j = 0; j < strar.length; j++) {
-                        al.add(strar[j]);
-                    }
-                    arList.add(al);
-                    System.out.println();
-                    i++;
-                }
-            } catch (Exception e) {
-                System.out.println("shit");
-            }
-
-            try {
-                HSSFWorkbook hwb = new HSSFWorkbook();
-                HSSFSheet sheet = hwb.createSheet(TABLE_NAME);
-                for (int k = 0; k < arList.size(); k++) {
-                    ArrayList ardata = (ArrayList) arList.get(k);
-                    HSSFRow row = sheet.createRow((short) 0 + k);
-                    for (int p = 0; p < ardata.size(); p++) {
-                        HSSFCell cell = row.createCell((short) p);
-                        String data = ardata.get(p).toString();
-                        if (data.startsWith("=")) {
-                            cell.setCellType(Cell.CELL_TYPE_STRING);
-                            data = data.replaceAll("\"", "");
-                            data = data.replaceAll("=", "");
-                            cell.setCellValue(data);
-                        } else if (data.startsWith("\"")) {
-                            data = data.replaceAll("\"", "");
-                            cell.setCellType(Cell.CELL_TYPE_STRING);
-                            cell.setCellValue(data);
-                        } else {
-                            data = data.replaceAll("\"", "");
-                            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-                            cell.setCellValue(data);
-                        }
-                        //*/
-                        // cell.setCellValue(ardata.get(p).toString());
-                    }
-                    System.out.println();
-                }
-                FileOutputStream fileOut = new FileOutputStream(outFilePath);
-                hwb.write(fileOut);
-                fileOut.close();
-                System.out.println("Your excel file has been generated");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } //menu method ends
-            return true;
-        }
-
-        protected void onPostExecute(final Boolean success) {
-            if (this.dialog.isShowing()) {
-                this.dialog.dismiss();
-            }
-            if (success) {
-                Toast.makeText(ScanAssetActivity.this, "file is built!", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(ScanAssetActivity.this, "file fail to build", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
