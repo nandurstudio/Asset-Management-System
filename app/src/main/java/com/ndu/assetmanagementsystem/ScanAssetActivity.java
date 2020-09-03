@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -80,6 +83,7 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_A
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
+    private static final String XML_PATH = "xml_path";
     private AssetsAdapter mAdapter;
     private List<Asset> assetList = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -96,6 +100,12 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private Button buttResult;
     private Drawable dialogIcon;
     private Button buttAssetMap;
+
+    public static final int PICKFILE_RESULT_CODE = 1;
+    private Uri fileUri;
+    private String filePath;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences preferences;
 //    private ProgressBar spinner;
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -114,6 +124,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         dialogIcon = getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 //        spinner = (ProgressBar) findViewById(R.id.progressBar);
         db = new DatabaseHelper(this);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
 
         toolbar.setTitle(R.string.assets_list);
         setSupportActionBar(toolbar);
@@ -188,6 +201,27 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }));
     }
 
+    @SuppressLint("SdCardPath")
+    @Override
+    //https://www.woolha.com/tutorials/android-file-picker-example
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+                    fileUri = data.getData();
+                    filePath = Objects.requireNonNull(fileUri).getPath();
+                    Log.d(TAG, "onActivityResult: " + "/mnt/sdcard/" + filePath.substring(18));
+                    editor.putString(XML_PATH, "/mnt/sdcard/" + filePath.substring(18));
+                    editor.apply();
+
+                    pullDataAsyncTask task = new pullDataAsyncTask();
+                    task.execute();
+                }
+                break;
+        }
+    }
+
     private void runDexter() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -243,8 +277,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             case R.id.action_settings:
                 goToSetting();
                 return true;
-                /*
-            case R.id.action_delete_database:
+
+/*            case R.id.action_delete_database:
                 String title = getResources().getString(R.string.action_delete_database) + "?";
                 String msg = "Ini akan menghapus data asset!";
                 nduDialog(this,
@@ -255,7 +289,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         "Yes", "Cancel",
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
-                                deleteAssetDatabase();
+                                openFilePicker();
                             }
                             dialog.cancel();
                         });
@@ -274,8 +308,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                             if (which == BUTTON_POSITIVE) {
                                 dialog.cancel();
                                 deleteAssetDatabase();
-                                pullDataAsyncTask task = new pullDataAsyncTask();
-                                task.execute();
+                                openFilePicker();
                                 //progressDialog.dismiss();
                             }
                             dialog.cancel();
@@ -288,6 +321,14 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openFilePicker() {
+        Intent intentfile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intentfile.addCategory(Intent.CATEGORY_OPENABLE);
+        intentfile.setType("text/xml");
+        //https://stackoverflow.com/questions/35915602/selecting-a-specific-type-of-file-in-android
+        startActivityForResult(intentfile, PICKFILE_RESULT_CODE);
     }
 
     private void refreshAssetList() {
@@ -669,7 +710,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 //InputStream istream = getAssets().open("userdetails.xml");
 
                 /*Input from mnt/sdcard*/
-                File file = new File("mnt/sdcard/Asset/AssetUpdate.xml");
+                String pathFile = preferences.getString(XML_PATH, "mnt/sdcard/Asset/Asset.xml");
+                //File file = new File("mnt/sdcard/Asset/AssetUpdate.xml");
+                File file = new File(Objects.requireNonNull(pathFile));
                 InputStream inputStreamSd = new FileInputStream(file.getPath());
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
@@ -702,7 +745,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 }
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
-                displayExceptionMessage(e.getMessage());
+                return "No File";
+                //displayExceptionMessage(e.getMessage());
+
             }
             return "COMPLETE!";
         }
@@ -761,7 +806,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             }
             if (result.equals("COMPLETE!")) {
                 this.dialog.setMessage(result);
-                Toast.makeText(ScanAssetActivity.this, "Import succeed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanAssetActivity.this, "Import complete", Toast.LENGTH_SHORT).show();
+            } else if (result.equals("No File")) {
+                Toast.makeText(ScanAssetActivity.this, "No Asset.xml file in the directory", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ScanAssetActivity.this, "Import failed", Toast.LENGTH_SHORT).show();
             }
