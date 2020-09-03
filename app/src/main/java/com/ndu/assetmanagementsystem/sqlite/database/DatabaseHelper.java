@@ -310,6 +310,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean checkIsStatusUpdated(String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_STATUS + " = " + "'" + status + "'";
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return true;
+        }
+        cursor.close();
+        return false;
+    }
+
     public boolean checkIsItemCodeInDb(String itemCode) {
         SQLiteDatabase db = this.getReadableDatabase();
         String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_CODE + " = " + "'" + itemCode + "'";
