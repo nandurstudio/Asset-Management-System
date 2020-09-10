@@ -9,9 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +30,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,6 +73,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import ir.androidexception.filepicker.dialog.SingleFilePickerDialog;
+
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
@@ -92,18 +96,10 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private DatabaseHelper db;
     //RFID
     RfidManager mRfidManager = null;
-    HashMap<String, String> asset = new HashMap<>();
     private String assetLocation;
-    private String rfid;
-    private int position;
-    private File file;
     private Button buttResult;
     private Drawable dialogIcon;
     private Button buttAssetMap;
-
-    public static final int PICKFILE_RESULT_CODE = 1;
-    private Uri fileUri;
-    private String filePath;
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 //    private ProgressBar spinner;
@@ -201,27 +197,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }));
     }
 
-    @SuppressLint("SdCardPath")
-    @Override
-    //https://www.woolha.com/tutorials/android-file-picker-example
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PICKFILE_RESULT_CODE:
-                if (resultCode == -1) {
-                    fileUri = data.getData();
-                    filePath = Objects.requireNonNull(fileUri).getPath();
-                    Log.d(TAG, "onActivityResult: " + "/mnt/sdcard/" + filePath.substring(18));
-                    editor.putString(XML_PATH, "/mnt/sdcard/" + filePath.substring(18));
-                    editor.apply();
-
-                    pullDataAsyncTask task = new pullDataAsyncTask();
-                    task.execute();
-                }
-                break;
-        }
-    }
-
     private void runDexter() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -299,7 +274,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
                 nduDialog(this,
                         getResources().getString(R.string.action_refresh_assets) + "?",
-                        "Ini akan merefresh list dan semua data scan yang belum terexport akan hilang!",
+                        "Ini akan merefresh list dan semua data scan yang belum terimport akan hilang!",
                         true,
                         dialogIcon,
                         "Yes",
@@ -324,11 +299,36 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     }
 
     private void openFilePicker() {
-        Intent intentfile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intentfile.addCategory(Intent.CATEGORY_OPENABLE);
-        intentfile.setType("text/xml");
-        //https://stackoverflow.com/questions/35915602/selecting-a-specific-type-of-file-in-android
-        startActivityForResult(intentfile, PICKFILE_RESULT_CODE);
+//        Intent intentfile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//        intentfile.addCategory(Intent.CATEGORY_OPENABLE);
+//        intentfile.setType("text/xml");
+//        //https://stackoverflow.com/questions/35915602/selecting-a-specific-type-of-file-in-android
+//        startActivityForResult(intentfile, PICKFILE_RESULT_CODE);
+
+        if (permissionGranted()) {
+            SingleFilePickerDialog singleFilePickerDialog = new SingleFilePickerDialog(this,
+                    () -> Toast.makeText(ScanAssetActivity.this, "Canceled!!", Toast.LENGTH_SHORT).show(),
+                    files -> {
+                        Toast.makeText(ScanAssetActivity.this, files[0].getPath(), Toast.LENGTH_SHORT).show();
+                        editor.putString(XML_PATH, files[0].getPath());
+                        editor.apply();
+
+                        pullDataAsyncTask task = new pullDataAsyncTask();
+                        task.execute();
+                    });
+            singleFilePickerDialog.show();
+        } else {
+            requestPermission();
+        }
+    }
+
+    private boolean permissionGranted() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
     private void refreshAssetList() {
@@ -671,9 +671,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-
         unregisterReceiver(myDataReceiver);
-
         mRfidManager.Release();
     }
 
@@ -747,7 +745,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 e.printStackTrace();
                 return "No File";
                 //displayExceptionMessage(e.getMessage());
-
             }
             return "COMPLETE!";
         }
@@ -755,7 +752,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         // -- gets called just before thread begins
         @Override
         protected void onPreExecute() {
-            Log.i("makemachine", "onPreExecute()");
+            Log.i(TAG, "onPreExecute()");
             super.onPreExecute();
             this.dialog.setMessage("Importing data asset...");
             this.dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -791,7 +788,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            Log.i("makemachine", "onCancelled()");
+            Log.i(TAG, "onCancelled()");
             this.dialog.setMessage("Cancelled!");
         }
 
@@ -800,7 +797,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.i("makemachine", "onPostExecute(): " + result);
+            Log.i(TAG, "onPostExecute(): " + result);
             if (this.dialog.isShowing()) {
                 this.dialog.dismiss();
             }

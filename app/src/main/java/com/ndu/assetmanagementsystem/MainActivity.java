@@ -18,13 +18,17 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+
+import static com.ndu.assetmanagementsystem.NandurLibs.dialogInfoVersionName;
+import static com.ndu.assetmanagementsystem.NandurLibs.shareApp;
+import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
+import static com.ndu.assetmanagementsystem.NandurLibs.versName;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,8 +43,6 @@ public class MainActivity extends AppCompatActivity
     private static final String DEPT_HRGA = "HRGA";
     private static final String DIV_PLANT = "Plant";
     private static final String DIV_KN = "KN";
-    public static String versName;
-    public static int versCode;
     private DrawerLayout drawer;
     private Handler handler;
     private SharedPreferences sharedPrefs;
@@ -167,22 +169,6 @@ public class MainActivity extends AppCompatActivity
                 goToAms());
     }
 
-    private void shareApp() {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        String shareSubject = getResources().getString(R.string.app_name);
-//        String bitly = getResources().getString(R.string.bitly_share)+getResources().getString(R.string.bitly_dynamic);
-//        String direct = getResources().getString(R.string.bitly_share)+getResources().getString(R.string.bitly_direct);
-//        String hashtag = getResources().getString(R.string.hashtag);
-//        String ofcWeb = getResources().getString(R.string.ofc_website);
-//        String download = getResources().getString(R.string.direct_download);
-//        String shareBody = tvResult.getText().toString()+"\n\n"+ofcWeb+bitly+"\n"+download+direct+"\n"+hashtag.trim();
-        String shareVia = getResources().getString(R.string.menu_send);
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject + " " + getResources().getString(R.string.version_title) + " " + versName + " " + getResources().getString(R.string.build_title) + " " + versCode);
-//        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, shareVia));
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -240,26 +226,22 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_share:
                 closeDrawer();
-                handler.postDelayed(this::shareApp, 250);
+                handler.postDelayed(() -> shareApp(this,
+                        getResources().getString(R.string.menu_send),
+                        getResources().getString(R.string.app_name),
+                        getResources().getString(R.string.version_title),
+                        versName,
+                        getResources().getString(R.string.build_title),
+                        versCode), 250);
                 break;
             case R.id.nav_version_name:
                 closeDrawer();
-                handler.postDelayed(this::onInfoVersionName, 250);
+                handler.postDelayed(() -> dialogInfoVersionName(MainActivity.this), 250);
                 break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void onInfoVersionName() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(R.string.version_title);
-        builder.setMessage("Version Name: " + versName + "\n" + "Version Code: " + versCode);
-        builder.setIcon(R.drawable.ic_info_outline_black_24dp);
-        AlertDialog diag = builder.create();
-        //Display the message!
-        diag.show();
     }
 
     private void closeDrawer() {

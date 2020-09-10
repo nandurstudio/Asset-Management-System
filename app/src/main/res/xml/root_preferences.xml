@@ -48,6 +48,18 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="@string/file_header">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="file_location"
+            app:summary="@string/file_export_location_sum"
+            app:title="@string/file_export_location_header" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="@string/about_header">
 
         <Preference

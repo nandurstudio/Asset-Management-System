@@ -1,34 +1,36 @@
 package com.ndu.assetmanagementsystem;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
 
-import java.text.MessageFormat;
+import ir.androidexception.filepicker.dialog.DirectoryPickerDialog;
 
-import static com.ndu.assetmanagementsystem.MainActivity.versCode;
-import static com.ndu.assetmanagementsystem.MainActivity.versName;
+import static com.ndu.assetmanagementsystem.NandurLibs.sendFeedback;
+import static com.ndu.assetmanagementsystem.NandurLibs.showInstalledAppDetails;
+import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
+import static com.ndu.assetmanagementsystem.NandurLibs.versName;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final String SCHEME = "package";
-    private static final String APP_PKG_NAME_21 = "com.android.settings.ApplicationPkgName";
-    private static final String APP_PKG_NAME_22 = "pkg";
-    private static final String APP_DETAILS_PACKAGE_NAME = "com.android.settings";
-    private static final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
+    private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,12 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+        public static final String KEY_EXPORT_FILE_DIRECTORY = "file_directory";
+        public SharedPreferences sharedPrefs;
+        public SharedPreferences.Editor editor;
+
+        @SuppressLint("CommitPrefEdits")
         @SuppressWarnings("ConstantConditions")
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -60,15 +67,17 @@ public class SettingsActivity extends AppCompatActivity {
             Preference prefVersion = findPreference("current_version");
             Preference prefCheckUpdate = findPreference("check_update");
             Preference prefSendFeedback = findPreference("feedback");
+            Preference prefFilePicker = findPreference("file_location");
+
+            //update value
+            sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            editor = sharedPrefs.edit();
 
             //getVersionName
             if (prefVersion != null) {
                 String versi = getResources().getString(R.string.version_title);
                 String build = getResources().getString(R.string.build_title);
                 prefVersion.setSummary(versi + " " + versName + " " + build + " " + versCode);
-            }
-
-            if (prefVersion != null) {
                 prefVersion.setOnPreferenceClickListener(preference -> {
                     showInstalledAppDetails(getContext(), requireActivity().getPackageName());
                     return true;
@@ -94,49 +103,70 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (prefSendFeedback != null) {
                 prefSendFeedback.setOnPreferenceClickListener(preference -> {
-                    sendFeedback(requireContext());
+                    sendFeedback(requireContext(),
+                            requireContext().getResources().getString(R.string.pattern_mailbody),
+                            requireContext().getString(R.string.feedback_body),
+                            requireContext().getString(R.string.app_name),
+                            requireContext().getString(R.string.choose_email_client),
+                            requireContext().getResources().getString(R.string.nav_header_subtitle),
+                            versName, versCode);
                     return true;
                 });
             }
-        }
 
-        private void showInstalledAppDetails(Context context, String packageName) {
-            Intent intent = new Intent();
-            final int apiLevel = Build.VERSION.SDK_INT;
-            if (apiLevel >= 9) { // above 2.3
-                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts(SCHEME, packageName, null);
-                intent.setData(uri);
-            } else { // below 2.3
-                final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
-                        : APP_PKG_NAME_21);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setClassName(APP_DETAILS_PACKAGE_NAME,
-                        APP_DETAILS_CLASS_NAME);
-                intent.putExtra(appPkgName, packageName);
+            if (prefFilePicker != null) {
+                prefFilePicker.setOnPreferenceClickListener(preference -> {
+                    if (permissionGranted()) {
+                        DirectoryPickerDialog directoryPickerDialog = new DirectoryPickerDialog(getContext(),
+                                () -> Toast.makeText(getContext(), "Canceled!!", Toast.LENGTH_SHORT).show(),
+                                files -> {
+                                    Toast.makeText(getContext(), files[0].getPath(), Toast.LENGTH_SHORT).show();
+                                    editor.putString(SettingsFragment.KEY_EXPORT_FILE_DIRECTORY, files[0].getPath());
+                                    editor.apply();
+                                }
+                        );
+                        directoryPickerDialog.show();
+                    } else {
+                        requestPermission();
+                    }
+                    return true;
+                });
+                prefFilePicker.setSummary(sharedPrefs.getString(KEY_EXPORT_FILE_DIRECTORY, "Directory Default"));
             }
-            context.startActivity(intent);
-
         }
-    }
 
-    /**
-     * Email client intent to send support mail
-     * Appends the necessary device information to email body
-     * useful when providing support
-     */
-    public static void sendFeedback(Context context) {
-        String feedBody = context.getString(R.string.feedback_body);
-        String appName = context.getString(R.string.app_name);
-        String emailClient = context.getString(R.string.choose_email_client);
-        String targetMail = context.getResources().getString(R.string.nav_header_subtitle);
-        String patterMailBody = context.getResources().getString(R.string.pattern_mailbody);
-        String body = MessageFormat.format(patterMailBody, Build.VERSION.RELEASE, versName, Build.BRAND, Build.MODEL, Build.MANUFACTURER, versCode);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{targetMail});
-        intent.putExtra(Intent.EXTRA_SUBJECT, MessageFormat.format("{0} {1} v{2} b{3}", feedBody, appName, versName, versCode));
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-        context.startActivity(Intent.createChooser(intent, emailClient));
+        private boolean permissionGranted() {
+            return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        private void requestPermission() {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceScreen().getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceScreen().getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+            if (s.equals(KEY_EXPORT_FILE_DIRECTORY)) {
+                Log.d(TAG, "onSharedPreferenceChanged: " + sharedPreferences.toString());
+                //https://stackoverflow.com/questions/8003098/how-do-you-refresh-preferenceactivity-to-show-changes-in-the-settings
+            }
+            requireActivity().finish();
+            requireActivity().startActivity(requireActivity().getIntent());
+            Log.d(TAG, "onCreatePreferences: " + sharedPreferences.getString(s, "Directory Default"));
+        }
     }
 }

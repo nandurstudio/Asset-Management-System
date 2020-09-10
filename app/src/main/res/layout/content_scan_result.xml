@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -186,12 +187,44 @@
 
     <Button
         android:id="@+id/button_export_csv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="@dimen/nav_header_vertical_spacing"
         android:background="@color/colorPrimary"
         android:text="@string/action_export_csv"
         android:textColor="@color/design_default_color_background" />
+
+    <Button
+        android:id="@+id/button_export_pdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/nav_header_vertical_spacing"
+        android:background="@color/colorPrimary"
+        android:text="@string/action_export_pdf"
+        android:textColor="@color/design_default_color_background" />
+
+    <Button
+        android:id="@+id/button_mailto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/nav_header_vertical_spacing"
+        android:background="@color/colorPrimary"
+        android:text="@string/action_mailto"
+        android:textColor="@color/design_default_color_background" />
+
+    <EditText
+        android:id="@+id/editText_mailto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/nav_header_vertical_spacing"
+        android:autofillHints="Email"
+        android:inputType="textEmailAddress"
+        android:text="@string/nav_header_subtitle"
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/textViewAMS"

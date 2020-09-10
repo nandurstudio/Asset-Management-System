@@ -1,21 +1,34 @@
 package com.ndu.assetmanagementsystem;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -27,30 +40,46 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
+import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 
 public class ScanResultActivity extends AppCompatActivity {
 
     private DatabaseHelper db;
-    private TextView totalAsset;
     private String assetLocation;
-    private String TAG = "ScanResultActivity";
-    private TextView readAbleAsset;
-    private TextView unReadAbleAsset;
-    private TextView percentageAsset;
-    private Button butExport;
+    private SharedPreferences sharedPrefs;
+    private File file;
+    private String fileNameTxt;
+    private String path;
+    private String TAG = ScanResultActivity.class.getSimpleName();
+
+    public ScanResultActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +104,22 @@ public class ScanResultActivity extends AppCompatActivity {
             toolbar.setTitle(getResources().getString(R.string.asset_result) + " Of " + assetLocation.substring(1));
         }
 
+        //update value
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         //Initializing
-        totalAsset = findViewById(R.id.textView_total_asset);
-        readAbleAsset = findViewById(R.id.textView_readble_units);
-        unReadAbleAsset = findViewById(R.id.textView_unreadble_units);
-        percentageAsset = findViewById(R.id.textView_readble_result);
-        butExport = findViewById(R.id.button_export_csv);
+        TextView totalAsset = findViewById(R.id.textView_total_asset);
+        TextView readAbleAsset = findViewById(R.id.textView_readble_units);
+        TextView unReadAbleAsset = findViewById(R.id.textView_unreadble_units);
+        TextView percentageAsset = findViewById(R.id.textView_readble_result);
+        Button butExportXls = findViewById(R.id.button_export_csv);
+        Button butExportPdf = findViewById(R.id.button_export_pdf);
+        Button butMailTo = findViewById(R.id.button_mailto);
 
         totalAsset.setText(String.valueOf(db.getAssetsCountByLocation(assetLocation)));
         readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
 
         try {
-
             double totalAssetInt = Double.parseDouble(totalAsset.getText().toString());
             double readAbleAssetInt = Double.parseDouble(readAbleAsset.getText().toString());
 
@@ -94,53 +127,138 @@ public class ScanResultActivity extends AppCompatActivity {
             BigDecimal bdUnread = new BigDecimal(unRead).setScale(0, RoundingMode.HALF_EVEN);
             unReadAbleAsset.setText(String.valueOf(bdUnread));
             double percenTage = (readAbleAssetInt / totalAssetInt) * 100;
+            String TAG = "ScanResultActivity";
             Log.d(TAG, "onCreate: " + percenTage);
             //https://stackoverflow.com/a/4826827/7772358
             BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
-            percenTage = bd.doubleValue();
+            bd.doubleValue();
             percentageAsset.setText(String.valueOf(bd));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         toolbar.setNavigationOnClickListener(view -> finish());
-        butExport.setOnClickListener(view -> exportDataTXls());
+        percentageAsset.setOnClickListener(view -> saveToFile());
+        butExportXls.setOnClickListener(view -> exportDataToXls());
+        butExportPdf.setOnClickListener(view -> {
+            createPdfAsyncTask task = new createPdfAsyncTask();
+            task.execute();
+        });
+        butMailTo.setOnClickListener(view -> sendToEmail());
+
     }
 
-    private void exportDataTXls() {
-        ExportDatabaseToCSVTask task = new ExportDatabaseToCSVTask();
+    // Serializes an object and saves it to a file
+    public void saveToFile() {
+
+        ExportDataAsXmlTask task = new ExportDataAsXmlTask();
         task.execute();
+//        ExportDatabaseFileTask task = new ExportDatabaseFileTask();
+//        task.execute();
+        /*List<Asset> assets = new ArrayList<>();
+        XmlSerializer serializer = Xml.newSerializer();
+        File newxmlfile = new File("/storage/emulated/0/Podcasts/new.xml");
+        try {
+            newxmlfile.createNewFile();
+        } catch (IOException e) {
+            Log.e("IOException", "Exception in create new File(");
+        }
+        FileOutputStream fileos = null;
+        try {
+            fileos = new FileOutputStream(newxmlfile);
+
+        } catch (FileNotFoundException e) {
+            Log.e("FileNotFoundException", e.toString());
+        }
+        try {
+            serializer.setOutput(fileos, "UTF-8");
+            //<?xml version="1.0" encoding="UTF-8" standalone="true"?>
+            serializer.startDocument("UTF-8", true);
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            //<assets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            serializer.startTag("", "assets");
+
+            for (Asset asset : assets) {
+                serializer.startTag("", "asset");
+                serializer.attribute("", "date", asset.getTimestamp());
+
+                serializer.startTag("", COLUMN_ASSET_CODE);
+                serializer.text(asset.getAsset_code());
+                serializer.endTag("", COLUMN_ASSET_CODE);
+
+                serializer.startTag("", COLUMN_ASSET_DESC);
+                serializer.text(asset.getAsset_desc());
+                serializer.endTag("", COLUMN_ASSET_DESC);
+
+                serializer.startTag("", COLUMN_ASSET_PIC);
+                serializer.text(asset.getAsset_pic());
+                serializer.endTag("", COLUMN_ASSET_PIC);
+
+                serializer.startTag("", COLUMN_ASSET_LOCATION);
+                serializer.text(asset.getAsset_location());
+                serializer.endTag("", COLUMN_ASSET_LOCATION);
+
+                serializer.endTag("", "asset");
+            }
+            serializer.endTag("", "assets");
+            serializer.endDocument();
+            serializer.flush();
+            if (fileos != null) {
+                fileos.close();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }*/
     }
 
+    private void exportDataToXls() {
+        path = sharedPrefs.getString(KEY_EXPORT_FILE_DIRECTORY, "");
+        File exportDir = new File(path, "");
+
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(ScanResultActivity.this);
+        alert.setMessage(R.string.export_result_message);
+        alert.setTitle(R.string.export_result_title);
+        alert.setView(edittext);
+        alert.setPositiveButton(R.string.button_yes, (dialog, whichButton) -> {
+            //What ever you want to do with the value
+            //Editable YouEditTextValue = edittext.getText();
+            //OR
+            fileNameTxt = edittext.getText().toString();
+            file = new File(exportDir, fileNameTxt + ".csv");
+            ExportDatabaseToCSVTask task = new ExportDatabaseToCSVTask();
+            task.execute();
+        });
+
+        alert.setNegativeButton(R.string.button_cancel, (dialog, whichButton) -> {
+            // what ever you want to do with No option.
+        });
+        alert.show();
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
     public class ExportDatabaseToCSVTask extends AsyncTask<String, Void, Boolean> {
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
 
         @Override
         protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database...");
+            this.dialog.setMessage(getString(R.string.loading_exporting_database));
             this.dialog.show();
         }
 
         protected Boolean doInBackground(final String... args) {
-
-            File dbFile = getDatabasePath(DATABASE_NAME);
-            //AABDatabaseManager dbhelper = new AABDatabaseManager(getApplicationContext());
-            DatabaseHelper db = new DatabaseHelper(ScanResultActivity.this);
-            System.out.println(dbFile);  // displays the data base path in your logcat
-
-            File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-
-            if (!exportDir.exists()) {
-                exportDir.mkdirs();
-            }
-
-            File file = new File(exportDir, "Asset.csv");
             try {
                 if (file.createNewFile()) {
                     System.out.println("File is created!");
                     System.out.println("myfile.csv " + file.getAbsolutePath());
                 } else {
                     System.out.println("File already exists.");
+                    toaster(ScanResultActivity.this, "File already exist", 1);
                 }
                 CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
                 //SQLiteDatabase db = dbhelper.getWritableDatabase();
@@ -182,8 +300,8 @@ public class ScanResultActivity extends AppCompatActivity {
     }
 
     //    CSV to XLS
+    @SuppressLint("StaticFieldLeak")
     public class CSVToExcelConverter extends AsyncTask<String, Void, Boolean> {
-
 
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
 
@@ -195,33 +313,24 @@ public class ScanResultActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            ArrayList arList = null;
-            ArrayList al = null;
+            ArrayList<ArrayList<String>> arList = null;
+            ArrayList<String> al;
 
-            //File dbFile= new File(getDatabasePath("database_name").toString());
-            File dbFile = getDatabasePath(DATABASE_NAME);
-            String yes = dbFile.getAbsolutePath();
-
-            String inFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.csv";
-            String outFilePath = Environment.getExternalStorageDirectory().toString() + "/Asset.xls";
+            String inFilePath = path + "/" + fileNameTxt + ".csv";
+            String outFilePath = path + "/" + fileNameTxt + ".xls";
             String thisLine;
-            int count = 0;
 
             try {
 
                 FileInputStream fis = new FileInputStream(inFilePath);
                 DataInputStream myInput = new DataInputStream(fis);
-                int i = 0;
-                arList = new ArrayList();
+                arList = new ArrayList<>();
                 while ((thisLine = myInput.readLine()) != null) {
-                    al = new ArrayList();
+                    al = new ArrayList<>();
                     String[] strar = thisLine.split(",");
-                    for (int j = 0; j < strar.length; j++) {
-                        al.add(strar[j]);
-                    }
+                    Collections.addAll(al, strar);
                     arList.add(al);
                     System.out.println();
-                    i++;
                 }
             } catch (Exception e) {
                 System.out.println("shit");
@@ -230,12 +339,12 @@ public class ScanResultActivity extends AppCompatActivity {
             try {
                 HSSFWorkbook hwb = new HSSFWorkbook();
                 HSSFSheet sheet = hwb.createSheet(TABLE_NAME);
-                for (int k = 0; k < arList.size(); k++) {
-                    ArrayList ardata = (ArrayList) arList.get(k);
-                    HSSFRow row = sheet.createRow((short) 0 + k);
+                for (int k = 0; k < Objects.requireNonNull(arList).size(); k++) {
+                    ArrayList<String> ardata = arList.get(k);
+                    HSSFRow row = sheet.createRow(k);
                     for (int p = 0; p < ardata.size(); p++) {
                         HSSFCell cell = row.createCell((short) p);
-                        String data = ardata.get(p).toString();
+                        String data = ardata.get(p);
                         if (data.startsWith("=")) {
                             cell.setCellType(Cell.CELL_TYPE_STRING);
                             data = data.replaceAll("\"", "");
@@ -273,6 +382,267 @@ public class ScanResultActivity extends AppCompatActivity {
                 Toast.makeText(ScanResultActivity.this, "file is built!", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(ScanResultActivity.this, "file fail to build", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //
+    @SuppressLint("StaticFieldLeak")
+    private class ExportDatabaseFileTask extends AsyncTask<String, Void, Boolean> {
+        private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
+
+        // can use UI thread here
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        // automatically done on worker thread (separate from UI thread)
+        protected Boolean doInBackground(final String... args) {
+
+            File dbFile =
+                    new File(Environment.getDataDirectory() + "/data/com.ndu.assetmanagementsystem.ams/databases/assets_db");
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "exampledata");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+            File file = new File(exportDir, dbFile.getName());
+
+            try {
+                file.createNewFile();
+                this.copyFile(dbFile, file);
+                return true;
+            } catch (IOException e) {
+                Log.e(ScanResultActivity.class.getSimpleName(), e.getMessage(), e);
+                return false;
+            }
+        }
+
+        // can use UI thread here
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success) {
+                Toast.makeText(ScanResultActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        void copyFile(File src, File dst) throws IOException {
+            try (FileChannel inChannel = new FileInputStream(src).getChannel(); FileChannel outChannel = new FileOutputStream(dst).getChannel()) {
+                inChannel.transferTo(0, inChannel.size(), outChannel);
+            }
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class ExportDataAsXmlTask extends AsyncTask<String, Void, String> {
+        private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
+
+        // can use UI thread here
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database as XML...");
+            //this.dialog.show();
+        }
+
+        // automatically done on worker thread (separate from UI thread)
+        protected String doInBackground(final String... args) {
+            SQLiteDatabase database = db.getReadableDatabase();
+            DataXmlExporter dm = new DataXmlExporter(database);
+            Log.d("TAG", "doInBackground: " + Arrays.toString(args));
+            try {
+                String dbName = DATABASE_NAME;
+                String exportFileName = "args";
+                dm.export(dbName, exportFileName);
+            } catch (IOException e) {
+                Log.e(ScanResultActivity.class.getSimpleName(), e.getMessage(), e);
+                return e.getMessage();
+            }
+            return null;
+        }
+
+        // can use UI thread here
+        protected void onPostExecute(final String errMsg) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (errMsg == null) {
+                toaster(ScanResultActivity.this, "Export succesful", 0);
+            } else {
+                Toast.makeText(ScanResultActivity.this, "Export failed - " + errMsg, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void sendToEmail() {
+        //https://stackoverflow.com/questions/9974987/how-to-send-an-email-with-a-file-attachment-in-android
+        EditText editTextMail = findViewById(R.id.editText_mailto);
+        String[] mailto = {editTextMail.getText().toString()};
+        String fileName = TABLE_NAME + " " + assetLocation.substring(1) + ".pdf";
+        File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME + File.separator + fileName);
+        Uri uri = Uri.fromFile(fileLocation);
+        Log.d(TAG, "sendToEmail: " + uri);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, fileName);
+        emailIntent.putExtra(Intent.EXTRA_CC, "");
+        emailIntent.putExtra(Intent.EXTRA_BCC, "");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Laporan " + fileName);
+        emailIntent.setType("application/pdf");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+    }
+
+    /**
+     * sub-class of AsyncTask
+     */
+    @SuppressLint("StaticFieldLeak")
+    protected class createPdfAsyncTask extends AsyncTask<Context, Integer, String> {
+        /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
+        private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
+        //long totalAsset = DatabaseUtils.queryNumEntries(db.getReadableDatabase(), TABLE_NAME);
+        long totalAssetLoc = db.getAssetsCountByLocation(assetLocation);
+
+        // -- run intensive processes here
+        // -- notice that the datatype of the first param in the class definition matches the param passed to this
+        // method
+        // -- and that the datatype of the last param in the class definition matches the return type of this method
+        @Override
+        protected String doInBackground(Context... params) {
+            // -- on every iteration
+            // -- runs a while loop that causes the thread to sleep for 50 milliseconds
+            // -- publishes the progress - calls the onProgressUpdate handler defined below
+            // -- and increments the counter variable i by one
+
+            /*https://www.tutlane.com/tutorial/android/android-xml-parsing-using-sax-parser*/
+            /*https://stackoverflow.com/questions/15967896/how-to-parse-xml-file-from-sdcard-in-android*/
+            try {
+                String dir = Environment.getExternalStorageDirectory() + File.separator + TABLE_NAME;
+                File folder = new File(dir);
+                folder.mkdirs();
+
+                File file = new File(dir, TABLE_NAME + " " + assetLocation.substring(1) + ".pdf");
+                SQLiteDatabase database = db.getWritableDatabase();
+                @SuppressLint("Recycle") Cursor c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'", null);
+                Document document = new Document();  // create the document
+                PdfWriter.getInstance(document, new FileOutputStream(file));
+                document.open();
+
+                Paragraph p3 = new Paragraph();
+                p3.add("List of " + TABLE_NAME + " " + assetLocation.substring(1) + "\n");
+                p3.add("Total " + totalAssetLoc + " Assets\n");
+                document.add(p3);
+
+                PdfPTable table = new PdfPTable(8);
+                table.addCell("NO");
+                table.addCell(COLUMN_ASSET_CODE);
+                table.addCell(COLUMN_ASSET_RFID);
+                table.addCell(COLUMN_ASSET_DESC);
+                table.addCell(COLUMN_ASSET_PIC);
+                table.addCell(COLUMN_ASSET_LOCATION);
+                table.addCell(COLUMN_ASSET_STATUS);
+                table.addCell(COLUMN_TIMESTAMP);
+                for (int i = 0; i < totalAssetLoc; i++) {
+                    if (c1.moveToNext()) {
+                        String asset_code = c1.getString(0);
+                        String asset_rfid = c1.getString(1);
+                        String asset_desc = c1.getString(2);
+                        String asset_pic = c1.getString(3);
+                        String asset_location = c1.getString(4);
+                        String asset_status = c1.getString(5);
+                        String asset_timestamp = c1.getString(6);
+
+                        table.addCell(String.valueOf(i + 1));
+                        table.addCell(asset_code);
+                        table.addCell(asset_rfid);
+                        table.addCell(asset_desc);
+                        table.addCell(asset_pic);
+                        table.addCell(asset_location);
+                        table.addCell(asset_status);
+                        table.addCell(asset_timestamp);
+                    }
+                    publishProgress(i);
+                }
+
+                document.add(table);
+                document.addCreationDate();
+                document.close();
+            } catch (FileNotFoundException | DocumentException e) {
+                e.printStackTrace();
+                return "No File";
+            }
+            return "COMPLETE!";
+        }
+
+        // -- gets called just before thread begins
+        @Override
+        protected void onPreExecute() {
+            Log.i(TAG, "onPreExecute()");
+            super.onPreExecute();
+            this.dialog.setTitle("Export Asset To .pdf");
+            this.dialog.setMessage("Preparing asset, Please wait!");
+            this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            this.dialog.setIndeterminate(true);
+            this.dialog.setCancelable(false);
+            this.dialog.setCanceledOnTouchOutside(false);
+            this.dialog.show();
+        }
+
+        // -- called from the publish progress
+        // -- notice that the datatype of the second param gets passed to this method
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            try {
+                double valuesDb = Double.parseDouble(String.valueOf((values[0])));
+                Log.d(TAG, "onProgressUpdate: " + values[0]);
+                double totalAssetDb = Double.parseDouble(String.valueOf(totalAssetLoc));
+                double percenTage = (valuesDb / totalAssetDb) * 100;
+                Log.d(TAG, "onCreate: " + percenTage);
+                BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
+                bd.doubleValue();
+                Log.d(TAG, "onProgressUpdate: " + bd);
+//                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
+                this.dialog.setTitle("Exporting " + (int) totalAssetLoc + " Assets to .pdf");
+                this.dialog.setMessage("It will take a while, Please wait!");
+                this.dialog.setMax((int) totalAssetLoc);
+                this.dialog.setProgress(values[0]);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // -- called if the cancel button is pressed
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Log.i(TAG, "onCancelled()");
+            this.dialog.setMessage("Cancelled!");
+        }
+
+        // -- called as soon as doInBackground method completes
+// -- notice that the third param gets passed to this method
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.i(TAG, "onPostExecute(): " + result);
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (result.equals("COMPLETE!")) {
+                this.dialog.setMessage(result);
+                Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+            } else if (result.equals("No File")) {
+                Toast.makeText(ScanResultActivity.this, "No Asset file in the database", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
             }
         }
     }

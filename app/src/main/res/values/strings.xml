@@ -57,6 +57,17 @@
     <string name="action_pull_assets">Pull Data Assets</string>
     <string name="copyright_title">Copyright</string>
     <string name="action_refresh_assets">Refresh Asset List</string>
+    <string name="file_header">File</string>
+    <string name="file_export_location_header">Export Location</string>
+    <string name="file_export_location_sum">Internal Storage</string>
+    <string name="sdcard_default_path">mnt/sdcard/</string>
+    <string name="export_result_title">Will export all result to .csv and .xls file</string>
+    <string name="export_result_message">Export Result To Excel</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="loading_exporting_database">Exporting database...</string>
+    <string name="action_export_pdf">Export To PDF</string>
+    <string name="action_mailto">Mail to</string>
 
     <string-array name="shp_array">
         <item>Plant</item>
