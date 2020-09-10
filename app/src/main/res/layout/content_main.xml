@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageViewKalbe"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:contentDescription="TODO"
@@ -26,7 +25,6 @@
             android:padding="25dp">
 
             <TextView
-                android:id="@+id/textViewDivision"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -42,7 +40,6 @@
                 android:layout_marginBottom="20dp" />
 
             <TextView
-                android:id="@+id/textViewDept"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -67,7 +64,6 @@
                 android:textColor="@color/design_default_color_background" />
 
             <TextView
-                android:id="@+id/textViewAMS"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
@@ -79,7 +75,6 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/imageViewVbn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"

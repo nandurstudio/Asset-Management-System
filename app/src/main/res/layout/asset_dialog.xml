@@ -27,6 +27,7 @@
         android:hint="@string/hint_enter_rfid_tag"
         android:inputType="textShortMessage"
         android:lines="4"
-        android:textSize="@dimen/input_new_note" />
+        android:textSize="@dimen/input_new_note"
+        android:autofillHints="" />
 
 </LinearLayout>

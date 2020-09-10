@@ -159,7 +159,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         /*Add all assets in Asset.db to recyclerView*/
         assetList.addAll(db.getAllAssetsByDept(assetLocation));
-        mAdapter = new AssetsAdapter(this, assetList);
+        mAdapter = new AssetsAdapter(assetList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -651,6 +651,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressWarnings("LoopConditionNotUpdatedInsideLoop")
     protected String getNodeValue(String tag, Element element) {
         NodeList nodeList = element.getElementsByTagName(tag);
         Node node = nodeList.item(0);
@@ -703,7 +704,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             /*https://www.tutlane.com/tutorial/android/android-xml-parsing-using-sax-parser*/
             /*https://stackoverflow.com/questions/15967896/how-to-parse-xml-file-from-sdcard-in-android*/
             try {
-                ArrayList<HashMap<String, String>> userList = new ArrayList<>();
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") ArrayList<HashMap<String, String>> userList = new ArrayList<>();
                 /*Input from android asset folder*/
                 //InputStream istream = getAssets().open("userdetails.xml");
 

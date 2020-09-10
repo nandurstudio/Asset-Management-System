@@ -7,7 +7,6 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageViewKalbe"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:contentDescription="TODO"
@@ -27,7 +26,6 @@
             android:padding="25dp">
 
             <TextView
-                android:id="@+id/textViewDivision"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -53,7 +51,6 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView_units"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -71,7 +68,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/textView_asset_readable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -92,7 +88,6 @@
 
 
                 <TextView
-                    android:id="@+id/textView_readble_asset_units"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -111,7 +106,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/textView_asset_unreadable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -132,7 +126,6 @@
 
 
                 <TextView
-                    android:id="@+id/textView_unreadble_asset_units"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -151,7 +144,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/textView_asset_result"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -172,7 +164,6 @@
 
 
                 <TextView
-                    android:id="@+id/textView_readble_asset_result"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -227,7 +218,6 @@
         tools:ignore="LabelFor" />
 
     <TextView
-        android:id="@+id/textViewAMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -236,7 +226,6 @@
         android:textStyle="bold" />
 
     <ImageView
-        android:id="@+id/imageViewVbn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"

@@ -1,7 +1,6 @@
 package com.ndu.assetmanagementsystem.sqlite.view;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +22,9 @@ import java.util.Objects;
 
 public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewHolder> {
 
-    private Context context;
     private List<Asset> assetList;
 
-    public class AssetViewHolder extends RecyclerView.ViewHolder {
+    public static class AssetViewHolder extends RecyclerView.ViewHolder {
         public TextView id;
         public TextView asset_code;
         public TextView asset_rfid;
@@ -52,8 +50,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     }
 
 
-    public AssetsAdapter(Context context, List<Asset> assetList) {
-        this.context = context;
+    public AssetsAdapter(List<Asset> assetList) {
         this.assetList = assetList;
     }
 
@@ -84,12 +81,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
 
         // Formatting and displaying timestamp
         holder.timestamp.setText(formatDate(asset.getTimestamp()));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TAG", "onClick: " + position);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> Log.d("TAG", "onClick: " + position));
     }
 
     @Override
