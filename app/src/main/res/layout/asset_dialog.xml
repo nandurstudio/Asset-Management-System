@@ -4,30 +4,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_margin"
+    android:paddingTop="@dimen/activity_margin"
     android:paddingRight="@dimen/activity_margin"
-    android:paddingTop="@dimen/activity_margin">
+    android:theme="@style/Theme.AppCompat.Light.Dialog">
 
-    <TextView android:id="@+id/dialog_title"
+    <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_10"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="8sp"
-        android:text="@string/lbl_new_asset_title"
+        android:text="@string/lbl_reg_asset_title"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/lbl_new_note_title"
         android:textStyle="normal" />
 
-    <EditText
-        android:id="@+id/assetRfid"
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_rfid_tag"
-        android:inputType="textShortMessage"
-        android:lines="4"
-        android:textSize="@dimen/input_new_note"
-        android:autofillHints="" />
+        android:paddingTop="10dip">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInput_rfid_tag_number"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:inputType="textShortMessage" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_enter_asset_pic"
+        android:paddingTop="10dip">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInput_assetPic"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:inputType="textShortMessage|textCapWords"
+            android:maxLength="3"
+            android:textAllCaps="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

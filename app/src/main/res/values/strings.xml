@@ -3,7 +3,7 @@
     <string name="ams_name">Asset Management System</string>
     <string name="lbl_new_asset_title">New Asset</string>
     <string name="lbl_edit_asset_title">Edit Asset</string>
-    <string name="hint_enter_rfid_tag">Input RFID tag number</string>
+    <string name="hint_enter_rfid_tag">RFID Tag Number</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -64,7 +64,19 @@
     <string name="button_cancel">Cancel</string>
     <string name="loading_exporting_database">Exporting database…</string>
     <string name="action_export_pdf">Export To PDF</string>
-    <string name="action_mailto">Mail to</string>
+    <string name="action_mailto">Send Result By Email</string>
+    <string name="lbl_reg_asset_title">Asset Registration</string>
+    <string name="hint_enter_asset_pic">PIC Name</string>
+    <string name="rfid_empty_error_message">RFID Tag Number Can\'t Be Empty</string>
+    <string name="hint_enter_email">Mail Destination</string>
+    <string name="email_empty_error_message">"Email Address Can't Be Empty "</string>
+    <string name="hint_asset_code">Asset Code</string>
+    <string name="hint_asset_rfid">RFID Tag</string>
+    <string name="hint_asset_desc">Asset Description</string>
+    <string name="hint_asset_location">Asset Location</string>
+    <string name="hint_asset_status">Asset Status</string>
+    <string name="asset_detail">Asset Detail</string>
+    <string name="delete_asset">Delete Asset</string>
 
     <string-array name="shp_array">
         <item>Plant</item>

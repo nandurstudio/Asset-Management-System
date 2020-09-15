@@ -40,12 +40,12 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
             //dot = view.findViewById(R.id.dot);
             id = view.findViewById(R.id.assetId);
             asset_code = view.findViewById(R.id.assetCode);
-            asset_rfid = view.findViewById(R.id.assetRfid);
+            asset_rfid = view.findViewById(R.id.editText_assetRfid);
             asset_desc = view.findViewById(R.id.assetDesc);
-            asset_pic = view.findViewById(R.id.assetPic);
-            asset_location = view.findViewById(R.id.assetLocation);
+            //asset_pic = view.findViewById(R.id.assetPic);
+            //asset_location = view.findViewById(R.id.assetLocation);
             asset_status = view.findViewById(R.id.assetStatus);
-            timestamp = view.findViewById(R.id.timestamp);
+            //timestamp = view.findViewById(R.id.timestamp);
         }
     }
 
@@ -66,21 +66,29 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     @Override
     public void onBindViewHolder(AssetViewHolder holder, final int position) {
         Asset asset = assetList.get(position);
-
+        String s = asset.getAsset_desc();
         holder.id.setText(String.valueOf(position + 1));
+        /*
+        * Beberapa element di hidden
+        * */
+
         //holder.id.setText(String.valueOf(asset.getId()));
         holder.asset_code.setText(asset.getAsset_code());
         holder.asset_rfid.setText(asset.getAsset_rfid());
-        holder.asset_desc.setText(asset.getAsset_desc());
-        holder.asset_pic.setText(asset.getAsset_pic());
-        holder.asset_location.setText(asset.getAsset_location());
+        if (s.length() <= 23) {
+            holder.asset_desc.setText(s);
+        } else {
+            holder.asset_desc.setText(s.substring(0, Math.min(s.length(), 23)).concat("..."));
+        }
+        //holder.asset_pic.setText(asset.getAsset_pic());
+        //holder.asset_location.setText(asset.getAsset_location());
         holder.asset_status.setText(asset.getAsset_status());
 
         // Displaying dot from HTML character code
         //holder.dot.setText(Html.fromHtml("&#8226;"));
 
         // Formatting and displaying timestamp
-        holder.timestamp.setText(formatDate(asset.getTimestamp()));
+        //holder.timestamp.setText(formatDate(asset.getTimestamp()));
         holder.itemView.setOnClickListener(v -> Log.d("TAG", "onClick: " + position));
     }
 

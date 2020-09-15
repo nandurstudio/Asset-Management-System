@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +39,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cipherlab.rfid.DeviceEvent;
 import com.cipherlab.rfid.GeneralString;
 import com.cipherlab.rfidapi.RfidManager;
+import com.google.android.material.textfield.TextInputEditText;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -78,16 +78,20 @@ import ir.androidexception.filepicker.dialog.SingleFilePickerDialog;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
+import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private static final String XML_PATH = "xml_path";
+    private static final String KEY_RFID_TAG = "key_rfid_tag";
     private AssetsAdapter mAdapter;
     private List<Asset> assetList = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -102,6 +106,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private Button buttAssetMap;
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
+    private String sharedTag;
 //    private ProgressBar spinner;
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -188,6 +193,25 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, final int position) {
+                clearSharedPref();
+                final Asset asset = assetList.get(position);
+                String assetCode = asset.getAsset_code();
+                String assetRfid = asset.getAsset_rfid();
+                String assetDesc = asset.getAsset_desc();
+                String assetPic = asset.getAsset_pic();
+                String assetLocation = asset.getAsset_location();
+                String assetStatus = asset.getAsset_status();
+                String assetTimestamp = asset.getTimestamp();
+
+                editor.putString(COLUMN_ASSET_CODE, assetCode);
+                editor.putString(COLUMN_ASSET_RFID, assetRfid);
+                editor.putString(COLUMN_ASSET_DESC, assetDesc);
+                editor.putString(COLUMN_ASSET_PIC, assetPic);
+                editor.putString(COLUMN_ASSET_LOCATION, assetLocation);
+                editor.putString(COLUMN_ASSET_STATUS, assetStatus);
+                editor.putString(COLUMN_TIMESTAMP, assetTimestamp);
+                editor.apply();
+                goToDetail();
             }
 
             @Override
@@ -195,6 +219,22 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 showActionsDialog(position);
             }
         }));
+    }
+
+    private void clearSharedPref() {
+        preferences.edit().remove(COLUMN_ASSET_CODE).apply();
+        preferences.edit().remove(COLUMN_ASSET_RFID).apply();
+        preferences.edit().remove(COLUMN_ASSET_DESC).apply();
+        preferences.edit().remove(COLUMN_ASSET_PIC).apply();
+        preferences.edit().remove(COLUMN_ASSET_LOCATION).apply();
+        preferences.edit().remove(COLUMN_ASSET_STATUS).apply();
+        preferences.edit().remove(COLUMN_TIMESTAMP).apply();
+    }
+
+    private void goToDetail() {
+        Intent intent = new
+                Intent(ScanAssetActivity.this, AssetDetailActivity.class);
+        startActivity(intent);
     }
 
     private void runDexter() {
@@ -449,9 +489,23 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         builder.setTitle("Choose option");
         builder.setItems(colors, (dialog, which) -> {
             if (which == 0) {
-                showAssetDialog(true, assetList.get(position), position);
+                showAssetDialog(assetList.get(position), position);
             } else {
-                deleteAsset(position);
+                nduDialog(this,
+                        getResources().getString(R.string.delete_asset) + "?",
+                        "Ini akan menghapus item dari database!",
+                        true,
+                        dialogIcon,
+                        "Yes",
+                        "Cancel",
+                        (DialogInterface dialogInterface, int whichOne) -> {
+                            if (whichOne == BUTTON_POSITIVE) {
+                                dialogInterface.cancel();
+                                deleteAsset(position);
+                                //progressDialog.dismiss();
+                            }
+                            dialogInterface.cancel();
+                        });
             }
         });
         builder.show();
@@ -463,51 +517,66 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * when shouldUpdate=true, it automatically displays old asset and changes the
      * button text to UPDATE
      */
-    private void showAssetDialog(final boolean shouldUpdate, final Asset asset, final int position) {
+    private void showAssetDialog(final Asset asset, final int position) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         View view = layoutInflaterAndroid.inflate(R.layout.asset_dialog, null);
 
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(ScanAssetActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
-        final EditText inputRfidAsset = view.findViewById(R.id.assetRfid);
+        //final EditText inputRfidAsset = view.findViewById(R.id.editText_assetRfid);
+        final TextInputEditText inputPic = view.findViewById(R.id.textInput_assetPic);
+        final TextInputEditText inputRfidNumber = view.findViewById(R.id.textInput_rfid_tag_number);
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
-        dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_asset_title) : getString(R.string.lbl_edit_asset_title));
+        dialogTitle.setText(getString(R.string.lbl_edit_asset_title));
 
-        if (shouldUpdate && asset != null) {
-            inputRfidAsset.setText(asset.getAsset_rfid());
+        sharedTag = preferences.getString(KEY_RFID_TAG, "");
+        if (asset != null) {
+            if (!asset.getAsset_rfid().equals("")) {
+                //inputRfidAsset.setText(asset.getAsset_rfid());
+                inputRfidNumber.setText(asset.getAsset_rfid());
+                Log.d(TAG, "showAssetDialog: !null " + asset.getAsset_rfid());
+                Log.d(TAG, "showAssetDialog: " + asset.getAsset_pic());
+            } else {
+                Log.d(TAG, "showAssetDialog: null " + sharedTag);
+                //inputRfidAsset.setText(sharedTag);
+                inputRfidNumber.setText(sharedTag);
+            }
+            inputPic.setText(asset.getAsset_pic());
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(shouldUpdate ? "update" : "save", (dialogBox, id) -> {
+                .setPositiveButton("update",
+                        (dialogBox, id) -> {
 
-                })
+                        })
                 .setNegativeButton("cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogBox, int id) {
-                                dialogBox.cancel();
-                            }
-                        });
+                        (dialogBox, id) -> dialogBox.cancel());
 
         final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
         alertDialog.show();
 
         alertDialog.getButton(BUTTON_POSITIVE).setOnClickListener(v -> {
             // Show toast message when no text is entered
-            if (TextUtils.isEmpty(inputRfidAsset.getText().toString())) {
-                Toast.makeText(ScanAssetActivity.this, "Enter Rfid Tag Number!", Toast.LENGTH_SHORT).show();
+            if (TextUtils.isEmpty(Objects.requireNonNull(inputRfidNumber.getText()).toString())) {
+                inputRfidNumber.setError(getString(R.string.rfid_empty_error_message));
                 return;
             } else {
                 alertDialog.dismiss();
             }
 
             // check if user updating asset
-            if (shouldUpdate && asset != null) {
-                // update asset by it's id
-                updateAsset(inputRfidAsset.getText().toString(), position);
+            if (asset != null) {
+                if (!db.checkIsRfidInDB(sharedTag)) {
+                    // update asset by it's id
+                    updateAsset(inputRfidNumber.getText().toString(), position);
+                } else {
+                    toaster(ScanAssetActivity.this, "Tag sudah terpakai!", 0);
+                    alertDialog.dismiss();
+                }
             } else {
                 // create new asset
-                createAsset(inputRfidAsset.getText().toString());
+                createAsset(inputRfidNumber.getText().toString());
             }
         });
     }
@@ -595,8 +664,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
                     Log.d(TAG, "end =============================================== ");
                 } else {
-                    // Inserting record
-                    Log.d(TAG, "onReceive: Data No Exist");
+                    // Inserting record to sharedPref
+                    editor.putString(KEY_RFID_TAG, EPC);
+                    editor.apply();
+                    Log.d(TAG, "onReceive: Tag " + EPC + " unregistered, saved to sharedPref");
+
                     //createAsset(EPC);
                 }
                 mAdapter.notifyDataSetChanged();

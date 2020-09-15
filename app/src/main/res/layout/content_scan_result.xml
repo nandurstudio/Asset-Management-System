@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Theme.AppCompat.Light">
 
     <ImageView
         android:layout_width="match_parent"
@@ -171,30 +172,29 @@
                     android:text="@string/percentage"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/button_export_csv"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_margin="@dimen/nav_header_vertical_spacing"
-        android:background="@color/colorPrimary"
-        android:text="@string/action_export_csv"
-        android:textColor="@color/design_default_color_background" />
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="@string/hint_enter_email">
 
-    <Button
-        android:id="@+id/button_export_pdf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/nav_header_vertical_spacing"
-        android:background="@color/colorPrimary"
-        android:text="@string/action_export_pdf"
-        android:textColor="@color/design_default_color_background" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInput_mailTo"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:inputType="textEmailAddress"
+            android:text="@string/nav_header_subtitle" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/button_mailto"
@@ -205,17 +205,6 @@
         android:background="@color/colorPrimary"
         android:text="@string/action_mailto"
         android:textColor="@color/design_default_color_background" />
-
-    <EditText
-        android:id="@+id/editText_mailto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/nav_header_vertical_spacing"
-        android:autofillHints="Email"
-        android:inputType="textEmailAddress"
-        android:text="@string/nav_header_subtitle"
-        tools:ignore="LabelFor" />
 
     <TextView
         android:layout_width="wrap_content"

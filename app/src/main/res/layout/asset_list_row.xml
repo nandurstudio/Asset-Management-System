@@ -23,23 +23,22 @@
         android:lineSpacingExtra="0dp"
         android:textSize="@dimen/timestamp" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/timestamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/assetId"
-        android:textSize="@dimen/timestamp" />
+        android:textSize="@dimen/timestamp" />-->
 
     <TextView
         android:id="@+id/assetCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timestamp"
         android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
     <TextView
-        android:id="@+id/assetRfid"
+        android:id="@+id/editText_assetRfid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetCode"
@@ -51,32 +50,32 @@
         android:id="@+id/assetDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/assetRfid"
+        android:layout_below="@id/editText_assetRfid"
         android:layout_toEndOf="@id/assetId"
         android:textSize="@dimen/note_list_text" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/assetPic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetDesc"
         android:layout_toEndOf="@id/assetId"
-        android:textSize="@dimen/note_list_text" />
+        android:textSize="@dimen/note_list_text" />-->
 
-    <TextView
+<!--    <TextView
         android:id="@+id/assetLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/assetPic"
         android:layout_toEndOf="@id/assetId"
         android:text="@string/app_name"
-        android:textSize="@dimen/note_list_text" />
+        android:textSize="@dimen/note_list_text" />-->
 
     <TextView
         android:id="@+id/assetStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/assetLocation"
+        android:layout_below="@id/assetDesc"
         android:layout_toEndOf="@id/assetId"
         android:text="@string/app_name"
         android:textColor="#4CAF50"

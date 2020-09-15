@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ScanResultActivity">
+
+    <item
+        android:id="@+id/action_export_pdf"
+        android:icon="@drawable/pdf_logo"
+        android:orderInCategory="15"
+        android:title="@string/action_export_pdf"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_export_xls"
+        android:icon="@drawable/ic_xls"
+        android:orderInCategory="15"
+        android:title="@string/action_export_csv"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:orderInCategory="15"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+</menu>

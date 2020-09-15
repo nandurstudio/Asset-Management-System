@@ -3,16 +3,21 @@ package com.ndu.assetmanagementsystem;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -56,7 +62,9 @@ import java.util.Objects;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
+import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
@@ -72,6 +80,9 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NA
 
 public class ScanResultActivity extends AppCompatActivity {
 
+    private static final String KEY_TRIGGER_FROM = "key_trigger_from";
+    private static final String EXPORT_MENU = "export_menu";
+    private static final String MAIL_BUTTON = "mail_button";
     private DatabaseHelper db;
     private String assetLocation;
     private SharedPreferences sharedPrefs;
@@ -79,10 +90,13 @@ public class ScanResultActivity extends AppCompatActivity {
     private String fileNameTxt;
     private String path;
     private String TAG = ScanResultActivity.class.getSimpleName();
+    private Drawable dialogIcon;
+    private SharedPreferences.Editor editor;
 
     public ScanResultActivity() {
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,15 +122,15 @@ public class ScanResultActivity extends AppCompatActivity {
 
         //update value
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPrefs.edit();
 
         //Initializing
         TextView totalAsset = findViewById(R.id.textView_total_asset);
         TextView readAbleAsset = findViewById(R.id.textView_readble_units);
         TextView unReadAbleAsset = findViewById(R.id.textView_unreadble_units);
         TextView percentageAsset = findViewById(R.id.textView_readble_result);
-        Button butExportXls = findViewById(R.id.button_export_csv);
-        Button butExportPdf = findViewById(R.id.button_export_pdf);
         Button butMailTo = findViewById(R.id.button_mailto);
+        dialogIcon = getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 
         totalAsset.setText(String.valueOf(db.getAssetsCountByLocation(assetLocation)));
         readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
@@ -141,13 +155,84 @@ public class ScanResultActivity extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(view -> finish());
         percentageAsset.setOnClickListener(view -> saveToFile());
-        butExportXls.setOnClickListener(view -> exportDataToXls());
-        butExportPdf.setOnClickListener(view -> {
-            createPdfAsyncTask task = new createPdfAsyncTask();
-            task.execute();
+        butMailTo.setOnClickListener(view -> {
+            editor.putString(KEY_TRIGGER_FROM, MAIL_BUTTON);
+            editor.apply();
+            exportToPdf();
         });
-        butMailTo.setOnClickListener(view -> sendToEmail());
+    }
 
+    private void exportToPdf() {
+        createPdfAsyncTask task = new createPdfAsyncTask();
+        task.execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.scan_result_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_settings:
+                goToSetting();
+                return true;
+
+            case R.id.action_export_xls:
+                String title = getResources().getString(R.string.action_export_csv) + "?";
+                String msg = "Mungkin agak lama, tunggu saja!";
+                nduDialog(this,
+                        title,
+                        msg,
+                        true,
+                        getDrawable(R.drawable.excel_logo),
+                        "Yes", "Cancel",
+                        (DialogInterface dialog, int which) -> {
+                            if (which == BUTTON_POSITIVE) {
+                                exportToXls();
+                            }
+                            dialog.cancel();
+                        });
+                return true;
+
+            case R.id.action_export_pdf:
+                //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
+                nduDialog(this,
+                        getResources().getString(R.string.action_export_pdf) + "?",
+                        "Mungkin agak lama, tunggu saja!",
+                        true,
+                        getDrawable(R.drawable.pdf_logo),
+                        "Yes",
+                        "Cancel",
+                        (DialogInterface dialog, int which) -> {
+                            if (which == BUTTON_POSITIVE) {
+                                dialog.cancel();
+                                editor.putString(KEY_TRIGGER_FROM, EXPORT_MENU);
+                                editor.apply();
+                                exportToPdf();
+                                //progressDialog.dismiss();
+                            }
+                            dialog.cancel();
+                        });
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void goToSetting() {
+        Intent settingsIntent = new
+                Intent(ScanResultActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 
     // Serializes an object and saves it to a file
@@ -213,7 +298,7 @@ public class ScanResultActivity extends AppCompatActivity {
         }*/
     }
 
-    private void exportDataToXls() {
+    private void exportToXls() {
         path = sharedPrefs.getString(KEY_EXPORT_FILE_DIRECTORY, "");
         File exportDir = new File(path, "");
 
@@ -482,22 +567,26 @@ public class ScanResultActivity extends AppCompatActivity {
 
     private void sendToEmail() {
         //https://stackoverflow.com/questions/9974987/how-to-send-an-email-with-a-file-attachment-in-android
-        EditText editTextMail = findViewById(R.id.editText_mailto);
-        String[] mailto = {editTextMail.getText().toString()};
-        String fileName = TABLE_NAME + " " + assetLocation.substring(1) + ".pdf";
-        File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME + File.separator + fileName);
-        Uri uri = Uri.fromFile(fileLocation);
-        Log.d(TAG, "sendToEmail: " + uri);
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, fileName);
-        emailIntent.putExtra(Intent.EXTRA_CC, "");
-        emailIntent.putExtra(Intent.EXTRA_BCC, "");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Laporan " + fileName);
-        emailIntent.setType("application/pdf");
-        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        TextInputEditText editTextMail = findViewById(R.id.textInput_mailTo);
+        if (TextUtils.isEmpty(Objects.requireNonNull(editTextMail.getText()).toString())) {
+            editTextMail.setError(getString(R.string.email_empty_error_message));
+        } else {
+            String[] mailto = {Objects.requireNonNull(editTextMail.getText()).toString()};
+            String fileName = TABLE_NAME + " " + assetLocation.substring(1) + ".pdf";
+            File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME + File.separator + fileName);
+            Uri uri = Uri.fromFile(fileLocation);
+            Log.d(TAG, "sendToEmail: " + uri);
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, fileName);
+            emailIntent.putExtra(Intent.EXTRA_CC, "");
+            emailIntent.putExtra(Intent.EXTRA_BCC, "");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Laporan " + fileName);
+            emailIntent.setType("application/pdf");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
-        startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+            startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+        }
     }
 
     /**
@@ -660,7 +749,13 @@ public class ScanResultActivity extends AppCompatActivity {
             }
             if (result.equals("COMPLETE!")) {
                 this.dialog.setMessage(result);
-                Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+                String triggerFrom = sharedPrefs.getString(KEY_TRIGGER_FROM, "");
+                if (triggerFrom != null && triggerFrom.equals(EXPORT_MENU)) {
+                    Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+                    sendToEmail();
+                }
             } else if (result.equals("No File")) {
                 Toast.makeText(ScanResultActivity.this, "No Asset file in the database", Toast.LENGTH_SHORT).show();
             } else {
