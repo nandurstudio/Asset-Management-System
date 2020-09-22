@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG_ADMOB = "Admob";
     static final String DEPT_NAME = "dept_name";
+    static final String ASSET_AREA = "asset_area";
     private static final String DEPT_GENERAL = "General";
     private static final String DEPT_PRD = "Production";
     private static final String DEPT_QA = "QA";
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity
     private String TAG = "MainActivity";
     private Spinner spinnerDynamic;
     private String deptName;
+    private String floorStage;
+    private Spinner spinnerArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +78,13 @@ public class MainActivity extends AppCompatActivity
 
         //Spinner https://stackoverflow.com/a/29778386/7772358
         Spinner spinnerShp = findViewById(R.id.spinnerShp);
+        spinnerArea = findViewById(R.id.spinner_area);
         spinnerDynamic = findViewById(R.id.spinner_dynamic);
+
+
+        ArrayAdapter<CharSequence> arrayAdapterFloor = ArrayAdapter
+                .createFromResource(this, R.array.area_array,
+                        R.layout.spinner_row);
 
         // Create an ArrayAdapter using the string array and a default spinner
         ArrayAdapter<CharSequence> arrayAdapterShp = ArrayAdapter
@@ -100,6 +109,34 @@ public class MainActivity extends AppCompatActivity
                 android.R.layout.simple_spinner_item, items);*/
 
         // Apply the adapter to the spinner
+        spinnerArea.setAdapter(arrayAdapterFloor);
+        spinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.v("floor", (String) parent.getItemAtPosition(position));
+                if (parent.getItemAtPosition(position).equals("Area 1")) {
+                    floorStage = "Area 1";
+                } else if (parent.getItemAtPosition(position).equals("Area 2")) {
+                    floorStage = "Area 2";
+                } else if (parent.getItemAtPosition(position).equals("Area 3")) {
+                    floorStage = "Area 3";
+                } else if (parent.getItemAtPosition(position).equals("Area 4")) {
+                    floorStage = "Area 4";
+                } else if (parent.getItemAtPosition(position).equals("Area 5")) {
+                    floorStage = "Area 5";
+                } else if (parent.getItemAtPosition(position).equals("Area 6")) {
+                    floorStage = "Area 6";
+                } else {
+                    floorStage = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         spinnerShp.setAdapter(arrayAdapterShp);
         spinnerShp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -211,6 +248,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new
                 Intent(MainActivity.this, ScanAssetActivity.class);
         intent.putExtra(DEPT_NAME, deptName);
+        intent.putExtra(ASSET_AREA, floorStage);
         startActivity(intent);
     }
 

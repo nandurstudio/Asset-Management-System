@@ -77,6 +77,7 @@ import ir.androidexception.filepicker.dialog.SingleFilePickerDialog;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
+import static com.ndu.assetmanagementsystem.MainActivity.ASSET_AREA;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
@@ -147,9 +148,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             String dept = (String) bundle.get(DEPT_NAME);
+            String assetArea = (String) bundle.get(ASSET_AREA);
             assetLocation = "%" + dept;
             toolbar.setTitle(getResources().getString(R.string.assets_list) + " " + dept);
             Log.d(TAG, "onCreate: " + assetLocation);
+            Log.d(TAG, "onCreate: " + assetArea);
         }
 
         /*Storage permission*/
@@ -846,7 +849,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 double percenTage = (valuesDb / totalAssetDb) * 100;
                 Log.d(TAG, "onCreate: " + percenTage);
                 BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
-                percenTage = bd.doubleValue();
+                bd.doubleValue();
 //                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
                 this.dialog.setMessage("Importing data asset, Please wait!");
                 this.dialog.setMax(totalAsset);

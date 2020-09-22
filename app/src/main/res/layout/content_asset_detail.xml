@@ -150,10 +150,29 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_asset_area">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_assetArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <TextView
                 android:id="@+id/textView_timestamp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/last_sync"
                 android:layout_margin="@dimen/nav_header_vertical_spacing" />
 
         </LinearLayout>

@@ -22,7 +22,6 @@
     <string name="choose_division">Choose Division</string>
     <string name="choose_dept">Choose Department</string>
 
-
     <!-- Version Preferences -->
     <string name="version_title">Version</string>
     <string name="version_summary" translatable="false">1.0.0</string>
@@ -69,7 +68,7 @@
     <string name="hint_enter_asset_pic">PIC Name</string>
     <string name="rfid_empty_error_message">RFID Tag Number Can\'t Be Empty</string>
     <string name="hint_enter_email">Mail Destination</string>
-    <string name="email_empty_error_message">"Email Address Can't Be Empty "</string>
+    <string name="email_empty_error_message">Email Address Can\'t Be Empty</string>
     <string name="hint_asset_code">Asset Code</string>
     <string name="hint_asset_rfid">RFID Tag</string>
     <string name="hint_asset_desc">Asset Description</string>
@@ -77,6 +76,18 @@
     <string name="hint_asset_status">Asset Status</string>
     <string name="asset_detail">Asset Detail</string>
     <string name="delete_asset">Delete Asset</string>
+    <string name="choose_area">Choose Area</string>
+    <string name="last_sync">Last Sync</string>
+    <string name="hint_asset_area">Asset Area</string>
+
+    <string-array name="area_array">
+        <item>Area 1</item>
+        <item>Area 2</item>
+        <item>Area 3</item>
+        <item>Area 4</item>
+        <item>Area 5</item>
+        <item>Area 6</item>
+    </string-array>
 
     <string-array name="shp_array">
         <item>Plant</item>
