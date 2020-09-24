@@ -146,7 +146,6 @@ public class AssetsAdapterV2 extends RecyclerView.Adapter<AssetsAdapterV2.AssetV
                             asset.getTxtAssetDescription().toLowerCase().contains(text) ||
                             asset.getTxtAssetCategory().toLowerCase().contains(text) ||
                             asset.getTxtSupervisorID().toLowerCase().contains(text) ||
-                            asset.getDecAcquisition().toLowerCase().contains(text) ||
                             asset.getTxtName().toLowerCase().contains(text) ||
                             asset.getTxtNick().toLowerCase().contains(text) ||
                             asset.getTxtEmail().toLowerCase().contains(text) ||

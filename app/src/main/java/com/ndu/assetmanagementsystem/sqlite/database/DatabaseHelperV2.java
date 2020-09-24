@@ -132,7 +132,7 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETDESCRIPTION)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETCATEGORY)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTSUPERVISORID)),
-                cursor.getString(cursor.getColumnIndex(COLUMN_DECACQUISITION)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_DECACQUISITION)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTNAME)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTNICK)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TXTEMAIL)),
@@ -172,7 +172,7 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
                 asset.setTxtAssetDescription(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETDESCRIPTION)));
                 asset.setTxtAssetCategory(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETCATEGORY)));
                 asset.setTxtSupervisorID(cursor.getString(cursor.getColumnIndex(COLUMN_TXTSUPERVISORID)));
-                asset.setDecAcquisition(cursor.getString(cursor.getColumnIndex(COLUMN_DECACQUISITION)));
+                asset.setDecAcquisition(cursor.getInt(cursor.getColumnIndex(COLUMN_DECACQUISITION)));
                 asset.setTxtName(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNAME)));
                 asset.setTxtNick(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNICK)));
                 asset.setTxtEmail(cursor.getString(cursor.getColumnIndex(COLUMN_TXTEMAIL)));
@@ -217,7 +217,7 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
                 asset.setTxtAssetDescription(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETDESCRIPTION)));
                 asset.setTxtAssetCategory(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETCATEGORY)));
                 asset.setTxtSupervisorID(cursor.getString(cursor.getColumnIndex(COLUMN_TXTSUPERVISORID)));
-                asset.setDecAcquisition(cursor.getString(cursor.getColumnIndex(COLUMN_DECACQUISITION)));
+                asset.setDecAcquisition(cursor.getInt(cursor.getColumnIndex(COLUMN_DECACQUISITION)));
                 asset.setTxtName(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNAME)));
                 asset.setTxtNick(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNICK)));
                 asset.setTxtEmail(cursor.getString(cursor.getColumnIndex(COLUMN_TXTEMAIL)));
@@ -322,6 +322,17 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_TXTSTATUS, asset.getTxtStatus());
+
+        // updating row
+        return db.update(TABLE_NAME_V2, values, COLUMN_TXTRFID + " = ?",
+                new String[]{rfid});
+    }
+
+    public int updateAreaByRfid(AssetV2 asset, String rfid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TXTAREA, asset.getTxtArea());
 
         // updating row
         return db.update(TABLE_NAME_V2, values, COLUMN_TXTRFID + " = ?",

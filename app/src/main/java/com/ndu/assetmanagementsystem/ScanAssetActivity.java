@@ -47,10 +47,13 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
+import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelperV2;
 import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
+import com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2;
 import com.ndu.assetmanagementsystem.sqlite.utils.MyDividerItemDecoration;
 import com.ndu.assetmanagementsystem.sqlite.utils.RecyclerTouchListener;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapter;
+import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapterV2;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,6 +83,7 @@ import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.MainActivity.ASSET_AREA;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
@@ -88,17 +92,39 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_A
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTIMGLINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private static final String XML_PATH = "xml_path";
     private static final String KEY_RFID_TAG = "key_rfid_tag";
+    private static final String DEMO_MODE = "1";
+    private static final String AMEN_MODE = "2";
     private AssetsAdapter mAdapter;
+    private AssetsAdapterV2 mAdapterV2;
     private List<Asset> assetList = new ArrayList<>();
+    private List<AssetV2> assetListV2 = new ArrayList<>();
     private RecyclerView recyclerView;
     private TextView noAssetView;
 
     private DatabaseHelper db;
+    private DatabaseHelperV2 db_v2;
     //RFID
     RfidManager mRfidManager = null;
     private String assetLocation;
@@ -108,6 +134,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
     private String sharedTag;
+    private String sharedDBVersion;
+    private String assetArea;
 //    private ProgressBar spinner;
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -126,6 +154,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         dialogIcon = getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 //        spinner = (ProgressBar) findViewById(R.id.progressBar);
         db = new DatabaseHelper(this);
+        db_v2 = new DatabaseHelperV2(this);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
@@ -138,6 +167,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             actionBar.setHomeButtonEnabled(true);
         }
 
+        sharedDBVersion = preferences.getString(DATABASE_VERSION, "1");
+
         /*OnClick Handling*/
         toolbar.setNavigationOnClickListener(view -> finish());
         buttResult.setOnClickListener(view -> goToResult());
@@ -148,7 +179,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             String dept = (String) bundle.get(DEPT_NAME);
-            String assetArea = (String) bundle.get(ASSET_AREA);
+            assetArea = (String) bundle.get(ASSET_AREA);
             assetLocation = "%" + dept;
             toolbar.setTitle(getResources().getString(R.string.assets_list) + " " + dept);
             Log.d(TAG, "onCreate: " + assetLocation);
@@ -166,14 +197,24 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
 
         /*Add all assets in Asset.db to recyclerView*/
+        assetListV2.addAll(db_v2.getAllAssetsByDept(assetLocation));
+        mAdapterV2 = new AssetsAdapterV2(assetListV2);
+
         assetList.addAll(db.getAllAssetsByDept(assetLocation));
         mAdapter = new AssetsAdapter(assetList);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));
-        recyclerView.setAdapter(mAdapter);
-        toggleEmptyAssets();
+
+        if (sharedDBVersion.equals(AMEN_MODE)) {
+            recyclerView.setAdapter(mAdapterV2);
+            toggleEmptyAssetsV2();
+        } else {
+            recyclerView.setAdapter(mAdapter);
+            toggleEmptyAssets();
+        }
 
         /*RFID Section*/
         mRfidManager = RfidManager.InitInstance(this);
@@ -196,23 +237,67 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, final int position) {
-                clearSharedPref();
-                final Asset asset = assetList.get(position);
-                String assetCode = asset.getAsset_code();
-                String assetRfid = asset.getAsset_rfid();
-                String assetDesc = asset.getAsset_desc();
-                String assetPic = asset.getAsset_pic();
-                String assetLocation = asset.getAsset_location();
-                String assetStatus = asset.getAsset_status();
-                String assetTimestamp = asset.getTimestamp();
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    clearSharedPrefV2();
+                    try {
+                        final AssetV2 assetV2 = assetListV2.get(position);
+                        String assetCode = assetV2.getTxtFixedAssetCode();
+                        String assetDesc = assetV2.getTxtAssetDescription();
+                        String assetCategory = assetV2.getTxtAssetCategory();
+                        String assetSupervisorID = assetV2.getTxtSupervisorID();
+                        int assetAcquisition = assetV2.getDecAcquisition();
+                        String assetPicName = assetV2.getTxtName();
+                        String assetPicNick = assetV2.getTxtNick();
+                        String assetPicEmail = assetV2.getTxtEmail();
+                        String assetUser = assetV2.getTxtPenggunaID();
+                        String assetLocation = assetV2.getTxtLokasiPengguna();
+                        String assetLob = assetV2.getTxtLOBPengguna();
+                        String assetArea = assetV2.getTxtArea();
+                        String assetRfid = assetV2.getTxtRfid();
+                        String assetStatus = assetV2.getTxtStatus();
+                        String assetImgLink = assetV2.getTxtImgLink();
+                        String assetNotes = assetV2.getTxtNotes();
+                        String assetTimestamp = assetV2.getDtmTimestamp();
 
-                editor.putString(COLUMN_ASSET_CODE, assetCode);
-                editor.putString(COLUMN_ASSET_RFID, assetRfid);
-                editor.putString(COLUMN_ASSET_DESC, assetDesc);
-                editor.putString(COLUMN_ASSET_PIC, assetPic);
-                editor.putString(COLUMN_ASSET_LOCATION, assetLocation);
-                editor.putString(COLUMN_ASSET_STATUS, assetStatus);
-                editor.putString(COLUMN_TIMESTAMP, assetTimestamp);
+                        editor.putString(COLUMN_TXTFIXEDASSETCODE, assetCode);
+                        editor.putString(COLUMN_TXTASSETDESCRIPTION, assetDesc);
+                        editor.putString(COLUMN_TXTASSETCATEGORY, assetCategory);
+                        editor.putString(COLUMN_TXTSUPERVISORID, assetSupervisorID);
+                        editor.putInt(COLUMN_DECACQUISITION, assetAcquisition);
+                        editor.putString(COLUMN_TXTNAME, assetPicName);
+                        editor.putString(COLUMN_TXTNICK, assetPicNick);
+                        editor.putString(COLUMN_TXTEMAIL, assetPicEmail);
+                        editor.putString(COLUMN_TXTPENGGUNAID, assetUser);
+                        editor.putString(COLUMN_TXTLOKASIPENGGUNA, assetLocation);
+                        editor.putString(COLUMN_TXTLOBPENGGUNA, assetLob);
+                        editor.putString(COLUMN_TXTAREA, assetArea);
+                        editor.putString(COLUMN_TXTRFID, assetRfid);
+                        editor.putString(COLUMN_TXTSTATUS, assetStatus);
+                        editor.putString(COLUMN_TXTIMGLINK, assetImgLink);
+                        editor.putString(COLUMN_TXTNOTES, assetNotes);
+                        editor.putString(COLUMN_DTMTIMESTAMP, assetTimestamp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    clearSharedPref();
+                    final Asset asset = assetList.get(position);
+                    String assetCode = asset.getAsset_code();
+                    String assetRfid = asset.getAsset_rfid();
+                    String assetDesc = asset.getAsset_desc();
+                    String assetPic = asset.getAsset_pic();
+                    String assetLocation = asset.getAsset_location();
+                    String assetStatus = asset.getAsset_status();
+                    String assetTimestamp = asset.getTimestamp();
+
+                    editor.putString(COLUMN_ASSET_CODE, assetCode);
+                    editor.putString(COLUMN_ASSET_RFID, assetRfid);
+                    editor.putString(COLUMN_ASSET_DESC, assetDesc);
+                    editor.putString(COLUMN_ASSET_PIC, assetPic);
+                    editor.putString(COLUMN_ASSET_LOCATION, assetLocation);
+                    editor.putString(COLUMN_ASSET_STATUS, assetStatus);
+                    editor.putString(COLUMN_TIMESTAMP, assetTimestamp);
+                }
                 editor.apply();
                 goToDetail();
             }
@@ -234,10 +319,36 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         preferences.edit().remove(COLUMN_TIMESTAMP).apply();
     }
 
+    private void clearSharedPrefV2() {
+        preferences.edit().remove(COLUMN_TXTFIXEDASSETCODE).apply();
+        preferences.edit().remove(COLUMN_TXTASSETDESCRIPTION).apply();
+        preferences.edit().remove(COLUMN_TXTASSETCATEGORY).apply();
+        preferences.edit().remove(COLUMN_TXTSUPERVISORID).apply();
+        preferences.edit().remove(COLUMN_DECACQUISITION).apply();
+        preferences.edit().remove(COLUMN_TXTNAME).apply();
+        preferences.edit().remove(COLUMN_TXTNICK).apply();
+        preferences.edit().remove(COLUMN_TXTEMAIL).apply();
+        preferences.edit().remove(COLUMN_TXTPENGGUNAID).apply();
+        preferences.edit().remove(COLUMN_TXTLOKASIPENGGUNA).apply();
+        preferences.edit().remove(COLUMN_TXTLOBPENGGUNA).apply();
+        preferences.edit().remove(COLUMN_TXTAREA).apply();
+        preferences.edit().remove(COLUMN_TXTRFID).apply();
+        preferences.edit().remove(COLUMN_TXTSTATUS).apply();
+        preferences.edit().remove(COLUMN_TXTIMGLINK).apply();
+        preferences.edit().remove(COLUMN_TXTNOTES).apply();
+        preferences.edit().remove(COLUMN_DTMTIMESTAMP).apply();
+    }
+
     private void goToDetail() {
-        Intent intent = new
-                Intent(ScanAssetActivity.this, AssetDetailActivity.class);
-        startActivity(intent);
+        if (sharedDBVersion.equals(AMEN_MODE)) {
+            Intent intent = new
+                    Intent(ScanAssetActivity.this, AssetDetailV2Activity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new
+                    Intent(ScanAssetActivity.this, AssetDetailActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void runDexter() {
@@ -274,13 +385,21 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     @Override
     public boolean onQueryTextChange(String query) {
         // Here is where we are going to implement the filter logic
-        mAdapter.filter(query, db, assetLocation);
+        if (sharedDBVersion.equals(AMEN_MODE)) {
+            mAdapterV2.filter(query, db_v2, assetLocation);
+        } else {
+            mAdapter.filter(query, db, assetLocation);
+        }
         return false;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        mAdapter.filter(query, db, assetLocation);
+        if (sharedDBVersion.equals(AMEN_MODE)) {
+            mAdapterV2.filter(query, db_v2, assetLocation);
+        } else {
+            mAdapter.filter(query, db, assetLocation);
+        }
         return false;
     }
 
@@ -325,7 +444,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
                                 dialog.cancel();
-                                deleteAssetDatabase();
+                                if (sharedDBVersion.equals(AMEN_MODE)) {
+                                    deleteAssetDatabaseV2();
+                                } else {
+                                    deleteAssetDatabase();
+                                }
                                 openFilePicker();
                                 //progressDialog.dismiss();
                             }
@@ -334,7 +457,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 return true;
 
             case R.id.action_sort_show_all:
-                showAllAssetsInDb();
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    showAllAssetsInDbV2();
+                } else {
+                    showAllAssetsInDb();
+                }
                 return true;
         }
 
@@ -356,8 +483,15 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         editor.putString(XML_PATH, files[0].getPath());
                         editor.apply();
 
-                        pullDataAsyncTask task = new pullDataAsyncTask();
-                        task.execute();
+                        if (sharedDBVersion.equals(AMEN_MODE)) {
+                            //TODO: databaseV2
+                            toaster(this, sharedDBVersion, 0);
+                            pullDataAsyncTaskV2 taskv2 = new pullDataAsyncTaskV2();
+                            taskv2.execute();
+                        } else {
+                            pullDataAsyncTask task = new pullDataAsyncTask();
+                            task.execute();
+                        }
                     });
             singleFilePickerDialog.show();
         } else {
@@ -380,11 +514,24 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    private void refreshAssetListV2() {
+        assetListV2.addAll(db_v2.getAllAssetsByDept(assetLocation));
+        mAdapterV2.notifyDataSetChanged();
+        toggleEmptyAssetsV2();
+    }
+
     private void showAllAssetsInDb() {
         assetList.clear();
         assetList.addAll(db.getAllAssets());
         mAdapter.notifyDataSetChanged();
         toggleEmptyAssets();
+    }
+
+    private void showAllAssetsInDbV2() {
+        assetListV2.clear();
+        assetListV2.addAll(db_v2.getAllAssets());
+        mAdapterV2.notifyDataSetChanged();
+        toggleEmptyAssetsV2();
     }
 
     private void goToSetting() {
@@ -399,6 +546,13 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         assetList.clear();
         mAdapter.notifyDataSetChanged();
         toggleEmptyAssets();
+    }
+
+    private void deleteAssetDatabaseV2() {
+        db_v2.dropTable();
+        assetListV2.clear();
+        mAdapterV2.notifyDataSetChanged();
+        toggleEmptyAssetsV2();
     }
 
     private void goToResult() {
@@ -431,6 +585,16 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
     }
 
+    private void createAssetV2(String asset) {
+        long id = db_v2.insertAsset(asset);
+        AssetV2 a = db_v2.getAsset(id);
+        if (a != null) {
+            assetListV2.add(0, a);
+            mAdapterV2.notifyDataSetChanged();
+            toggleEmptyAssetsV2();
+        }
+    }
+
     /**
      * Updating asset in db and updating
      * item in the list by its position
@@ -450,6 +614,17 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    private void updateAssetV2(String rfid, int position, String area) {
+        AssetV2 a = assetListV2.get(position);
+        a.setTxtRfid(rfid);
+        a.setTxtArea(area);
+        db_v2.updateAsset(a);
+        db_v2.updateAreaByRfid(a, rfid);
+        assetListV2.set(position, a);
+        mAdapterV2.notifyItemChanged(position);
+        toggleEmptyAssetsV2();
+    }
+
     private void updateStatusAsset(int position, String rfid) {
         Asset asset = assetList.get(position);
         // updating asset text
@@ -463,6 +638,24 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         mAdapter.notifyItemChanged(position);
 
         toggleEmptyAssets();
+    }
+
+    private void updateStatusAssetV2(int position, String rfid) {
+        AssetV2 asset = assetListV2.get(position);
+        asset.setTxtStatus(ASSET_EXIST);
+        db_v2.updateStatusByRfid(asset, rfid);
+        assetListV2.set(position, asset);
+        mAdapterV2.notifyItemChanged(position);
+        toggleEmptyAssetsV2();
+    }
+
+    private void updateStatusAreaV2(int position, String rfid, String area) {
+        AssetV2 asset = assetListV2.get(position);
+        asset.setTxtArea(area);
+        db_v2.updateAreaByRfid(asset, rfid);
+        assetListV2.set(position, asset);
+        mAdapterV2.notifyItemChanged(position);
+        toggleEmptyAssetsV2();
     }
 
     /**
@@ -480,6 +673,13 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    private void deleteAssetV2(int position) {
+        db_v2.deleteAsset(assetListV2.get(position));
+        assetListV2.remove(position);
+        mAdapterV2.notifyItemRemoved(position);
+        toggleEmptyAssetsV2();
+    }
+
     /**
      * Opens dialog with Edit - Delete options
      * Edit - 0
@@ -492,7 +692,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         builder.setTitle("Choose option");
         builder.setItems(colors, (dialog, which) -> {
             if (which == 0) {
-                showAssetDialog(assetList.get(position), position);
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    showAssetDialogV2(assetListV2.get(position), position);
+                } else {
+                    showAssetDialog(assetList.get(position), position);
+                }
             } else {
                 nduDialog(this,
                         getResources().getString(R.string.delete_asset) + "?",
@@ -504,7 +708,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         (DialogInterface dialogInterface, int whichOne) -> {
                             if (whichOne == BUTTON_POSITIVE) {
                                 dialogInterface.cancel();
-                                deleteAsset(position);
+                                if (sharedDBVersion.equals(AMEN_MODE)) {
+                                    deleteAssetV2(position);
+                                } else {
+                                    deleteAsset(position);
+                                }
                                 //progressDialog.dismiss();
                             }
                             dialogInterface.cancel();
@@ -584,6 +792,70 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         });
     }
 
+    private void showAssetDialogV2(final AssetV2 assetV2, final int position) {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
+        View view = layoutInflaterAndroid.inflate(R.layout.asset_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(ScanAssetActivity.this);
+        alertDialogBuilderUserInput.setView(view);
+
+        //final EditText inputRfidAsset = view.findViewById(R.id.editText_assetRfid);
+        final TextInputEditText inputPic = view.findViewById(R.id.textInput_assetPic);
+        final TextInputEditText inputRfidNumber = view.findViewById(R.id.textInput_rfid_tag_number);
+        TextView dialogTitle = view.findViewById(R.id.dialog_title);
+        dialogTitle.setText(getString(R.string.lbl_edit_asset_title));
+
+        sharedTag = preferences.getString(KEY_RFID_TAG, "");
+        if (assetV2 != null) {
+            if (!assetV2.getTxtRfid().equals("")) {
+                //inputRfidAsset.setText(asset.getAsset_rfid());
+                inputRfidNumber.setText(assetV2.getTxtRfid());
+                Log.d(TAG, "showAssetDialog: !null " + assetV2.getTxtRfid());
+                Log.d(TAG, "showAssetDialog: " + assetV2.getTxtNick());
+            } else {
+                Log.d(TAG, "showAssetDialog: null " + sharedTag);
+                //inputRfidAsset.setText(sharedTag);
+                inputRfidNumber.setText(sharedTag);
+            }
+            inputPic.setText(assetV2.getTxtNick());
+        }
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton("update",
+                        (dialogBox, id) -> {
+
+                        })
+                .setNegativeButton("cancel",
+                        (dialogBox, id) -> dialogBox.cancel());
+
+        final AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
+
+        alertDialog.getButton(BUTTON_POSITIVE).setOnClickListener(v -> {
+            // Show toast message when no text is entered
+            if (TextUtils.isEmpty(Objects.requireNonNull(inputRfidNumber.getText()).toString())) {
+                inputRfidNumber.setError(getString(R.string.rfid_empty_error_message));
+                return;
+            } else {
+                alertDialog.dismiss();
+            }
+
+            // check if user updating asset
+            if (assetV2 != null) {
+                if (!db_v2.checkIsRfidInDB(sharedTag)) {
+                    // update asset by it's id
+                    updateAssetV2(inputRfidNumber.getText().toString(), position, assetArea);
+                } else {
+                    toaster(ScanAssetActivity.this, "Tag sudah terpakai!", 0);
+                    alertDialog.dismiss();
+                }
+            } else {
+                // create new asset
+                createAsset(inputRfidNumber.getText().toString());
+            }
+        });
+    }
+
     /**
      * Toggling list and empty assets view
      */
@@ -591,6 +863,19 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         // you can check assetsList.size() > 0
 
         if (db.getAssetsCount() > 0) {
+            noAssetView.setVisibility(View.GONE);
+        } else {
+            noAssetView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Toggling list and empty assets view
+     */
+    private void toggleEmptyAssetsV2() {
+        // you can check assetsList.size() > 0
+
+        if (db_v2.getAssetsCount() > 0) {
             noAssetView.setVisibility(View.GONE);
         } else {
             noAssetView.setVisibility(View.VISIBLE);
@@ -647,35 +932,69 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
 
                 //scan get position
-                if (db.checkIsRfidInDB(EPC)) {
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+
+                    if (db_v2.checkIsRfidInDB(EPC)) {
 //
 //                    this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 //                    this.dialog.setMessage("Scanning Asset...");
 //                    this.dialog.show();
 //                    spinner.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "start =============================================== ");
-                    Log.d(TAG, "RFID Tag Exist: " + EPC);
-                    int tagPos = mAdapter.getRfidPosition(EPC);
-                    Log.d(TAG, "Asset Desc bfr: " + mAdapter.getAssetDesc(tagPos));
-                    Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
-                    Log.d(TAG, "Rfid Tag Position: " + tagPos);
+                        Log.d(TAG, "start =============================================== ");
+                        Log.d(TAG, "RFID Tag Exist: " + EPC);
+                        int tagPos = mAdapterV2.getRfidPosition(EPC);
+                        Log.d(TAG, "Asset Desc bfr: " + mAdapterV2.getAssetDesc(tagPos));
+                        Log.d(TAG, "Asset Status bfr: " + mAdapterV2.getAssetStatus(tagPos));
+                        Log.d(TAG, "Rfid Tag Position: " + tagPos);
 
-                    updateStatusAsset(tagPos, EPC);
-                    recyclerView.scrollToPosition(tagPos);
+                        updateStatusAssetV2(tagPos, EPC);
+                        updateStatusAreaV2(tagPos, EPC, assetArea);
+                        recyclerView.scrollToPosition(tagPos);
 
-                    Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
-                    Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
-                    Log.d(TAG, "end =============================================== ");
+                        Log.d(TAG, "Asset Desc: " + mAdapterV2.getAssetDesc(tagPos));
+                        Log.d(TAG, "Asset Status: " + mAdapterV2.getAssetStatus(tagPos));
+                        Log.d(TAG, "end =============================================== ");
+                    } else {
+                        // Inserting record to sharedPref
+                        editor.putString(KEY_RFID_TAG, EPC);
+                        editor.apply();
+                        Log.d(TAG, "onReceive: Tag " + EPC + " unregistered, saved to sharedPref");
+
+                        //createAsset(EPC);
+                    }
+                    mAdapterV2.notifyDataSetChanged();
+                    toggleEmptyAssetsV2();
                 } else {
-                    // Inserting record to sharedPref
-                    editor.putString(KEY_RFID_TAG, EPC);
-                    editor.apply();
-                    Log.d(TAG, "onReceive: Tag " + EPC + " unregistered, saved to sharedPref");
+                    if (db.checkIsRfidInDB(EPC)) {
+//
+//                    this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//                    this.dialog.setMessage("Scanning Asset...");
+//                    this.dialog.show();
+//                    spinner.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "start =============================================== ");
+                        Log.d(TAG, "RFID Tag Exist: " + EPC);
+                        int tagPos = mAdapter.getRfidPosition(EPC);
+                        Log.d(TAG, "Asset Desc bfr: " + mAdapter.getAssetDesc(tagPos));
+                        Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
+                        Log.d(TAG, "Rfid Tag Position: " + tagPos);
 
-                    //createAsset(EPC);
+                        updateStatusAsset(tagPos, EPC);
+                        recyclerView.scrollToPosition(tagPos);
+
+                        Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
+                        Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
+                        Log.d(TAG, "end =============================================== ");
+                    } else {
+                        // Inserting record to sharedPref
+                        editor.putString(KEY_RFID_TAG, EPC);
+                        editor.apply();
+                        Log.d(TAG, "onReceive: Tag " + EPC + " unregistered, saved to sharedPref");
+
+                        //createAsset(EPC);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    toggleEmptyAssets();
                 }
-                mAdapter.notifyDataSetChanged();
-                toggleEmptyAssets();
 //                if (this.dialog.isShowing()) {
 //                    this.dialog.dismiss();
 //                }
@@ -886,6 +1205,148 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 Toast.makeText(ScanAssetActivity.this, "Import failed", Toast.LENGTH_SHORT).show();
             }
             refreshAssetList();
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    protected class pullDataAsyncTaskV2 extends AsyncTask<Context, Integer, String> {
+        /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
+        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
+        private int totalAsset = 0;
+
+        // -- run intensive processes here
+        // -- notice that the datatype of the first param in the class definition matches the param passed to this
+        // method
+        // -- and that the datatype of the last param in the class definition matches the return type of this method
+        @Override
+        protected String doInBackground(Context... params) {
+            // -- on every iteration
+            // -- runs a while loop that causes the thread to sleep for 50 milliseconds
+            // -- publishes the progress - calls the onProgressUpdate handler defined below
+            // -- and increments the counter variable i by one
+
+            /*https://www.tutlane.com/tutorial/android/android-xml-parsing-using-sax-parser*/
+            /*https://stackoverflow.com/questions/15967896/how-to-parse-xml-file-from-sdcard-in-android*/
+            try {
+                @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") ArrayList<HashMap<String, String>> userList = new ArrayList<>();
+                /*Input from android asset folder*/
+                //InputStream istream = getAssets().open("userdetails.xml");
+
+                /*Input from mnt/sdcard*/
+                String pathFile = preferences.getString(XML_PATH, "mnt/sdcard/Asset/Asset.xml");
+                //File file = new File("mnt/sdcard/Asset/AssetUpdate.xml");
+                File file = new File(Objects.requireNonNull(pathFile));
+                InputStream inputStreamSd = new FileInputStream(file.getPath());
+                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
+                Document doc = docBuilder.parse(inputStreamSd);
+                NodeList nList = doc.getElementsByTagName("asset");
+                HashMap<String, String> asset;
+                totalAsset = nList.getLength();
+
+                for (int i = 0; i < nList.getLength(); i++) {
+                    if (nList.item(0).getNodeType() == Node.ELEMENT_NODE) {
+                        asset = new HashMap<>();
+                        Element elm = (Element) nList.item(i);
+                        asset.put(COLUMN_TXTFIXEDASSETCODE, getNodeValue(COLUMN_TXTFIXEDASSETCODE, elm));
+                        asset.put(COLUMN_TXTASSETDESCRIPTION, getNodeValue(COLUMN_TXTASSETDESCRIPTION, elm));
+                        asset.put(COLUMN_TXTASSETCATEGORY, getNodeValue(COLUMN_TXTASSETCATEGORY, elm));
+                        asset.put(COLUMN_TXTSUPERVISORID, getNodeValue(COLUMN_TXTSUPERVISORID, elm));
+                        asset.put(COLUMN_DECACQUISITION, getNodeValue(COLUMN_DECACQUISITION, elm));
+                        asset.put(COLUMN_TXTNAME, getNodeValue(COLUMN_TXTNAME, elm));
+                        asset.put(COLUMN_TXTNICK, getNodeValue(COLUMN_TXTNICK, elm));
+                        asset.put(COLUMN_TXTEMAIL, getNodeValue(COLUMN_TXTEMAIL, elm));
+                        asset.put(COLUMN_TXTPENGGUNAID, getNodeValue(COLUMN_TXTPENGGUNAID, elm));
+                        asset.put(COLUMN_TXTLOKASIPENGGUNA, getNodeValue(COLUMN_TXTPENGGUNAID, elm));
+                        asset.put(COLUMN_TXTLOBPENGGUNA, getNodeValue(COLUMN_TXTLOBPENGGUNA, elm));
+                        asset.put(COLUMN_TXTAREA, getNodeValue(COLUMN_TXTAREA, elm));
+                        asset.put(COLUMN_TXTRFID, getNodeValue(COLUMN_TXTRFID, elm));
+                        asset.put(COLUMN_TXTSTATUS, getNodeValue(COLUMN_TXTSTATUS, elm));
+                        asset.put(COLUMN_TXTIMGLINK, getNodeValue(COLUMN_TXTIMGLINK, elm));
+                        asset.put(COLUMN_TXTNOTES, getNodeValue(COLUMN_TXTNOTES, elm));
+
+                        userList.add(asset);
+                        //scan get position
+                        if (db_v2.checkIsItemCodeInDb(asset.put(COLUMN_TXTFIXEDASSETCODE, getNodeValue(COLUMN_TXTFIXEDASSETCODE, elm)))) {
+                            Log.d(TAG, "onReceive: Exist");
+                            Log.d(TAG, "loadAssetList: ");
+                        } else {
+                            // Inserting record
+                            Log.d(TAG, "onReceive: Data No Exist" + i);
+                            db_v2.inputDataFromDom(Objects.requireNonNull(asset));
+                            publishProgress(i);
+                        }
+                    }
+                }
+            } catch (IOException | ParserConfigurationException | SAXException e) {
+                e.printStackTrace();
+                return "No File";
+                //displayExceptionMessage(e.getMessage());
+            }
+            return "COMPLETE!";
+        }
+
+        // -- gets called just before thread begins
+        @Override
+        protected void onPreExecute() {
+            Log.i(TAG, "onPreExecute()");
+            super.onPreExecute();
+            this.dialog.setMessage("Importing data asset_v2...");
+            this.dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            this.dialog.setCancelable(false);
+            this.dialog.setCanceledOnTouchOutside(false);
+            this.dialog.show();
+        }
+
+        // -- called from the publish progress
+        // -- notice that the datatype of the second param gets passed to this method
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            try {
+                double valuesDb = Double.parseDouble(String.valueOf((values[0])));
+                double totalAssetDb = Double.parseDouble(String.valueOf(totalAsset));
+                double percenTage = (valuesDb / totalAssetDb) * 100;
+                Log.d(TAG, "onCreate: " + percenTage);
+                BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
+                bd.doubleValue();
+//                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
+                this.dialog.setMessage("Importing data asset, Please wait!");
+                this.dialog.setMax(totalAsset);
+                this.dialog.setProgress((values[0]));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // -- called if the cancel button is pressed
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Log.i(TAG, "onCancelled()");
+            this.dialog.setMessage("Cancelled!");
+        }
+
+        // -- called as soon as doInBackground method completes
+        // -- notice that the third param gets passed to this method
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.i(TAG, "onPostExecute(): " + result);
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (result.equals("COMPLETE!")) {
+                this.dialog.setMessage(result);
+                Toast.makeText(ScanAssetActivity.this, "Import complete", Toast.LENGTH_SHORT).show();
+            } else if (result.equals("No File")) {
+                Toast.makeText(ScanAssetActivity.this, "No Asset.xml file in the directory", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ScanAssetActivity.this, "Import failed", Toast.LENGTH_SHORT).show();
+            }
+            refreshAssetListV2();
         }
     }
 }

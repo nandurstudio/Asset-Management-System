@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="databaseVersion">
+        <item>Demo Mode</item>
+        <item>Amen Mode</item>
+    </string-array>
+    <string-array name="databaseVersionValue">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

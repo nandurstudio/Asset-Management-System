@@ -93,7 +93,7 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_enter_asset_pic">
+                android:hint="@string/hint_enter_asset_pic_nick">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetPic"

@@ -30,7 +30,7 @@ public class AssetV2 {
     private String txtAssetDescription;
     private String txtAssetCategory;
     private String txtSupervisorID;
-    private String decAcquisition;
+    private int decAcquisition;
     private String txtName;
     private String txtNick;
     private String txtEmail;
@@ -139,7 +139,7 @@ public class AssetV2 {
                                String txtAssetDescription,
                                String txtAssetCategory,
                                String txtSupervisorID,
-                               String decAcquisition,
+                               int decAcquisition,
                                String txtName,
                                String txtNick,
                                String txtEmail,
@@ -260,11 +260,11 @@ public class AssetV2 {
         this.txtSupervisorID = txtSupervisorID;
     }
 
-    public String getDecAcquisition() {
+    public int getDecAcquisition() {
         return decAcquisition;
     }
 
-    public void setDecAcquisition(String decAcquisition) {
+    public void setDecAcquisition(int decAcquisition) {
         this.decAcquisition = decAcquisition;
     }
 

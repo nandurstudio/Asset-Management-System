@@ -59,6 +59,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="Database"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/databaseVersion"
+            android:entryValues="@array/databaseVersionValue"
+            android:key="database_version"
+            android:summary="Penyesuaian database dan format file .xml yang digunakan"
+            android:title="Database Version"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/about_header">
 

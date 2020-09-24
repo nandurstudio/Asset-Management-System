@@ -65,7 +65,7 @@
     <string name="action_export_pdf">Export To PDF</string>
     <string name="action_mailto">Send Result By Email</string>
     <string name="lbl_reg_asset_title">Asset Registration</string>
-    <string name="hint_enter_asset_pic">PIC Name</string>
+    <string name="hint_enter_asset_pic_nick">PIC Nickname</string>
     <string name="rfid_empty_error_message">RFID Tag Number Can\'t Be Empty</string>
     <string name="hint_enter_email">Mail Destination</string>
     <string name="email_empty_error_message">Email Address Can\'t Be Empty</string>
@@ -79,6 +79,14 @@
     <string name="choose_area">Choose Area</string>
     <string name="last_sync">Last Sync</string>
     <string name="hint_asset_area">Asset Area</string>
+    <string name="hint_asset_category">Asset Category</string>
+    <string name="hint_asset_supervisorid">Asset Supervisor ID</string>
+    <string name="hint_asset_acquisition">Asset Acquisition</string>
+    <string name="hint_asset_pic_name">PIC Name</string>
+    <string name="hint_asset_pic_email">PIC Email</string>
+    <string name="hint_asset_pic_user">Asset User</string>
+    <string name="hint_asset_lob">LOB User</string>
+    <string name="hint_asset_img">Asset Image</string>
 
     <string-array name="area_array">
         <item>Area 1</item>
