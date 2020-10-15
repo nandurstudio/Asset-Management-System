@@ -37,6 +37,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
+import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelperV2;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -66,6 +67,8 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
+import static com.ndu.assetmanagementsystem.ScanAssetActivity.AMEN_MODE;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
@@ -77,6 +80,20 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_A
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
 
 public class ScanResultActivity extends AppCompatActivity {
 
@@ -84,6 +101,7 @@ public class ScanResultActivity extends AppCompatActivity {
     private static final String EXPORT_MENU = "export_menu";
     private static final String MAIL_BUTTON = "mail_button";
     private DatabaseHelper db;
+    private DatabaseHelperV2 db_v2;
     private String assetLocation;
     private SharedPreferences sharedPrefs;
     private File file;
@@ -92,6 +110,7 @@ public class ScanResultActivity extends AppCompatActivity {
     private String TAG = ScanResultActivity.class.getSimpleName();
     private Drawable dialogIcon;
     private SharedPreferences.Editor editor;
+    private String sharedDBVersion;
 
     public ScanResultActivity() {
     }
@@ -111,6 +130,7 @@ public class ScanResultActivity extends AppCompatActivity {
         }
 
         db = new DatabaseHelper(this);
+        db_v2 = new DatabaseHelperV2(this);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -124,6 +144,8 @@ public class ScanResultActivity extends AppCompatActivity {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPrefs.edit();
 
+        sharedDBVersion = sharedPrefs.getString(DATABASE_VERSION, "1");
+
         //Initializing
         TextView totalAsset = findViewById(R.id.textView_total_asset);
         TextView readAbleAsset = findViewById(R.id.textView_readble_units);
@@ -132,8 +154,13 @@ public class ScanResultActivity extends AppCompatActivity {
         Button butMailTo = findViewById(R.id.button_mailto);
         dialogIcon = getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 
-        totalAsset.setText(String.valueOf(db.getAssetsCountByLocation(assetLocation)));
-        readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
+        if (sharedDBVersion.equals(AMEN_MODE)) {
+            totalAsset.setText(String.valueOf(db_v2.getAssetsCountByLocation(assetLocation)));
+            readAbleAsset.setText(String.valueOf(db_v2.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
+        } else {
+            totalAsset.setText(String.valueOf(db.getAssetsCountByLocation(assetLocation)));
+            readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
+        }
 
         try {
             double totalAssetInt = Double.parseDouble(totalAsset.getText().toString());
@@ -349,7 +376,12 @@ public class ScanResultActivity extends AppCompatActivity {
                 }
                 CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
                 //SQLiteDatabase db = dbhelper.getWritableDatabase();
-                Cursor curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                Cursor curCSV;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                } else {
+                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                }
                 csvWrite.writeNext(curCSV.getColumnNames());
                 while (curCSV.moveToNext()) {
                     String[] arrStr = {
@@ -538,7 +570,12 @@ public class ScanResultActivity extends AppCompatActivity {
 
         // automatically done on worker thread (separate from UI thread)
         protected String doInBackground(final String... args) {
-            SQLiteDatabase database = db.getReadableDatabase();
+            SQLiteDatabase database;
+            if (sharedDBVersion.equals(AMEN_MODE)) {
+                database = db_v2.getReadableDatabase();
+            } else {
+                database = db.getReadableDatabase();
+            }
             DataXmlExporter dm = new DataXmlExporter(database);
             Log.d("TAG", "doInBackground: " + Arrays.toString(args));
             try {
@@ -597,6 +634,7 @@ public class ScanResultActivity extends AppCompatActivity {
         /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
         //long totalAsset = DatabaseUtils.queryNumEntries(db.getReadableDatabase(), TABLE_NAME);
+        long totalAssetLocV2 = db_v2.getAssetsCountByLocation(assetLocation);
         long totalAssetLoc = db.getAssetsCountByLocation(assetLocation);
 
         // -- run intensive processes here
@@ -618,8 +656,15 @@ public class ScanResultActivity extends AppCompatActivity {
                 folder.mkdirs();
 
                 File file = new File(dir, TABLE_NAME + " " + assetLocation.substring(1) + ".pdf");
-                SQLiteDatabase database = db.getWritableDatabase();
-                @SuppressLint("Recycle") Cursor c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'", null);
+                SQLiteDatabase database;
+                @SuppressLint("Recycle") Cursor c1;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    database = db_v2.getWritableDatabase();
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
+                } else {
+                    database = db.getWritableDatabase();
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'", null);
+                }
                 Document document = new Document(PageSize.A4.rotate());  // create the document
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 //                HeaderAndFooter event = new HeaderAndFooter();
@@ -643,41 +688,89 @@ public class ScanResultActivity extends AppCompatActivity {
 
                 Paragraph p3 = new Paragraph();
                 p3.add("List of " + TABLE_NAME + " " + assetLocation.substring(1) + "\n");
-                p3.add("Total " + totalAssetLoc + " Assets\n");
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    p3.add("Total " + totalAssetLocV2 + " Assets\n");
+                } else {
+                    p3.add("Total " + totalAssetLoc + " Assets\n");
+                }
                 document.add(p3);
+                PdfPTable table;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    table = new PdfPTable(14);
+                    table.addCell("NO");//1
+                    table.addCell(COLUMN_TXTFIXEDASSETCODE);//4
+                    table.addCell(COLUMN_TXTASSETDESCRIPTION);//5
+                    table.addCell(COLUMN_TXTASSETCATEGORY);//4
+                    table.addCell(COLUMN_TXTSUPERVISORID);//2
+                    table.addCell(COLUMN_TXTNAME);//4
+                    table.addCell(COLUMN_TXTNICK);//2
+                    table.addCell(COLUMN_TXTEMAIL);//4
+                    table.addCell(COLUMN_TXTPENGGUNAID);//2
+                    table.addCell(COLUMN_TXTLOKASIPENGGUNA);//4
+                    table.addCell(COLUMN_TXTLOBPENGGUNA);//4
+                    table.addCell(COLUMN_TXTAREA);//4
+                    table.addCell(COLUMN_TXTRFID);//4
+                    table.addCell(COLUMN_TXTSTATUS);//3
+                    table.addCell(COLUMN_TXTNOTES);//5
 
-                PdfPTable table = new PdfPTable(8);
-                table.addCell("NO");
-                table.addCell(COLUMN_ASSET_CODE);
-                table.addCell(COLUMN_ASSET_RFID);
-                table.addCell(COLUMN_ASSET_DESC);
-                table.addCell(COLUMN_ASSET_PIC);
-                table.addCell(COLUMN_ASSET_LOCATION);
-                table.addCell(COLUMN_ASSET_STATUS);
-                table.addCell(COLUMN_TIMESTAMP);
-                table.setWidthPercentage(100);
-                table.setWidths(new int[]{1, 4, 4, 5, 2, 3, 2, 3});
-                table.setHeaderRows(1);
-                for (int i = 0; i < totalAssetLoc; i++) {
-                    if (c1.moveToNext()) {
-                        String asset_code = c1.getString(0);
-                        String asset_rfid = c1.getString(1);
-                        String asset_desc = c1.getString(2);
-                        String asset_pic = c1.getString(3);
-                        String asset_location = c1.getString(4);
-                        String asset_status = c1.getString(5);
-                        String asset_timestamp = c1.getString(6);
+                    table.setWidthPercentage(100);
+                    table.setWidths(new int[]{1, 4, 5, 4, 2, 4, 2, 4, 2, 4, 4, 4, 4, 3, 5});
+                    table.setHeaderRows(1);
+                    for (int i = 0; i < totalAssetLocV2; i++) {
+                        if (c1.moveToNext()) {
 
-                        table.addCell(String.valueOf(i + 1));
-                        table.addCell(asset_code);
-                        table.addCell(asset_rfid);
-                        table.addCell(asset_desc);
-                        table.addCell(asset_pic);
-                        table.addCell(asset_location);
-                        table.addCell(asset_status);
-                        table.addCell(asset_timestamp);
+                            table.addCell(String.valueOf(i + 1));
+                            table.addCell(c1.getString(0));
+                            table.addCell(c1.getString(1));
+                            table.addCell(c1.getString(2));
+                            table.addCell(c1.getString(3));
+                            table.addCell(c1.getString(5));
+                            table.addCell(c1.getString(6));
+                            table.addCell(c1.getString(7));
+                            table.addCell(c1.getString(8));
+                            table.addCell(c1.getString(9));
+                            table.addCell(c1.getString(10));
+                            table.addCell(c1.getString(11));
+                            table.addCell(c1.getString(12));
+                            table.addCell(c1.getString(13));
+                            table.addCell(c1.getString(15));
+                        }
+                        publishProgress(i);
                     }
-                    publishProgress(i);
+                } else {
+                    table = new PdfPTable(8);
+                    table.addCell("NO");
+                    table.addCell(COLUMN_ASSET_CODE);
+                    table.addCell(COLUMN_ASSET_RFID);
+                    table.addCell(COLUMN_ASSET_DESC);
+                    table.addCell(COLUMN_ASSET_PIC);
+                    table.addCell(COLUMN_ASSET_LOCATION);
+                    table.addCell(COLUMN_ASSET_STATUS);
+                    table.addCell(COLUMN_TIMESTAMP);
+                    table.setWidthPercentage(100);
+                    table.setWidths(new int[]{1, 4, 4, 5, 2, 3, 2, 3});
+                    table.setHeaderRows(1);
+                    for (int i = 0; i < totalAssetLoc; i++) {
+                        if (c1.moveToNext()) {
+                            String asset_code = c1.getString(0);
+                            String asset_rfid = c1.getString(1);
+                            String asset_desc = c1.getString(2);
+                            String asset_pic = c1.getString(3);
+                            String asset_location = c1.getString(4);
+                            String asset_status = c1.getString(5);
+                            String asset_timestamp = c1.getString(6);
+
+                            table.addCell(String.valueOf(i + 1));
+                            table.addCell(asset_code);
+                            table.addCell(asset_rfid);
+                            table.addCell(asset_desc);
+                            table.addCell(asset_pic);
+                            table.addCell(asset_location);
+                            table.addCell(asset_status);
+                            table.addCell(asset_timestamp);
+                        }
+                        publishProgress(i);
+                    }
                 }
 
                 document.add(table);
@@ -713,16 +806,26 @@ public class ScanResultActivity extends AppCompatActivity {
             try {
                 double valuesDb = Double.parseDouble(String.valueOf((values[0])));
                 Log.d(TAG, "onProgressUpdate: " + values[0]);
-                double totalAssetDb = Double.parseDouble(String.valueOf(totalAssetLoc));
+                double totalAssetDb;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    totalAssetDb = Double.parseDouble(String.valueOf(totalAssetLocV2));
+                } else {
+                    totalAssetDb = Double.parseDouble(String.valueOf(totalAssetLoc));
+                }
                 double percenTage = (valuesDb / totalAssetDb) * 100;
                 Log.d(TAG, "onCreate: " + percenTage);
                 BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
                 bd.doubleValue();
                 Log.d(TAG, "onProgressUpdate: " + bd);
 //                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
-                this.dialog.setTitle("Exporting " + (int) totalAssetLoc + " Assets to .pdf");
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    this.dialog.setTitle("Exporting " + (int) totalAssetLocV2 + " Assets to .pdf");
+                    this.dialog.setMax((int) totalAssetLocV2);
+                } else {
+                    this.dialog.setTitle("Exporting " + (int) totalAssetLoc + " Assets to .pdf");
+                    this.dialog.setMax((int) totalAssetLoc);
+                }
                 this.dialog.setMessage("It will take a while, Please wait!");
-                this.dialog.setMax((int) totalAssetLoc);
                 this.dialog.setProgress(values[0]);
 
             } catch (Exception e) {

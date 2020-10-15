@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_margin"
     android:paddingTop="@dimen/activity_margin"
@@ -25,6 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_enter_rfid_tag"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:paddingTop="10dip">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -32,7 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:inputType="textShortMessage" />
+            android:inputType="textShortMessage"
+            android:focusable="false"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 

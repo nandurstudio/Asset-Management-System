@@ -115,7 +115,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private static final String XML_PATH = "xml_path";
     private static final String KEY_RFID_TAG = "key_rfid_tag";
     private static final String DEMO_MODE = "1";
-    private static final String AMEN_MODE = "2";
+    public static final String AMEN_MODE = "2";
     private AssetsAdapter mAdapter;
     private AssetsAdapterV2 mAdapterV2;
     private List<Asset> assetList = new ArrayList<>();
@@ -191,7 +191,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         /*Create Asset table in Asset.db*/
         try {
-            db.createTable();
+            if (sharedDBVersion.equals(AMEN_MODE)) {
+                db_v2.createTable();
+            } else {
+                db.createTable();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -444,11 +448,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
                                 dialog.cancel();
-                                if (sharedDBVersion.equals(AMEN_MODE)) {
-                                    deleteAssetDatabaseV2();
-                                } else {
-                                    deleteAssetDatabase();
-                                }
                                 openFilePicker();
                                 //progressDialog.dismiss();
                             }
@@ -482,14 +481,15 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         Toast.makeText(ScanAssetActivity.this, files[0].getPath(), Toast.LENGTH_SHORT).show();
                         editor.putString(XML_PATH, files[0].getPath());
                         editor.apply();
-
                         if (sharedDBVersion.equals(AMEN_MODE)) {
                             //TODO: databaseV2
+                            deleteAssetDatabaseV2();
                             toaster(this, sharedDBVersion, 0);
                             pullDataAsyncTaskV2 taskv2 = new pullDataAsyncTaskV2();
                             taskv2.execute();
                         } else {
                             pullDataAsyncTask task = new pullDataAsyncTask();
+                            deleteAssetDatabase();
                             task.execute();
                         }
                     });
@@ -777,18 +777,34 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             }
 
             // check if user updating asset
-            if (asset != null) {
-                if (!db.checkIsRfidInDB(sharedTag)) {
-                    // update asset by it's id
-                    updateAsset(inputRfidNumber.getText().toString(), position);
+            if (sharedDBVersion.equals(AMEN_MODE)) {
+                if (asset != null) {
+                    if (!db_v2.checkIsRfidInDB(sharedTag)) {
+                        // update asset by it's id
+                        updateAssetV2(inputRfidNumber.getText().toString(), position, assetArea);
+                    } else {
+                        toaster(ScanAssetActivity.this, "Tag sudah terpakai!", 0);
+                        alertDialog.dismiss();
+                    }
                 } else {
-                    toaster(ScanAssetActivity.this, "Tag sudah terpakai!", 0);
-                    alertDialog.dismiss();
+                    // create new asset
+                    createAsset(inputRfidNumber.getText().toString());
                 }
             } else {
-                // create new asset
-                createAsset(inputRfidNumber.getText().toString());
+                if (asset != null) {
+                    if (!db.checkIsRfidInDB(sharedTag)) {
+                        // update asset by it's id
+                        updateAsset(inputRfidNumber.getText().toString(), position);
+                    } else {
+                        toaster(ScanAssetActivity.this, "Tag sudah terpakai!", 0);
+                        alertDialog.dismiss();
+                    }
+                } else {
+                    // create new asset
+                    createAsset(inputRfidNumber.getText().toString());
+                }
             }
+
         });
     }
 
@@ -1257,7 +1273,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         asset.put(COLUMN_TXTNICK, getNodeValue(COLUMN_TXTNICK, elm));
                         asset.put(COLUMN_TXTEMAIL, getNodeValue(COLUMN_TXTEMAIL, elm));
                         asset.put(COLUMN_TXTPENGGUNAID, getNodeValue(COLUMN_TXTPENGGUNAID, elm));
-                        asset.put(COLUMN_TXTLOKASIPENGGUNA, getNodeValue(COLUMN_TXTPENGGUNAID, elm));
+                        asset.put(COLUMN_TXTLOKASIPENGGUNA, getNodeValue(COLUMN_TXTLOKASIPENGGUNA, elm));
                         asset.put(COLUMN_TXTLOBPENGGUNA, getNodeValue(COLUMN_TXTLOBPENGGUNA, elm));
                         asset.put(COLUMN_TXTAREA, getNodeValue(COLUMN_TXTAREA, elm));
                         asset.put(COLUMN_TXTRFID, getNodeValue(COLUMN_TXTRFID, elm));
