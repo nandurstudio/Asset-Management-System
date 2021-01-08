@@ -75,7 +75,7 @@
     <string name="hint_asset_location">Asset Location</string>
     <string name="hint_asset_status">Asset Status</string>
     <string name="asset_detail">Asset Detail</string>
-    <string name="delete_asset">Delete Asset</string>
+    <string name="remove_rfid_tag">Remove RFID Tag</string>
     <string name="choose_area">Choose Area</string>
     <string name="last_sync">Last Sync</string>
     <string name="hint_asset_area">Asset Area</string>
@@ -87,20 +87,22 @@
     <string name="hint_asset_pic_user">Asset User</string>
     <string name="hint_asset_lob">LOB User</string>
     <string name="hint_asset_img">Asset Image</string>
+    <string name="hint_asset_notes">Asset Notes</string>
 
     <string-array name="area_array">
-        <item>Area 1</item>
-        <item>Area 2</item>
-        <item>Area 3</item>
-        <item>Area 4</item>
-        <item>Area 5</item>
-        <item>Area 6</item>
+        <item>Office Plant</item>
+        <item>Produksi Basic Care</item>
+        <item>Produksi High Care</item>
+        <item>Preparasi Basic Care</item>
+        <item>Preparasi High Care</item>
+        <item>Engineering Maintenace</item>
     </string-array>
 
     <string-array name="shp_array">
         <item>Plant</item>
         <item>KN</item>
     </string-array>
+
     <string-array name="plant_array">
         <item>General</item>
         <item>Production</item>
@@ -108,7 +110,9 @@
         <item>PPC &amp; Preparation</item>
         <item>Engineering Maintenace</item>
         <item>HRGA</item>
+        <item>All Dept</item>
     </string-array>
+
     <string-array name="kn_array">
         <item>MS</item>
         <item>IT</item>

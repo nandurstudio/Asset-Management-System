@@ -1,5 +1,6 @@
 package com.ndu.assetmanagementsystem;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -42,8 +43,15 @@ public class MainActivity extends AppCompatActivity
     private static final String DEPT_PPC_PREP = "Preparation";
     private static final String DEPT_EM = "EM";
     private static final String DEPT_HRGA = "HRGA";
+    private static final String ALL_DEPT = "All Dept";
     private static final String DIV_PLANT = "Plant";
     private static final String DIV_KN = "KN";
+    private static final String AREA_OFFICE_PLANT = "Office Plant";
+    private static final String AREA_PRODUKSI_BASIC_CARE = "Produksi Basic Care";
+    private static final String AREA_PRODUKSI_HIGH_CARE = "Produksi High Care";
+    private static final String AREA_PREPARASI_BASIC_CARE = "Preparasi Basic Care";
+    private static final String AREA_PREPARASI_HIGH_CARE = "Preparasi High Care";
+    private static final String AREA_ENGINEERING_MAINTENANCE = "Engineering Maintenance";
     private DrawerLayout drawer;
     private Handler handler;
     private SharedPreferences sharedPrefs;
@@ -55,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private String floorStage;
     private Spinner spinnerArea;
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,18 +123,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.v("floor", (String) parent.getItemAtPosition(position));
-                if (parent.getItemAtPosition(position).equals("Area 1")) {
-                    floorStage = "Area 1";
-                } else if (parent.getItemAtPosition(position).equals("Area 2")) {
-                    floorStage = "Area 2";
-                } else if (parent.getItemAtPosition(position).equals("Area 3")) {
-                    floorStage = "Area 3";
-                } else if (parent.getItemAtPosition(position).equals("Area 4")) {
-                    floorStage = "Area 4";
-                } else if (parent.getItemAtPosition(position).equals("Area 5")) {
-                    floorStage = "Area 5";
-                } else if (parent.getItemAtPosition(position).equals("Area 6")) {
-                    floorStage = "Area 6";
+                if (parent.getItemAtPosition(position).equals(AREA_OFFICE_PLANT)) {
+                    floorStage = AREA_OFFICE_PLANT;
+                } else if (parent.getItemAtPosition(position).equals(AREA_PRODUKSI_BASIC_CARE)) {
+                    floorStage = AREA_PRODUKSI_BASIC_CARE;
+                } else if (parent.getItemAtPosition(position).equals(AREA_PRODUKSI_HIGH_CARE)) {
+                    floorStage = AREA_PRODUKSI_HIGH_CARE;
+                } else if (parent.getItemAtPosition(position).equals(AREA_PREPARASI_BASIC_CARE)) {
+                    floorStage = AREA_PREPARASI_BASIC_CARE;
+                } else if (parent.getItemAtPosition(position).equals(AREA_PREPARASI_HIGH_CARE)) {
+                    floorStage = AREA_PREPARASI_HIGH_CARE;
+                } else if (parent.getItemAtPosition(position).equals(AREA_ENGINEERING_MAINTENANCE)) {
+                    floorStage = AREA_ENGINEERING_MAINTENANCE;
                 } else {
                     floorStage = "";
                 }
@@ -252,6 +261,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.

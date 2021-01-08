@@ -80,10 +80,17 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetCategory"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="textShortMessage" />
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,10 +141,17 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetPicName"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="textShortMessage" />
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine|textShortMessage"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,10 +185,17 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetPicEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="textShortMessage" />
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine|textEmailAddress"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -189,10 +210,17 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetUser"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="textShortMessage" />
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine|textShortMessage"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -328,7 +356,7 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_asset_desc">
+                android:hint="@string/hint_asset_notes">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInput_assetNotes"

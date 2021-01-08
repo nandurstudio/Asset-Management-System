@@ -12,6 +12,9 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
@@ -92,7 +95,15 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         assetDesc.setText(assetDescSh);
         assetCategory.setText(assetCategorySh);
         assetSupervisorID.setText(assetSupervisorIDSh);
-        assetAcquisition.setText(String.valueOf(assetAcuisitionSh));
+//        NumberFormat format = NumberFormat.getCurrencyInstance();
+//        format.setMaximumFractionDigits(0);
+//        format.setCurrency(Currency.getInstance("IDR"));
+//        assetAcquisition.setText(format.format(assetAcuisitionSh));
+
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+        assetAcquisition.setText(formatRupiah.format((double)assetAcuisitionSh));
+
         assetPicName.setText(assetUserNameSh);
         assetPicNick.setText(assetUserNickSh);
         assetPicEmail.setText(assetUserEmailSh);

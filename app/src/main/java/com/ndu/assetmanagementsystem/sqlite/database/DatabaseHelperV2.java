@@ -242,6 +242,51 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
         return assets;
     }
 
+    public List<AssetV2> getAllAssetsByExist() {
+        List<AssetV2> assets = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTSTATUS + " NOT LIKE '" + "%Asset Ada%" + "' " + " ORDER BY " +
+//                Asset.COLUMN_TIMESTAMP + " DESC";
+                /*COLUMN_ID*/COLUMN_TXTNICK + " ASC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                AssetV2 asset = new AssetV2();
+//                asset.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                asset.setTxtFixedAssetCode(cursor.getString(cursor.getColumnIndex(COLUMN_TXTFIXEDASSETCODE)));
+                asset.setTxtAssetDescription(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETDESCRIPTION)));
+                asset.setTxtAssetCategory(cursor.getString(cursor.getColumnIndex(COLUMN_TXTASSETCATEGORY)));
+                asset.setTxtSupervisorID(cursor.getString(cursor.getColumnIndex(COLUMN_TXTSUPERVISORID)));
+                asset.setDecAcquisition(cursor.getInt(cursor.getColumnIndex(COLUMN_DECACQUISITION)));
+                asset.setTxtName(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNAME)));
+                asset.setTxtNick(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNICK)));
+                asset.setTxtEmail(cursor.getString(cursor.getColumnIndex(COLUMN_TXTEMAIL)));
+                asset.setTxtPenggunaID(cursor.getString(cursor.getColumnIndex(COLUMN_TXTPENGGUNAID)));
+                asset.setTxtLokasiPengguna(cursor.getString(cursor.getColumnIndex(COLUMN_TXTLOKASIPENGGUNA)));
+                asset.setTxtLOBPengguna(cursor.getString(cursor.getColumnIndex(COLUMN_TXTLOBPENGGUNA)));
+                asset.setTxtArea(cursor.getString(cursor.getColumnIndex(COLUMN_TXTAREA)));
+                asset.setTxtRfid(cursor.getString(cursor.getColumnIndex(COLUMN_TXTRFID)));
+                asset.setTxtStatus(cursor.getString(cursor.getColumnIndex(COLUMN_TXTSTATUS)));
+                asset.setTxtImgLink(cursor.getString(cursor.getColumnIndex(COLUMN_TXTIMGLINK)));
+                asset.setTxtNotes(cursor.getString(cursor.getColumnIndex(COLUMN_TXTNOTES)));
+                asset.setDtmTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_DTMTIMESTAMP)));
+
+                assets.add(asset);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return assets list
+        return assets;
+    }
+
     public int getAssetsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_NAME_V2;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -256,6 +301,18 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
 
     public int getAssetsCountByLocation(String assetLocation) {
         String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    public int getAssetsCountByTag(String assetLocation) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTRFID + " IS NOT NULL AND " + COLUMN_TXTRFID + " != \"\" AND " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 
@@ -333,6 +390,28 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_TXTAREA, asset.getTxtArea());
+
+        // updating row
+        return db.update(TABLE_NAME_V2, values, COLUMN_TXTRFID + " = ?",
+                new String[]{rfid});
+    }
+
+    public int updateNickByRfid(AssetV2 assetV2, String rfid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TXTNICK, assetV2.getTxtNick());
+
+        // updating row
+        return db.update(TABLE_NAME_V2, values, COLUMN_TXTRFID + " = ?",
+                new String[]{rfid});
+    }
+
+    public int updateNameByRfid(AssetV2 assetV2, String rfid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TXTNAME, assetV2.getTxtName());
 
         // updating row
         return db.update(TABLE_NAME_V2, values, COLUMN_TXTRFID + " = ?",
@@ -433,5 +512,27 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
         onCreate(db);
+    }
+
+    public void deleteTagByItemCode(String itemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TXTRFID, "");
+
+        // updating row
+        db.update(TABLE_NAME_V2, values, COLUMN_TXTFIXEDASSETCODE + " = ?",
+                new String[]{itemCode});
+    }
+
+    public void deleteStatusByItemCode(String itemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TXTSTATUS, "");
+
+        // updating row
+        db.update(TABLE_NAME_V2, values, COLUMN_TXTFIXEDASSETCODE + " = ?",
+                new String[]{itemCode});
     }
 }

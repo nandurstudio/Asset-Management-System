@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.ndu.assetmanagementsystem"
@@ -55,25 +55,25 @@ dependencies {
     implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.navigation:navigation-fragment:2.3.0'
-    implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.2'
+    implementation 'androidx.navigation:navigation-ui:2.3.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.github.salehyarahmadi:FileAndFolderPicker:1.0.4'
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //permission https://github.com/Karumi/Dexter
-    implementation 'com.karumi:dexter:6.2.1'
+    implementation 'com.karumi:dexter:6.2.2'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     // For control over item selection of both touch and mouse driven selection
-    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc02'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc03'
 
 }

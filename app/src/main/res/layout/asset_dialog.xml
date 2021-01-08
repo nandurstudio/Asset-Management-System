@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_margin"
     android:paddingTop="@dimen/activity_margin"
@@ -25,9 +25,9 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_enter_rfid_tag"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:hint="@string/hint_enter_rfid_tag"
         android:paddingTop="10dip">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -35,9 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:inputType="textShortMessage"
             android:focusable="false"
-            />
+            android:inputType="textShortMessage" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:inputType="textShortMessage|textCapWords"
+            android:inputType="textCapCharacters"
             android:maxLength="3"
             android:textAllCaps="true" />
 

@@ -9,9 +9,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,6 +59,7 @@ import java.math.RoundingMode;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
@@ -80,20 +83,8 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_A
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
 
 public class ScanResultActivity extends AppCompatActivity {
 
@@ -107,10 +98,10 @@ public class ScanResultActivity extends AppCompatActivity {
     private File file;
     private String fileNameTxt;
     private String path;
-    private String TAG = ScanResultActivity.class.getSimpleName();
-    private Drawable dialogIcon;
+    private final String TAG = ScanResultActivity.class.getSimpleName();
     private SharedPreferences.Editor editor;
     private String sharedDBVersion;
+    private String toolbarTitle;
 
     public ScanResultActivity() {
     }
@@ -137,7 +128,8 @@ public class ScanResultActivity extends AppCompatActivity {
 
         if (bundle != null) {
             assetLocation = (String) bundle.get(DEPT_NAME);
-            toolbar.setTitle(getResources().getString(R.string.asset_result) + " Of " + assetLocation.substring(1));
+            toolbarTitle = getResources().getString(R.string.asset_result) + " Of Asset " + assetLocation.substring(1);
+            toolbar.setTitle(toolbarTitle);
         }
 
         //update value
@@ -152,7 +144,7 @@ public class ScanResultActivity extends AppCompatActivity {
         TextView unReadAbleAsset = findViewById(R.id.textView_unreadble_units);
         TextView percentageAsset = findViewById(R.id.textView_readble_result);
         Button butMailTo = findViewById(R.id.button_mailto);
-        dialogIcon = getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
+        getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 
         if (sharedDBVersion.equals(AMEN_MODE)) {
             totalAsset.setText(String.valueOf(db_v2.getAssetsCountByLocation(assetLocation)));
@@ -201,7 +193,8 @@ public class ScanResultActivity extends AppCompatActivity {
         return true;
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @SuppressLint({"UseCompatLoadingForDrawables", "NonConstantResourceId"})
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -325,16 +318,38 @@ public class ScanResultActivity extends AppCompatActivity {
         }*/
     }
 
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void exportToXls() {
-        path = sharedPrefs.getString(KEY_EXPORT_FILE_DIRECTORY, "");
+        //known bugs: Jika Android fresh instal, tidak ada value disini dan akan error Read-only file system
+        //jadi harus di statmentkan defValuenya ke /storage/emulated/0/AssetV2
+        String filepathEM = Environment.getExternalStorageDirectory().getPath();
+        File filex = new File(filepathEM);
+        if (!filex.exists()) {
+            filex.mkdirs();
+        }
+        String defaultValue = filex.getAbsolutePath() + "/";
+        Log.d(TAG, "exportToXls: defaultValue is " + defaultValue);
+        path = sharedPrefs.getString(KEY_EXPORT_FILE_DIRECTORY, defaultValue);
+
         File exportDir = new File(path, "");
 
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
-
+        Log.d(TAG, "exportToXls: " + exportDir.toString());
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(ScanResultActivity.this);
+        Calendar cal = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat month_date = new SimpleDateFormat("MMM");
+        String month_name = month_date.format(cal.getTime());
+        String currentDateNumber = currentDate.format(cal.getTime());
+        edittext.setText(toolbarTitle + "_" + currentDateNumber + " " + month_name);
+        edittext.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                ((EditText) v).selectAll();
+        });
         alert.setMessage(R.string.export_result_message);
         alert.setTitle(R.string.export_result_title);
         alert.setView(edittext);
@@ -372,22 +387,28 @@ public class ScanResultActivity extends AppCompatActivity {
                     System.out.println("myfile.csv " + file.getAbsolutePath());
                 } else {
                     System.out.println("File already exists.");
-                    toaster(ScanResultActivity.this, "File already exist", 1);
+                    //toaster(ScanResultActivity.this, "File already exist", 1);
+                    file.delete();
                 }
                 CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
                 //SQLiteDatabase db = dbhelper.getWritableDatabase();
                 Cursor curCSV;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                    curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME_V2 + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
                 } else {
-                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME, null);
+                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
                 }
                 csvWrite.writeNext(curCSV.getColumnNames());
                 while (curCSV.moveToNext()) {
                     String[] arrStr = {
-                            curCSV.getString(0), curCSV.getString(1), curCSV.getString(2),
-                            curCSV.getString(3), curCSV.getString(4),
-                            curCSV.getString(5), curCSV.getString(6)};
+                            curCSV.getString(0), curCSV.getString(1),
+                            curCSV.getString(2), curCSV.getString(3),
+                            curCSV.getString(4), curCSV.getString(5),
+                            curCSV.getString(6), curCSV.getString(7),
+                            curCSV.getString(8), curCSV.getString(9),
+                            curCSV.getString(10), curCSV.getString(11),
+                            curCSV.getString(12), curCSV.getString(13),
+                            curCSV.getString(14), curCSV.getString(15)};
                     /*curCSV.getString(3),curCSV.getString(4)};*/
                     csvWrite.writeNext(arrStr);
                 }
@@ -409,11 +430,13 @@ public class ScanResultActivity extends AppCompatActivity {
                 this.dialog.dismiss();
             }
             if (success) {
-                Toast.makeText(ScanResultActivity.this, "Export succeed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ScanResultActivity.this, "Export succeed", Toast.LENGTH_SHORT).show();
+                System.out.println("Export DB to CSV Succceed");
                 CSVToExcelConverter task = new CSVToExcelConverter();
                 task.execute();
             } else {
-                Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+                System.out.println("Export DB to CSV Failed");
+                //Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -423,6 +446,7 @@ public class ScanResultActivity extends AppCompatActivity {
     public class CSVToExcelConverter extends AsyncTask<String, Void, Boolean> {
 
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
+        private String inFilePath;
 
         @Override
         protected void onPreExecute() {
@@ -435,7 +459,7 @@ public class ScanResultActivity extends AppCompatActivity {
             ArrayList<ArrayList<String>> arList = null;
             ArrayList<String> al;
 
-            String inFilePath = path + "/" + fileNameTxt + ".csv";
+            inFilePath = path + "/" + fileNameTxt + ".csv";
             String outFilePath = path + "/" + fileNameTxt + ".xls";
             String thisLine;
 
@@ -498,9 +522,18 @@ public class ScanResultActivity extends AppCompatActivity {
                 this.dialog.dismiss();
             }
             if (success) {
-                Toast.makeText(ScanResultActivity.this, "file is built!", Toast.LENGTH_LONG).show();
+                Uri uri = Uri.parse(inFilePath);
+                File fdelete = new File(uri.getPath());
+                if (fdelete.exists()) {
+                    if (fdelete.delete()) {
+                        System.out.println("file Deleted :" + uri.getPath());
+                    } else {
+                        System.out.println("file not Deleted :" + uri.getPath());
+                    }
+                }
+                Toast.makeText(ScanResultActivity.this, "File " + fileNameTxt + ".xls is built!", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(ScanResultActivity.this, "file fail to build", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanResultActivity.this, "File fail to build", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -579,9 +612,8 @@ public class ScanResultActivity extends AppCompatActivity {
             DataXmlExporter dm = new DataXmlExporter(database);
             Log.d("TAG", "doInBackground: " + Arrays.toString(args));
             try {
-                String dbName = DATABASE_NAME;
                 String exportFileName = "args";
-                dm.export(dbName, exportFileName);
+                dm.export(DATABASE_NAME, exportFileName);
             } catch (IOException e) {
                 Log.e(ScanResultActivity.class.getSimpleName(), e.getMessage(), e);
                 return e.getMessage();
@@ -603,14 +635,15 @@ public class ScanResultActivity extends AppCompatActivity {
     }
 
     private void sendToEmail() {
+        //TODO: Tambahkan selection excel atau pdf dan amen mmode atau demo mode
         //https://stackoverflow.com/questions/9974987/how-to-send-an-email-with-a-file-attachment-in-android
         TextInputEditText editTextMail = findViewById(R.id.textInput_mailTo);
         if (TextUtils.isEmpty(Objects.requireNonNull(editTextMail.getText()).toString())) {
             editTextMail.setError(getString(R.string.email_empty_error_message));
         } else {
             String[] mailto = {Objects.requireNonNull(editTextMail.getText()).toString()};
-            String fileName = TABLE_NAME + " " + assetLocation.substring(1) + ".pdf";
-            File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME + File.separator + fileName);
+            String fileName = TABLE_NAME_V2 + " " + assetLocation.substring(1) + ".pdf";
+            File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME_V2 + File.separator + fileName);
             Uri uri = Uri.fromFile(fileLocation);
             Log.d(TAG, "sendToEmail: " + uri);
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
@@ -641,6 +674,7 @@ public class ScanResultActivity extends AppCompatActivity {
         // -- notice that the datatype of the first param in the class definition matches the param passed to this
         // method
         // -- and that the datatype of the last param in the class definition matches the return type of this method
+        @SuppressLint("Recycle")
         @Override
         protected String doInBackground(Context... params) {
             // -- on every iteration
@@ -651,16 +685,25 @@ public class ScanResultActivity extends AppCompatActivity {
             /*https://www.tutlane.com/tutorial/android/android-xml-parsing-using-sax-parser*/
             /*https://stackoverflow.com/questions/15967896/how-to-parse-xml-file-from-sdcard-in-android*/
             try {
-                String dir = Environment.getExternalStorageDirectory() + File.separator + TABLE_NAME;
+                String dir;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    dir = Environment.getExternalStorageDirectory() + File.separator + TABLE_NAME_V2;
+                } else {
+                    dir = Environment.getExternalStorageDirectory() + File.separator + TABLE_NAME;
+                }
                 File folder = new File(dir);
                 folder.mkdirs();
-
-                File file = new File(dir, TABLE_NAME + " " + assetLocation.substring(1) + ".pdf");
+                File file;
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    file = new File(dir, TABLE_NAME_V2 + " " + assetLocation.substring(1) + ".pdf");
+                } else {
+                    file = new File(dir, TABLE_NAME + " " + assetLocation.substring(1) + ".pdf");
+                }
                 SQLiteDatabase database;
                 @SuppressLint("Recycle") Cursor c1;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
                     database = db_v2.getWritableDatabase();
-                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
                 } else {
                     database = db.getWritableDatabase();
                     c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'", null);
@@ -674,7 +717,6 @@ public class ScanResultActivity extends AppCompatActivity {
                 HeaderFooterPageEvent event = new HeaderFooterPageEvent();
                 writer.setPageEvent(event);
 
-
                 // add meta-data to pdf
                 document.addAuthor("NDU - Nandang Duryat");
                 document.addCreationDate();
@@ -687,34 +729,35 @@ public class ScanResultActivity extends AppCompatActivity {
                 document.open();
 
                 Paragraph p3 = new Paragraph();
-                p3.add("List of " + TABLE_NAME + " " + assetLocation.substring(1) + "\n");
                 if (sharedDBVersion.equals(AMEN_MODE)) {
+                    p3.add("List of " + TABLE_NAME_V2 + " " + assetLocation.substring(1) + "\n");
                     p3.add("Total " + totalAssetLocV2 + " Assets\n");
                 } else {
+                    p3.add("List of " + TABLE_NAME + " " + assetLocation.substring(1) + "\n");
                     p3.add("Total " + totalAssetLoc + " Assets\n");
                 }
                 document.add(p3);
                 PdfPTable table;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    table = new PdfPTable(14);
-                    table.addCell("NO");//1
-                    table.addCell(COLUMN_TXTFIXEDASSETCODE);//4
-                    table.addCell(COLUMN_TXTASSETDESCRIPTION);//5
-                    table.addCell(COLUMN_TXTASSETCATEGORY);//4
-                    table.addCell(COLUMN_TXTSUPERVISORID);//2
-                    table.addCell(COLUMN_TXTNAME);//4
-                    table.addCell(COLUMN_TXTNICK);//2
-                    table.addCell(COLUMN_TXTEMAIL);//4
-                    table.addCell(COLUMN_TXTPENGGUNAID);//2
-                    table.addCell(COLUMN_TXTLOKASIPENGGUNA);//4
-                    table.addCell(COLUMN_TXTLOBPENGGUNA);//4
-                    table.addCell(COLUMN_TXTAREA);//4
-                    table.addCell(COLUMN_TXTRFID);//4
-                    table.addCell(COLUMN_TXTSTATUS);//3
-                    table.addCell(COLUMN_TXTNOTES);//5
+                    table = new PdfPTable(15);
+                    table.addCell("NO");
+                    table.addCell("Fixed Asset Code");//4
+                    table.addCell("Asset Description");//5
+                    table.addCell("Asset Category");//4
+                    table.addCell("NIK");//2
+                    table.addCell("Responsibility Name");//4
+                    table.addCell("Nick Name");//2
+                    table.addCell("E-mail");//4
+                    table.addCell("User Name");//2
+                    table.addCell("User Location");//4
+                    table.addCell("User LOB");//4
+                    table.addCell("Area");//4
+                    table.addCell("RFID Tag");//4
+                    table.addCell("Status");//3
+                    table.addCell("Notes");//5
 
                     table.setWidthPercentage(100);
-                    table.setWidths(new int[]{1, 4, 5, 4, 2, 4, 2, 4, 2, 4, 4, 4, 4, 3, 5});
+                    table.setWidths(new int[]{2, 4, 5, 4, 2, 4, 2, 4, 2, 4, 4, 4, 4, 3, 5});
                     table.setHeaderRows(1);
                     for (int i = 0; i < totalAssetLocV2; i++) {
                         if (c1.moveToNext()) {
