@@ -3,6 +3,7 @@ package com.ndu.assetmanagementsystem;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -11,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -58,6 +60,8 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         TextInputEditText assetNotes = findViewById(R.id.textInput_assetNotes);
         TextView assetTimestamp = findViewById(R.id.textView_timestamp);
 
+        ImageView imageView = findViewById(R.id.asset_image);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         toolbar.setTitle(R.string.asset_detail);
@@ -102,7 +106,7 @@ public class AssetDetailV2Activity extends AppCompatActivity {
 
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
-        assetAcquisition.setText(formatRupiah.format((double)assetAcuisitionSh));
+        assetAcquisition.setText(formatRupiah.format((double) assetAcuisitionSh));
 
         assetPicName.setText(assetUserNameSh);
         assetPicNick.setText(assetUserNickSh);
@@ -113,6 +117,13 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         assetArea.setText(assetAreaSh);
         assetRfid.setText(assetRfidSh);
         assetStatus.setText(assetStatusSh);
+        try {
+            Picasso picasso = Picasso.get();
+            picasso.setIndicatorsEnabled(true);
+            picasso.load(assetImageLinkSh).into(imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         assetImgLink.setText(assetImageLinkSh);
         assetNotes.setText(assetNotesSh);
         assetTimestamp.setText("Last sync: " + assetTimestampSh);
