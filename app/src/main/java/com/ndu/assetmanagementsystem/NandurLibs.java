@@ -6,17 +6,12 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Objects;
 
 public class NandurLibs {
 
@@ -56,38 +51,41 @@ public class NandurLibs {
         alert.show();
     }
 
-    /**
-     * Get external sd card path using reflection
-     *
-     * @param mContext
-     * @param is_removable is external storage removable
-     * @return
-     */
-    @SuppressWarnings("JavaDoc")
-    private static String getExternalStoragePath(Context mContext, boolean is_removable) {
-
-        StorageManager mStorageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
-        Class<?> storageVolumeClazz;
-        try {
-            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
-            @SuppressWarnings("JavaReflectionMemberAccess") Method getPath = storageVolumeClazz.getMethod("getPath");
-            Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
-            Object result = getVolumeList.invoke(mStorageManager);
-            final int length = Array.getLength(Objects.requireNonNull(result));
-            for (int i = 0; i < length; i++) {
-                Object storageVolumeElement = Array.get(result, i);
-                String path = (String) getPath.invoke(storageVolumeElement);
-                boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
-                if (is_removable == removable) {
-                    return path;
-                }
-            }
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+// --Commented out by Inspection START (14-Jan-21 15:25):
+//    /**
+//     * Get external sd card path using reflection
+//     *
+//     * @param mContext
+//     * @param is_removable is external storage removable
+//     * @return
+//     */
+//    @SuppressWarnings("JavaDoc")
+//    private static String getExternalStoragePath(Context mContext, boolean is_removable) {
+//
+//        StorageManager mStorageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+//        Class<?> storageVolumeClazz;
+//        try {
+//            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+//            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
+//            @SuppressWarnings("JavaReflectionMemberAccess") Method getPath = storageVolumeClazz.getMethod("getPath");
+//            Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
+//            Object result = getVolumeList.invoke(mStorageManager);
+//            final int length = Array.getLength(Objects.requireNonNull(result));
+//            for (int i = 0; i < length; i++) {
+//                Object storageVolumeElement = Array.get(result, i);
+//                String path = (String) getPath.invoke(storageVolumeElement);
+//                //noinspection ConstantConditions
+//                boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
+//                if (is_removable == removable) {
+//                    return path;
+//                }
+//            }
+//        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+// --Commented out by Inspection STOP (14-Jan-21 15:25)
 
     static void showInstalledAppDetails(Context context, String packageName) {
         Intent intent = new Intent();

@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity
     private static final String DEPT_PPC_PREP = "Preparation";
     private static final String DEPT_EM = "EM";
     private static final String DEPT_HRGA = "HRGA";
-    private static final String ALL_DEPT = "All Dept";
+    // --Commented out by Inspection (14-Jan-21 15:17):private static final String ALL_DEPT = "All Dept";
     private static final String DIV_PLANT = "Plant";
-    private static final String DIV_KN = "KN";
+    // --Commented out by Inspection (14-Jan-21 15:25):private static final String DIV_KN = "KN";
     private static final String AREA_OFFICE_PLANT = "Office Plant";
     private static final String AREA_PRODUKSI_BASIC_CARE = "Produksi Basic Care";
     private static final String AREA_PRODUKSI_HIGH_CARE = "Produksi High Care";
@@ -54,14 +54,10 @@ public class MainActivity extends AppCompatActivity
     private static final String AREA_ENGINEERING_MAINTENANCE = "Engineering Maintenance";
     private DrawerLayout drawer;
     private Handler handler;
-    private SharedPreferences sharedPrefs;
-    private SharedPreferences.Editor editor;
-    private Button buttAms;
-    private String TAG = "MainActivity";
+    private final String TAG = "MainActivity";
     private Spinner spinnerDynamic;
     private String deptName;
     private String floorStage;
-    private Spinner spinnerArea;
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -79,15 +75,15 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         handler = new Handler();
-        buttAms = findViewById(R.id.buttonAms);
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = sharedPrefs.edit();
+        Button buttAms = findViewById(R.id.buttonAms);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
         //Spinner https://stackoverflow.com/a/29778386/7772358
         Spinner spinnerShp = findViewById(R.id.spinnerShp);
-        spinnerArea = findViewById(R.id.spinner_area);
+        Spinner spinnerArea = findViewById(R.id.spinner_area);
         spinnerDynamic = findViewById(R.id.spinner_dynamic);
 
 
@@ -188,7 +184,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
             }
         });
         //getVersionName

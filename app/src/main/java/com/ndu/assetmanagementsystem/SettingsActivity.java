@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +25,7 @@ import ir.androidexception.filepicker.dialog.DirectoryPickerDialog;
 
 import static com.ndu.assetmanagementsystem.NandurLibs.sendFeedback;
 import static com.ndu.assetmanagementsystem.NandurLibs.showInstalledAppDetails;
+import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
 import static com.ndu.assetmanagementsystem.NandurLibs.versName;
 
@@ -130,9 +130,9 @@ public class SettingsActivity extends AppCompatActivity {
                 prefFilePicker.setOnPreferenceClickListener(preference -> {
                     if (permissionGranted()) {
                         DirectoryPickerDialog directoryPickerDialog = new DirectoryPickerDialog(getContext(),
-                                () -> Toast.makeText(getContext(), "Canceled!!", Toast.LENGTH_SHORT).show(),
+                                () -> toaster(getContext(), getResources().getString(R.string.canceled), 0),
                                 files -> {
-                                    Toast.makeText(getContext(), files[0].getPath(), Toast.LENGTH_SHORT).show();
+                                    toaster(getContext(), files[0].getPath(), 0);
                                     editor.putString(SettingsFragment.KEY_EXPORT_FILE_DIRECTORY, files[0].getPath());
                                     editor.apply();
                                 }

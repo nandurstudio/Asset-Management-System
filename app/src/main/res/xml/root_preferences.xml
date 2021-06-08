@@ -48,18 +48,18 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="@string/file_header">
+        app:title="@string/file_export_location_header">
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="file_location"
             app:summary="@string/file_export_location_sum"
-            app:title="@string/file_export_location_header" />
+            app:title="@string/file_export_location_title" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Database"
+        android:title="@string/database_header"
         app:iconSpaceReserved="false">
 
         <ListPreference
@@ -67,21 +67,21 @@
             android:entries="@array/databaseVersion"
             android:entryValues="@array/databaseVersionValue"
             android:key="database_version"
-            android:summary="Penyesuaian database dan format file .xml yang digunakan"
-            android:title="Database Version"
+            android:summary="@string/database_summary"
+            android:title="@string/database_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="@string/about_header">
+        app:title="@string/about_title">
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="about"
             app:summary="@string/about_summary"
-            app:title="@string/about_header" />
+            app:title="@string/about_title" />
 
     </PreferenceCategory>
 
@@ -115,7 +115,7 @@
             app:title="@string/feedback_title" />
 
         <Preference
-            android:icon="@drawable/vbn_logo"
+            android:icon="@drawable/ic_traced_vbn_logo"
             android:iconSpaceReserved="true"
             app:key="copyright"
             app:summary="@string/nav_header_title"

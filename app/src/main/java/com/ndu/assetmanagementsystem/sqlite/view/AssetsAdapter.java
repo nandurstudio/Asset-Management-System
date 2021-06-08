@@ -1,6 +1,5 @@
 package com.ndu.assetmanagementsystem.sqlite.view;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,26 +13,22 @@ import com.ndu.assetmanagementsystem.R;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
 import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewHolder> {
 
-    private List<Asset> assetList;
+    private final List<Asset> assetList;
 
     public static class AssetViewHolder extends RecyclerView.ViewHolder {
-        public TextView id;
-        public TextView asset_code;
-        public TextView asset_rfid;
-        public TextView asset_desc;
-        public TextView asset_pic;
-        public TextView asset_location;
-        public TextView asset_status;
+        public final TextView id;
+        public final TextView asset_code;
+        public final TextView asset_rfid;
+        public final TextView asset_desc;
+        //public TextView asset_pic;
+        //public TextView asset_location;
+        public final TextView asset_status;
         //public TextView dot;
-        public TextView timestamp;
+        //public TextView timestamp;
 
         public AssetViewHolder(View view) {
             super(view);
@@ -102,7 +97,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
      * Input: 2018-02-21 00:15:42
      * Output: Feb 21
      */
-    private String formatDate(String dateStr) {
+/*    private String formatDate(String dateStr) {
         try {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = fmt.parse(dateStr);
@@ -113,7 +108,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         }
 
         return "";
-    }
+    }*/
 
     /*https://stackoverflow.com/questions/42363135/get-position-of-specific-cardview-in-recyclerview-without-clicking-scrolling*/
     public int getRfidPosition(String rfid) {

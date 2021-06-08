@@ -192,5 +192,5 @@
         android:layout_gravity="center"
         android:contentDescription="TODO"
         android:padding="5dp"
-        app:srcCompat="@drawable/vbn_logo" />
+        app:srcCompat="@mipmap/ic_vbn_logo_original" />
 </LinearLayout>

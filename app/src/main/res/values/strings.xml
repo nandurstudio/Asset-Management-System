@@ -1,19 +1,18 @@
 <resources>
     <string name="app_name">SHP - AMS</string>
-    <string name="ams_name">Asset Management System</string>
-    <string name="lbl_new_asset_title">New Asset</string>
+    <string name="ams_name" translatable="false">Asset Management System</string>
     <string name="lbl_edit_asset_title">Edit Asset</string>
     <string name="hint_enter_rfid_tag">RFID Tag Number</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">©VBN - 2020</string>
-    <string name="nav_header_subtitle">nandang.duryat@kalbenutritionals.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">© VBN 2020</string>
+    <string name="nav_header_subtitle" translatable="false">nandang.duryat@kalbenutritionals.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
 
     <string name="menu_send">Send</string>
-    <string name="build_title">Build</string>
+    <string name="build_title" translatable="false">Build</string>
     <string name="menu_share">Share</string>
     <string name="menu_title_communicate">Communicate</string>
     <string name="assets_list">Assets List</string>
@@ -35,12 +34,12 @@
     <string name="pattern_mailbody">\n\n-----------------------------\nPlease do not delete this section\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
 
     <!-- Preference Titles -->
-    <string name="about_header">About</string>
+    <string name="about_title">About</string>
     <string name="update_header">Update</string>
     <string name="help_header">Help</string>
 
     <!-- About Preferences -->
-    <string name="about_summary">Asset Management System - AMS adalah aplikasi untuk inventory atau stock opname asset menggunakan RFID.\nDeveloped by NDU - System Control Plant\nVBN Future Industrial Technology.</string>
+    <string name="about_summary">Asset Management System - AMS is an app for asset inventory or stock opname using RFID.\nDeveloped by NDU - System Control Plant\nVBN Future Industrial Technology.</string>
 
     <!-- Update Preferences -->
     <string name="update_title">Check for update</string>
@@ -49,13 +48,12 @@
     <string name="asset_readable">Readable</string>
     <string name="asset_unreadable">Unreadable</string>
     <string name="asset_result">Result</string>
-    <string name="percentage">%</string>
-    <string name="assets_result">Result</string>
+    <string name="percentage" translatable="false">%</string>
     <string name="asset_empty">No Asset</string>
-    <string name="copyright_title">Copyright</string>
+    <string name="copyright_title" translatable="false">Copyright</string>
     <string name="action_refresh_assets">Refresh Asset List</string>
-    <string name="file_header">File</string>
-    <string name="file_export_location_header">Export Location</string>
+    <string name="file_export_location_header" translatable="false">File</string>
+    <string name="file_export_location_title">Export Location</string>
     <string name="file_export_location_sum">Internal Storage</string>
     <string name="export_result_title">Will export all result to .csv and .xls file</string>
     <string name="export_result_message">Export Result To Excel</string>
@@ -65,29 +63,47 @@
     <string name="action_export_pdf">Export To PDF</string>
     <string name="action_mailto">Send Result By Email</string>
     <string name="lbl_reg_asset_title">Asset Registration</string>
-    <string name="hint_enter_asset_pic_nick">PIC Nickname</string>
     <string name="rfid_empty_error_message">RFID Tag Number Can\'t Be Empty</string>
-    <string name="hint_enter_email">Mail Destination</string>
     <string name="email_empty_error_message">Email Address Can\'t Be Empty</string>
+    <string name="asset_detail">Asset Detail</string>
+    <string name="remove_rfid_tag">Remove RFID Tag</string>
+    <string name="choose_area">Choose Area</string>
+    <string name="last_sync">Last Sync</string>
+    <string name="hint_enter_asset_pic_nick">PIC Nickname</string>
+    <string name="hint_enter_email">Mail Destination</string>
     <string name="hint_asset_code">Asset Code</string>
     <string name="hint_asset_rfid">RFID Tag</string>
     <string name="hint_asset_desc">Asset Description</string>
     <string name="hint_asset_location">Asset Location</string>
     <string name="hint_asset_status">Asset Status</string>
-    <string name="asset_detail">Asset Detail</string>
-    <string name="remove_rfid_tag">Remove RFID Tag</string>
-    <string name="choose_area">Choose Area</string>
-    <string name="last_sync">Last Sync</string>
     <string name="hint_asset_area">Asset Area</string>
     <string name="hint_asset_category">Asset Category</string>
     <string name="hint_asset_supervisorid">Asset Supervisor ID</string>
-    <string name="hint_asset_acquisition">Asset Acquisition</string>
     <string name="hint_asset_pic_name">PIC Name</string>
     <string name="hint_asset_pic_email">PIC Email</string>
     <string name="hint_asset_pic_user">Asset User</string>
     <string name="hint_asset_lob">LOB User</string>
     <string name="hint_asset_img">Asset Image</string>
     <string name="hint_asset_notes">Asset Notes</string>
+    <string name="hint_asset_acquisition">Asset Acquisition</string>
+    <string name="asset_with_rfid_tag">Asset With RFID Tag</string>
+    <string name="scanned_asset">Scanned Asset</string>
+    <string name="percentage_text">Percentage</string>
+    <string name="storage_granted">Storage Granted</string>
+    <string name="storage_denied">Storage Denied</string>
+    <string name="canceled">Canceled!!</string>
+    <string name="button_update">Update</string>
+    <string name="importing_data_asset">Importing data asset…</string>
+    <string name="message_asset_no_tag">This asset doesn\'t have tag yet</string>
+    <string name="message_asset_tag_removed">Tag was removed from</string>
+    <string name="message_please_wait">Please wait!</string>
+    <string name="message_import_complete">Import complete!</string>
+    <string name="message_no_asset_xml_in_directory">No Asset.xml file in the directory</string>
+    <string name="message_import_failed">Import failed!</string>
+    <string name="message_asset_tag_delete">This will remove tag from Asset</string>
+    <string name="message_tag_pic_updated">Tag and PIC has been updated</string>
+    <string name="message_tag_in_use">Tag is used for another asset</string>
+    <string name="message_pic_updated">PIC has been updated</string>
 
     <string-array name="area_array">
         <item>Office Plant</item>
@@ -117,4 +133,8 @@
         <item>MS</item>
         <item>IT</item>
     </string-array>
+    <string name="message_refresh_notice">This will refresh asset list and all unimpoerted scan data will be lost!</string>
+    <string name="database_title">Database Version</string>
+    <string name="database_header" translatable="false">Database</string>
+    <string name="database_summary">Adjustments to the database and the .xml file format used</string>
 </resources>

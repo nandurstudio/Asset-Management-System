@@ -17,13 +17,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.*;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 //import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -57,24 +50,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long createAsset(String asset) {
-        // get writable database as we want to write data
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        // `id` and `timestamp` will be inserted automatically.
-        // no need to add them
-        values.put(COLUMN_ASSET_RFID, asset);
-
-        // insert row
-        long id = db.insert(TABLE_NAME, null, values);
-
-        // close db connection
-        db.close();
-
-        // return newly inserted row id
-        return id;
-    }
+// --Commented out by Inspection START (14-Jan-21 15:26):
+//    public long createAsset(String asset) {
+//        // get writable database as we want to write data
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        ContentValues values = new ContentValues();
+//        // `id` and `timestamp` will be inserted automatically.
+//        // no need to add them
+//        values.put(COLUMN_ASSET_RFID, asset);
+//
+//        // insert row
+//        long id = db.insert(TABLE_NAME, null, values);
+//
+//        // close db connection
+//        db.close();
+//
+//        // return newly inserted row id
+//        return id;
+//    }
+// --Commented out by Inspection STOP (14-Jan-21 15:26)
 
     public void dropTable() {
         // get readable database as we are not inserting anything
@@ -219,53 +214,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getAssetsCountByStatusNull(String assetLocation) {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'" + " & " + COLUMN_ASSET_STATUS + " IS NULL ";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
+// --Commented out by Inspection START (14-Jan-21 15:26):
+//    public int getAssetsCountByStatusNull(String assetLocation) {
+//        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'" + " & " + COLUMN_ASSET_STATUS + " IS NULL ";
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery(countQuery, null);
+//
+//        int count = cursor.getCount();
+//        cursor.close();
+//
+//        // return count
+//        return count;
+//    }
+// --Commented out by Inspection STOP (14-Jan-21 15:26)
 
-        int count = cursor.getCount();
-        cursor.close();
-
-        // return count
-        return count;
-    }
-
-    public int getScannedAssetsCount() {
-        String countQuery = "SELECT  COUNT (*) FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + ASSET_EXIST + "'";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-
-        int count = cursor.getCount();
-        cursor.close();
-
-        // return count
-        return count;
-    }
+// --Commented out by Inspection START (14-Jan-21 15:26):
+//    public int getScannedAssetsCount() {
+//        String countQuery = "SELECT  COUNT (*) FROM " + TABLE_NAME +
+//                " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + ASSET_EXIST + "'";
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery(countQuery, null);
+//
+//        int count = cursor.getCount();
+//        cursor.close();
+//
+//        // return count
+//        return count;
+//    }
+// --Commented out by Inspection STOP (14-Jan-21 15:26)
 
 //    SELECT COUNT(*) FROM Asset WHERE asset_rfid IS NOT NULL and asset_status = 'Asset Ada';
 
-    public int updateAsset(Asset asset) {
+    public void updateAsset(Asset asset) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_ASSET_RFID, asset.getAsset_rfid());
 
         // updating row
-        return db.update(TABLE_NAME, values, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
+        db.update(TABLE_NAME, values, /*COLUMN_ID*/COLUMN_ASSET_CODE + " = ?",
                 /*new String[]{String.valueOf(asset.getId())});*/
                 new String[]{asset.getAsset_code()});
     }
 
-    public int updateStatusByRfid(Asset asset, String rfid) {
+    public void updateStatusByRfid(Asset asset, String rfid) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_ASSET_STATUS, asset.getAsset_status());
 
         // updating row
-        return db.update(TABLE_NAME, values, COLUMN_ASSET_RFID + " = ?",
+        db.update(TABLE_NAME, values, COLUMN_ASSET_RFID + " = ?",
                 new String[]{rfid});
     }
 
@@ -310,17 +309,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean checkIsStatusUpdated(String status) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_STATUS + " = " + "'" + status + "'";
-        Cursor cursor = db.rawQuery(Query, null);
-        if (cursor.getCount() <= 0) {
-            cursor.close();
-            return true;
-        }
-        cursor.close();
-        return false;
-    }
+// --Commented out by Inspection START (14-Jan-21 15:26):
+//    public boolean checkIsStatusUpdated(String status) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        String Query = "Select * from " + TABLE_NAME + " where " + COLUMN_ASSET_STATUS + " = " + "'" + status + "'";
+//        Cursor cursor = db.rawQuery(Query, null);
+//        if (cursor.getCount() <= 0) {
+//            cursor.close();
+//            return true;
+//        }
+//        cursor.close();
+//        return false;
+//    }
+// --Commented out by Inspection STOP (14-Jan-21 15:26)
 
     public boolean checkIsItemCodeInDb(String itemCode) {
         SQLiteDatabase db = this.getReadableDatabase();

@@ -126,7 +126,7 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         }
         assetImgLink.setText(assetImageLinkSh);
         assetNotes.setText(assetNotesSh);
-        assetTimestamp.setText("Last sync: " + assetTimestampSh);
+        assetTimestamp.setText(getResources().getString(R.string.last_sync) + ": " + assetTimestampSh);
 
     }
 }

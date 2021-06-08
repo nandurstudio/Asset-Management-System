@@ -112,7 +112,7 @@ public class ScanResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_result);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.assets_result);
+        toolbar.setTitle(R.string.asset_result);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -214,7 +214,7 @@ public class ScanResultActivity extends AppCompatActivity {
                         title,
                         msg,
                         true,
-                        getDrawable(R.drawable.excel_logo),
+                        getDrawable(R.drawable.ic_excel_24px),
                         "Yes", "Cancel",
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
@@ -230,7 +230,7 @@ public class ScanResultActivity extends AppCompatActivity {
                         getResources().getString(R.string.action_export_pdf) + "?",
                         "Mungkin agak lama, tunggu saja!",
                         true,
-                        getDrawable(R.drawable.pdf_logo),
+                        getDrawable(R.drawable.ic_pdf_24px),
                         "Yes",
                         "Cancel",
                         (DialogInterface dialog, int which) -> {
@@ -667,8 +667,8 @@ public class ScanResultActivity extends AppCompatActivity {
         /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
         //long totalAsset = DatabaseUtils.queryNumEntries(db.getReadableDatabase(), TABLE_NAME);
-        long totalAssetLocV2 = db_v2.getAssetsCountByLocation(assetLocation);
-        long totalAssetLoc = db.getAssetsCountByLocation(assetLocation);
+        final long totalAssetLocV2 = db_v2.getAssetsCountByLocation(assetLocation);
+        final long totalAssetLoc = db.getAssetsCountByLocation(assetLocation);
 
         // -- run intensive processes here
         // -- notice that the datatype of the first param in the class definition matches the param passed to this

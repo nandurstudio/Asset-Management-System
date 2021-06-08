@@ -16,7 +16,7 @@ public class DataXmlExporter {
 
     private static final String DATASUBDIRECTORY = "exampledata";
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
     private XmlBuilder xmlBuilder;
 
     public DataXmlExporter(SQLiteDatabase db) {
@@ -98,7 +98,7 @@ public class DataXmlExporter {
         private static final String ROW_CLOSE = "</row>";
         private static final String COL_OPEN = "<col name='";
         private static final String COL_CLOSE = "</col>";
-        private static final String TAG_ASSET_OPEN = "<asset>";
+        //private static final String TAG_ASSET_OPEN = "<asset>";
 
         private final StringBuilder sb;
 
