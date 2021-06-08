@@ -21,12 +21,10 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
 
     public static class AssetViewHolder extends RecyclerView.ViewHolder {
         public final TextView id;
-        public final TextView asset_code;
+        public final TextView fixed_asset_code;
+        public final TextView nama_asset;
         public final TextView asset_rfid;
-        public final TextView asset_desc;
-        //public TextView asset_pic;
-        //public TextView asset_location;
-        public final TextView asset_status;
+        public final TextView status;
         //public TextView dot;
         //public TextView timestamp;
 
@@ -34,13 +32,10 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
             super(view);
             //dot = view.findViewById(R.id.dot);
             id = view.findViewById(R.id.assetId);
-            asset_code = view.findViewById(R.id.assetCode);
+            fixed_asset_code = view.findViewById(R.id.assetCode);
             asset_rfid = view.findViewById(R.id.editText_assetRfid);
-            asset_desc = view.findViewById(R.id.assetDesc);
-            //asset_pic = view.findViewById(R.id.assetPic);
-            //asset_location = view.findViewById(R.id.assetLocation);
-            asset_status = view.findViewById(R.id.assetStatus);
-            //timestamp = view.findViewById(R.id.timestamp);
+            nama_asset = view.findViewById(R.id.assetDesc);
+            status = view.findViewById(R.id.assetStatus);
         }
     }
 
@@ -61,23 +56,23 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     @Override
     public void onBindViewHolder(AssetViewHolder holder, final int position) {
         Asset asset = assetList.get(position);
-        String s = asset.getAsset_desc();
+        String s = asset.getTxtNamaAsset();
         holder.id.setText(String.valueOf(position + 1));
         /*
         * Beberapa element di hidden
         * */
 
         //holder.id.setText(String.valueOf(asset.getId()));
-        holder.asset_code.setText(asset.getAsset_code());
-        holder.asset_rfid.setText(asset.getAsset_rfid());
+        holder.fixed_asset_code.setText(asset.getTxtFixedAssetCode());
+        holder.asset_rfid.setText(asset.getTxtRfid());
         if (s.length() <= 23) {
-            holder.asset_desc.setText(s);
+            holder.nama_asset.setText(s);
         } else {
-            holder.asset_desc.setText(s.substring(0, Math.min(s.length(), 23)).concat("..."));
+            holder.nama_asset.setText(s.substring(0, Math.min(s.length(), 23)).concat("..."));
         }
         //holder.asset_pic.setText(asset.getAsset_pic());
         //holder.asset_location.setText(asset.getAsset_location());
-        holder.asset_status.setText(asset.getAsset_status());
+        holder.status.setText(asset.getTxtStatus());
 
         // Displaying dot from HTML character code
         //holder.dot.setText(Html.fromHtml("&#8226;"));
@@ -113,7 +108,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     /*https://stackoverflow.com/questions/42363135/get-position-of-specific-cardview-in-recyclerview-without-clicking-scrolling*/
     public int getRfidPosition(String rfid) {
         for (int i = 0; i < assetList.size(); i++) {
-            if (assetList.get(i).getAsset_rfid().equals(rfid)) {
+            if (assetList.get(i).getTxtRfid().equals(rfid)) {
                 return i;
             }
         }
@@ -121,11 +116,11 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
     }
 
     public String getAssetDesc(int position) {
-        return assetList.get(position).getAsset_desc();
+        return assetList.get(position).getTxtNamaAsset();
     }
 
     public String getAssetStatus(int position) {
-        return assetList.get(position).getAsset_status();
+        return assetList.get(position).getTxtStatus();
     }
 
     /*https://stackoverflow.com/a/37562572/7772358*/
@@ -137,11 +132,26 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
             text = text.toLowerCase();
             try {
                 for (Asset asset : db.getAllAssetsByDept(assetLocation)) {
-                    if (asset.getAsset_pic().toLowerCase().contains(text) ||
-                            asset.getAsset_desc().toLowerCase().contains(text) ||
-                            asset.getAsset_code().toLowerCase().contains(text) ||
-                            asset.getAsset_rfid().toLowerCase().contains(text) ||
-                            asset.getAsset_location().toLowerCase().contains(text) ||
+                    if (asset.getTxtNamaPengguna().toLowerCase().contains(text) ||
+                            asset.getTxtFixedAssetCode().toLowerCase().contains(text) ||
+                            asset.getTxtNamaAsset().toLowerCase().contains(text) ||
+                            asset.getIntUnitSistem().toLowerCase().contains(text) ||
+                            asset.getDtmTanggalBeli().toLowerCase().contains(text) ||
+                            asset.getIntNilaiBeli().toLowerCase().contains(text) ||
+                            asset.getIntUnitAktual().toLowerCase().contains(text) ||
+                            asset.getIntUnitSelisih().toLowerCase().contains(text) ||
+                            asset.getTxtStatus().toLowerCase().contains(text) ||
+                            asset.getTxtDeptLob().toLowerCase().contains(text) ||
+                            asset.getTxtDeptLobUpdate().toLowerCase().contains(text) ||
+                            asset.getTxtLokasiAssetBySystem().toLowerCase().contains(text) ||
+                            asset.getTxtLokasiUpdate().toLowerCase().contains(text) ||
+                            asset.getTxtNamaPengguna().toLowerCase().contains(text) ||
+                            asset.getTxtNamaPenggunaUpdate().toLowerCase().contains(text) ||
+                            asset.getTxtNamaPenanggungJawab().toLowerCase().contains(text) ||
+                            asset.getTxtNamaPenanggungJawabUpdate().toLowerCase().contains(text) ||
+                            asset.getTxtKeterangan().toLowerCase().contains(text) ||
+                            asset.getTxtRfid().toLowerCase().contains(text) ||
+                            asset.getTxtImageLink().toLowerCase().contains(text) ||
                             asset.getTimestamp().toLowerCase().contains(text)) {
                         assetList.add(asset);
                     }

@@ -7,140 +7,64 @@ public class Asset {
     public static final String ASSET_EXIST = "Asset Ada";
 
     //public static final String COLUMN_ID = "id";
-    public static final String COLUMN_ASSET_CODE = "asset_code";
-    public static final String COLUMN_ASSET_RFID = "asset_rfid";
-    public static final String COLUMN_ASSET_DESC = "asset_desc";
-    public static final String COLUMN_ASSET_PIC = "asset_pic";
-    public static final String COLUMN_ASSET_LOCATION = "asset_location";
-    public static final String COLUMN_ASSET_STATUS = "asset_status";
+    public static final String COLUMN_FIXED_ASSET_CODE = "txtFixedAssetCode";
+    public static final String COLUMN_NAMA_ASSET = "txtNamaAsset";
+    public static final String COLUMN_UNIT_SISTEM = "intUnitSistem";
+    public static final String COLUMN_TANGGAL_BELI = "dtmTanggalBeli";
+    public static final String COLUMN_NILAI_BELI = "intNilaiBeli";
+    public static final String COLUMN_UNIT_AKTUAL = "intUnitAktual";
+    public static final String COLUMN_UNIT_SELISIH = "intUnitSelisih";
+    public static final String COLUMN_STATUS = "txtStatus";
+    public static final String COLUMN_DEPT_LOB = "txtDeptLob";
+    public static final String COLUMN_DEPT_LOB_UPDATE = "txtDeptLobUpdate";
+    public static final String COLUMN_LOKASI_ASSET_BY_SYSTEM = "txtLokasiAssetBySystem";
+    public static final String COLUMN_LOKASI_UPDATE = "txtLokasiUpdate";
+    public static final String COLUMN_NAMA_PENGGUNA = "txtNamaPengguna";
+    public static final String COLUMN_NAMA_PENGGUNA_UPDATE = "txtNamaPenggunaUpdate";
+    public static final String COLUMN_NAMA_PENANGGUNG_JAWAB = "txtNamaPenanggungJawab";
+    public static final String COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE = "txtNamaPenanggungJawabUpdate";
+    public static final String COLUMN_KETERANGAN = "txtKeterangan";
+    public static final String COLUMN_RFID = "txtRfid";
+    public static final String COLUMN_IMAGE_LINK = "txtImageLink";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
     //private int id;
-    private String asset_code;
-    private String asset_rfid;
-    private String asset_desc;
-    private String asset_pic;
-    private String asset_location;
-    private String asset_status;
+    //sesuai asset
+    private String txtFixedAssetCode;
+    private String txtNamaAsset;
+    private String intUnitSistem;
+    private String dtmTanggalBeli;
+    private String intNilaiBeli;
+    private String intUnitAktual;
+    private String intUnitSelisih;
+    private String txtStatus;
+    private String txtDeptLob;
+    private String txtDeptLobUpdate;
+    private String txtLokasiAssetBySystem;
+    private String txtLokasiUpdate;
+    private String txtNamaPengguna;
+    private String txtNamaPenggunaUpdate;
+    private String txtNamaPenanggungJawab;
+    private String txtNamaPenanggungJawabUpdate;
+    private String txtKeterangan;
+    private String txtRfid;
+    private String txtImageLink;
     private String timestamp;
 
-
-    // Create table SQL query
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + "("
-                    //+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_ASSET_CODE + " TEXT PRIMARY KEY,"
-                    + COLUMN_ASSET_RFID + " TEXT,"
-                    + COLUMN_ASSET_DESC + " TEXT,"
-                    + COLUMN_ASSET_PIC + " TEXT,"
-                    + COLUMN_ASSET_LOCATION + " TEXT,"
-                    + COLUMN_ASSET_STATUS + " TEXT,"
-                    + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
-                    + ")";
-
-    public Asset() {
+    public static String getColumnRfid() {
+        return COLUMN_RFID;
     }
 
-    public Asset(/*int id, */String asset_code, String asset_rfid, String asset_desc, String asset_pic, String asset_location, String asset_status, String timestamp) {
-        //this.id = id;
-        this.asset_code = asset_code;
-        this.asset_rfid = asset_rfid;
-        this.asset_desc = asset_desc;
-        this.asset_pic = asset_pic;
-        this.asset_location = asset_location;
-        this.asset_status = asset_status;
-        this.timestamp = timestamp;
+    public String getTxtRfid() {
+        return txtRfid;
     }
 
-    /**/
-
-    /*public static String getColumnId() {
-        return COLUMN_ID;
-    }*/
-
-    public static String getColumnAssetCode() {
-        return COLUMN_ASSET_CODE;
-    }
-
-    public static String getColumnAssetRfid() {
-        return COLUMN_ASSET_RFID;
-    }
-
-    public static String getColumnAssetDesc() {
-        return COLUMN_ASSET_DESC;
-    }
-
-    public static String getColumnAssetPic() {
-        return COLUMN_ASSET_PIC;
-    }
-
-    public static String getColumnAssetStatus() {
-        return COLUMN_ASSET_STATUS;
+    public void setTxtRfid(String txtRfid) {
+        this.txtRfid = txtRfid;
     }
 
     public static String getColumnTimestamp() {
         return COLUMN_TIMESTAMP;
-    }
-
-    public static String getColumnAssetLocation() {
-        return COLUMN_ASSET_LOCATION;
-    }
-
-
-/*    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }*/
-
-    public String getAsset_code() {
-        return asset_code;
-    }
-
-    public void setAsset_code(String asset_code) {
-        this.asset_code = asset_code;
-    }
-
-    public String getAsset_rfid() {
-        return asset_rfid;
-    }
-
-    public void setAsset_rfid(String asset_rfid) {
-        this.asset_rfid = asset_rfid;
-    }
-
-    public String getAsset_desc() {
-        return asset_desc;
-    }
-
-    public void setAsset_desc(String asset_desc) {
-        this.asset_desc = asset_desc;
-    }
-
-    public String getAsset_pic() {
-        return asset_pic;
-    }
-
-    public void setAsset_pic(String asset_pic) {
-        this.asset_pic = asset_pic;
-    }
-
-    public String getAsset_location() {
-        return asset_location;
-    }
-
-    public void setAsset_location(String asset_location) {
-        this.asset_location = asset_location;
-    }
-
-    public String getAsset_status() {
-        return asset_status;
-    }
-
-    public void setAsset_status(String asset_status) {
-        this.asset_status = asset_status;
     }
 
     public String getTimestamp() {
@@ -148,6 +72,316 @@ public class Asset {
     }
 
     public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public static String getTableName() {
+        return TABLE_NAME;
+    }
+
+    public static String getAssetExist() {
+        return ASSET_EXIST;
+    }
+
+    public static String getColumnFixedAssetCode() {
+        return COLUMN_FIXED_ASSET_CODE;
+    }
+
+    public static String getColumnNamaAsset() {
+        return COLUMN_NAMA_ASSET;
+    }
+
+    public static String getColumnUnitSistem() {
+        return COLUMN_UNIT_SISTEM;
+    }
+
+    public static String getColumnTanggalBeli() {
+        return COLUMN_TANGGAL_BELI;
+    }
+
+    public static String getColumnNilaiBeli() {
+        return COLUMN_NILAI_BELI;
+    }
+
+    public static String getColumnUnitAktual() {
+        return COLUMN_UNIT_AKTUAL;
+    }
+
+    public static String getColumnUnitSelisih() {
+        return COLUMN_UNIT_SELISIH;
+    }
+
+    public static String getColumnStatus() {
+        return COLUMN_STATUS;
+    }
+
+    public static String getColumnDeptLob() {
+        return COLUMN_DEPT_LOB;
+    }
+
+    public static String getColumnDeptLobUpdate() {
+        return COLUMN_DEPT_LOB_UPDATE;
+    }
+
+    public static String getColumnLokasiAssetBySystem() {
+        return COLUMN_LOKASI_ASSET_BY_SYSTEM;
+    }
+
+    public static String getColumnLokasiUpdate() {
+        return COLUMN_LOKASI_UPDATE;
+    }
+
+    public static String getColumnNamaPengguna() {
+        return COLUMN_NAMA_PENGGUNA;
+    }
+
+    public static String getColumnNamaPenggunaUpdate() {
+        return COLUMN_NAMA_PENGGUNA_UPDATE;
+    }
+
+    public static String getColumnNamaPenanggungJawab() {
+        return COLUMN_NAMA_PENANGGUNG_JAWAB;
+    }
+
+    public static String getColumnNamaPenanggungJawabUpdate() {
+        return COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
+    }
+
+    public static String getColumnKeterangan() {
+        return COLUMN_KETERANGAN;
+    }
+
+    public static String getColumnImageLink() {
+        return COLUMN_IMAGE_LINK;
+    }
+
+    public String getTxtFixedAssetCode() {
+        return txtFixedAssetCode;
+    }
+
+    public void setTxtFixedAssetCode(String txtFixedAssetCode) {
+        this.txtFixedAssetCode = txtFixedAssetCode;
+    }
+
+    public String getTxtNamaAsset() {
+        return txtNamaAsset;
+    }
+
+    public void setTxtNamaAsset(String txtNamaAsset) {
+        this.txtNamaAsset = txtNamaAsset;
+    }
+
+    public String getIntUnitSistem() {
+        return intUnitSistem;
+    }
+
+    public void setIntUnitSistem(String intUnitSistem) {
+        this.intUnitSistem = intUnitSistem;
+    }
+
+    public String getDtmTanggalBeli() {
+        return dtmTanggalBeli;
+    }
+
+    public void setDtmTanggalBeli(String dtmTanggalBeli) {
+        this.dtmTanggalBeli = dtmTanggalBeli;
+    }
+
+    public String getIntNilaiBeli() {
+        return intNilaiBeli;
+    }
+
+    public void setIntNilaiBeli(String intNilaiBeli) {
+        this.intNilaiBeli = intNilaiBeli;
+    }
+
+    public String getIntUnitAktual() {
+        return intUnitAktual;
+    }
+
+    public void setIntUnitAktual(String intUnitAktual) {
+        this.intUnitAktual = intUnitAktual;
+    }
+
+    public String getIntUnitSelisih() {
+        return intUnitSelisih;
+    }
+
+    public void setIntUnitSelisih(String intUnitSelisih) {
+        this.intUnitSelisih = intUnitSelisih;
+    }
+
+    public String getTxtStatus() {
+        return txtStatus;
+    }
+
+    public void setTxtStatus(String txtStatus) {
+        this.txtStatus = txtStatus;
+    }
+
+    public String getTxtDeptLob() {
+        return txtDeptLob;
+    }
+
+    public void setTxtDeptLob(String txtDeptLob) {
+        this.txtDeptLob = txtDeptLob;
+    }
+
+    public String getTxtDeptLobUpdate() {
+        return txtDeptLobUpdate;
+    }
+
+    public void setTxtDeptLobUpdate(String txtDeptLobUpdate) {
+        this.txtDeptLobUpdate = txtDeptLobUpdate;
+    }
+
+    public String getTxtLokasiAssetBySystem() {
+        return txtLokasiAssetBySystem;
+    }
+
+    public void setTxtLokasiAssetBySystem(String txtLokasiAssetBySystem) {
+        this.txtLokasiAssetBySystem = txtLokasiAssetBySystem;
+    }
+
+    public String getTxtLokasiUpdate() {
+        return txtLokasiUpdate;
+    }
+
+    public void setTxtLokasiUpdate(String txtLokasiUpdate) {
+        this.txtLokasiUpdate = txtLokasiUpdate;
+    }
+
+    public String getTxtNamaPengguna() {
+        return txtNamaPengguna;
+    }
+
+    public void setTxtNamaPengguna(String txtNamaPengguna) {
+        this.txtNamaPengguna = txtNamaPengguna;
+    }
+
+    public String getTxtNamaPenggunaUpdate() {
+        return txtNamaPenggunaUpdate;
+    }
+
+    public void setTxtNamaPenggunaUpdate(String txtNamaPenggunaUpdate) {
+        this.txtNamaPenggunaUpdate = txtNamaPenggunaUpdate;
+    }
+
+    public String getTxtNamaPenanggungJawab() {
+        return txtNamaPenanggungJawab;
+    }
+
+    public void setTxtNamaPenanggungJawab(String txtNamaPenanggungJawab) {
+        this.txtNamaPenanggungJawab = txtNamaPenanggungJawab;
+    }
+
+    public String getTxtNamaPenanggungJawabUpdate() {
+        return txtNamaPenanggungJawabUpdate;
+    }
+
+    public void setTxtNamaPenanggungJawabUpdate(String txtNamaPenanggungJawabUpdate) {
+        this.txtNamaPenanggungJawabUpdate = txtNamaPenanggungJawabUpdate;
+    }
+
+    public String getTxtKeterangan() {
+        return txtKeterangan;
+    }
+
+    public void setTxtKeterangan(String txtKeterangan) {
+        this.txtKeterangan = txtKeterangan;
+    }
+
+    public String getTxtImageLink() {
+        return txtImageLink;
+    }
+
+    public void setTxtImageLink(String txtImageLink) {
+        this.txtImageLink = txtImageLink;
+    }
+
+    public static String getCreateTable() {
+        return CREATE_TABLE;
+    }
+
+    //note
+    /*    B  : assets ada, kondisinya BAIK
+    RA  : asset ada, kondisinya RUSAK DAPAT DIPERBAIKI
+    RD : asset ada, kondisinya RUSAK TIDAK DAPAT DIPERBAIKI
+    TK : asset TIDAK KETEMU
+    I : asset Idle, kondisinya Baik tetapi tidak digunakan*/
+
+
+    // Create table SQL query
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "("
+                    //+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_FIXED_ASSET_CODE + " TEXT PRIMARY KEY,"
+                    + COLUMN_FIXED_ASSET_CODE + " TEXT,"
+                    + COLUMN_NAMA_ASSET + " TEXT,"
+                    + COLUMN_UNIT_SISTEM + " TEXT,"
+                    + COLUMN_TANGGAL_BELI + " TEXT,"
+                    + COLUMN_NILAI_BELI + " TEXT,"
+                    + COLUMN_UNIT_AKTUAL + " TEXT,"
+                    + COLUMN_UNIT_SELISIH + " TEXT,"
+                    + COLUMN_STATUS + " TEXT,"
+                    + COLUMN_DEPT_LOB + " TEXT,"
+                    + COLUMN_DEPT_LOB_UPDATE + " TEXT,"
+                    + COLUMN_LOKASI_ASSET_BY_SYSTEM + " TEXT,"
+                    + COLUMN_LOKASI_UPDATE + " TEXT,"
+                    + COLUMN_NAMA_PENGGUNA + " TEXT,"
+                    + COLUMN_NAMA_PENGGUNA_UPDATE + " TEXT,"
+                    + COLUMN_NAMA_PENANGGUNG_JAWAB + " TEXT,"
+                    + COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE + " TEXT,"
+                    + COLUMN_KETERANGAN + " TEXT,"
+                    + COLUMN_RFID + " TEXT,"
+                    + COLUMN_IMAGE_LINK + " TEXT,"
+                    + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
+                    + ")";
+
+    public Asset() {
+    }
+
+    public Asset(
+            String txt_fixed_asset_code,
+            String txt_nama_asset,
+            String int_unit_sistem,
+            String dtm_tanggal_beli,
+            String int_nilai_beli,
+            String int_unit_aktual,
+            String int_unit_selisih,
+            String txt_status,
+            String txt_dept_lob,
+            String txt_dept_lob_update,
+            String txt_lokasi_asset_by_system,
+            String txt_lokasi_update,
+            String txt_nama_pengguna,
+            String txt_nama_pengguna_update,
+            String txt_nama_penanggung_jawab,
+            String txt_nama_penanggung_jawab_update,
+            String txt_rfid,
+            String txt_keterangan,
+            String txt_image_link,
+            String timestamp) {
+        //this.id = id;
+        this.txtFixedAssetCode = txt_fixed_asset_code;
+        this.txtNamaAsset = txt_nama_asset;
+        this.intUnitSistem = int_unit_sistem;
+        this.dtmTanggalBeli = dtm_tanggal_beli;
+        this.intNilaiBeli = int_nilai_beli;
+        this.intUnitAktual = int_unit_aktual;
+        this.intUnitSelisih = int_unit_selisih;
+        this.txtStatus = txt_status;
+        this.txtDeptLob = txt_dept_lob;
+        this.txtDeptLobUpdate = txt_dept_lob_update;
+        this.txtLokasiAssetBySystem = txt_lokasi_asset_by_system;
+        this.txtLokasiUpdate = txt_lokasi_update;
+        this.txtNamaPengguna = txt_nama_pengguna;
+        this.txtNamaPenggunaUpdate = txt_nama_pengguna_update;
+        this.txtNamaPenanggungJawab = txt_nama_penanggung_jawab;
+        this.txtNamaPenanggungJawabUpdate = txt_nama_penanggung_jawab_update;
+        this.txtRfid = txt_rfid;
+        this.txtKeterangan = txt_keterangan;
+        this.txtImageLink = txt_image_link;
         this.timestamp = timestamp;
     }
 }

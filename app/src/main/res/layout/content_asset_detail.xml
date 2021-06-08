@@ -32,10 +32,10 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_asset_code">
+                android:hint="@string/hint_fixed_asset_code">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetCode"
+                    android:id="@+id/textInput_txtFixedAssetCode"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -50,10 +50,53 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_asset_rfid">
+                android:hint="@string/hint_nama_asset">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetRfid"
+                    android:id="@+id/textInput_txtNamaAsset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_unit_sistem">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_intUnitSistem"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage|textCapCharacters" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_tanggal_beli">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_dtmTanggalBeli"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -68,41 +111,15 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_asset_desc">
+                android:hint="@string/hint_buy_value">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetDesc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:gravity="top|left"
-                    android:inputType="textMultiLine"
-                    android:lines="3"
-                    android:maxLength="1000"
-                    android:maxLines="5"
-                    android:minLines="1"
-                    android:scrollbars="vertical"
-                    android:singleLine="false"
-                    tools:ignore="RtlHardcoded" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/nav_header_vertical_spacing"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:hint="@string/hint_enter_asset_pic_nick">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetPic"
+                    android:id="@+id/textInput_intNilaiBeli"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:focusable="false"
-                    android:inputType="textCapWords|textShortMessage"
-                    android:maxLength="3" />
+                    android:inputType="textShortMessage" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,23 +129,33 @@
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/hint_asset_location">
+                android:hint="@string/hint_unit_actual">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetLocation"
+                    android:id="@+id/textInput_intUnitAktual"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:focusable="false"
-                    android:gravity="top|left"
-                    android:inputType="textMultiLine"
-                    android:lines="3"
-                    android:maxLength="1000"
-                    android:maxLines="5"
-                    android:minLines="1"
-                    android:scrollbars="vertical"
-                    android:singleLine="false"
-                    tools:ignore="RtlHardcoded" />
+                    android:inputType="textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_unit_selisih">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_intUnitSelisih"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,7 +168,7 @@
                 android:hint="@string/hint_asset_status">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetStatus"
+                    android:id="@+id/textInput_txtStatus"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -149,6 +176,219 @@
                     android:inputType="textShortMessage" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_dept_lob">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtDeptLob"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_dept_lob_update">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtDeptLobUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_asset_location_by_system">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtLokasiAssetBySystem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:maxLength="1000"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    tools:ignore="RtlHardcoded" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_lokasi_update">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtLokasiUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_nama_pengguna">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtNamaPengguna"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_nama_pengguna_update">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtNamaPenggunaUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_nama_penanggung_jawab">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtNamaPenanggungJawab"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_nama_penanggung_jawab_update">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtNamaPenanggungJawabUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_notes">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtKeterangan"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_rfid">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtRfid"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/hint_image_link">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInput_txtImageLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textCapWords|textShortMessage" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:text="@string/last_sync" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -167,13 +407,6 @@
                     android:inputType="textShortMessage" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textView_timestamp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/last_sync"
-                android:layout_margin="@dimen/nav_header_vertical_spacing" />
 
         </LinearLayout>
     </ScrollView>

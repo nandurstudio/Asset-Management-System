@@ -42,11 +42,11 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_enter_asset_pic_nick"
+        android:hint="@string/hint_nama_pengguna"
         android:paddingTop="10dip">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_assetPic"
+            android:id="@+id/textInput_txtNamaPengguna"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="center"

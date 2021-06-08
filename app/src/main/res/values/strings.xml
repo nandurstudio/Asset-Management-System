@@ -69,12 +69,12 @@
     <string name="remove_rfid_tag">Remove RFID Tag</string>
     <string name="choose_area">Choose Area</string>
     <string name="last_sync">Last Sync</string>
-    <string name="hint_enter_asset_pic_nick">PIC Nickname</string>
+    <string name="hint_nama_pengguna">User Name</string>
     <string name="hint_enter_email">Mail Destination</string>
-    <string name="hint_asset_code">Asset Code</string>
-    <string name="hint_asset_rfid">RFID Tag</string>
-    <string name="hint_asset_desc">Asset Description</string>
-    <string name="hint_asset_location">Asset Location</string>
+    <string name="hint_fixed_asset_code">Fixed Asset Code</string>
+    <string name="hint_rfid">RFID Tag</string>
+    <string name="hint_nama_asset">Asset Description</string>
+    <string name="hint_asset_location_by_system">Asset Location By System</string>
     <string name="hint_asset_status">Asset Status</string>
     <string name="hint_asset_area">Asset Area</string>
     <string name="hint_asset_category">Asset Category</string>
@@ -84,7 +84,7 @@
     <string name="hint_asset_pic_user">Asset User</string>
     <string name="hint_asset_lob">LOB User</string>
     <string name="hint_asset_img">Asset Image</string>
-    <string name="hint_asset_notes">Asset Notes</string>
+    <string name="hint_notes">Asset Notes</string>
     <string name="hint_asset_acquisition">Asset Acquisition</string>
     <string name="asset_with_rfid_tag">Asset With RFID Tag</string>
     <string name="scanned_asset">Scanned Asset</string>
@@ -137,4 +137,16 @@
     <string name="database_title">Database Version</string>
     <string name="database_header" translatable="false">Database</string>
     <string name="database_summary">Adjustments to the database and the .xml file format used</string>
+    <string name="hint_unit_sistem" translatable="false">Unit System</string>
+    <string name="hint_tanggal_beli" translatable="false">Buy Date</string>
+    <string name="hint_buy_value" translatable="false">Price</string>
+    <string name="hint_unit_actual" translatable="false">Unit Actual</string>
+    <string name="hint_unit_selisih" translatable="false">Unit Gap</string>
+    <string name="hint_dept_lob" translatable="false">Department LOB</string>
+    <string name="hint_dept_lob_update" translatable="false">Department LOB Update</string>
+    <string name="hint_nama_pengguna_update" translatable="false">User Name Update</string>
+    <string name="hint_nama_penanggung_jawab" translatable="false">Responsibility</string>
+    <string name="hint_nama_penanggung_jawab_update" translatable="false">Responsibility Update</string>
+    <string name="hint_image_link" translatable="false">Image Link</string>
+    <string name="hint_lokasi_update" translatable="false">Location Update</string>
 </resources>

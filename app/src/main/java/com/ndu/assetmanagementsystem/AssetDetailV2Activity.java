@@ -42,8 +42,8 @@ public class AssetDetailV2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_detail_v2);
-        TextInputEditText assetCode = findViewById(R.id.textInput_assetCode);
-        TextInputEditText assetDesc = findViewById(R.id.textInput_assetDesc);
+        TextInputEditText assetCode = findViewById(R.id.textInput_txtFixedAssetCode);
+        TextInputEditText assetDesc = findViewById(R.id.textInput_txtNamaAsset);
         TextInputEditText assetCategory = findViewById(R.id.textInput_assetCategory);
         TextInputEditText assetSupervisorID = findViewById(R.id.textInput_assetSupervisorID);
         TextInputEditText assetAcquisition = findViewById(R.id.textInput_assetAcquisition);
@@ -51,14 +51,14 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         TextInputEditText assetPicNick = findViewById(R.id.textInput_assetPicNick);
         TextInputEditText assetPicEmail = findViewById(R.id.textInput_assetPicEmail);
         TextInputEditText assetUser = findViewById(R.id.textInput_assetUser);
-        TextInputEditText assetLocation = findViewById(R.id.textInput_assetLocation);
+        TextInputEditText assetLocation = findViewById(R.id.textInput_txtLokasiAssetBySystem);
         TextInputEditText assetLob = findViewById(R.id.textInput_assetLOB);
         TextInputEditText assetArea = findViewById(R.id.textInput_assetArea);
-        TextInputEditText assetRfid = findViewById(R.id.textInput_assetRfid);
-        TextInputEditText assetStatus = findViewById(R.id.textInput_assetStatus);
+        TextInputEditText assetRfid = findViewById(R.id.textInput_txtRfid);
+        TextInputEditText assetStatus = findViewById(R.id.textInput_txtStatus);
         TextInputEditText assetImgLink = findViewById(R.id.textInput_assetImageLink);
         TextInputEditText assetNotes = findViewById(R.id.textInput_assetNotes);
-        TextView assetTimestamp = findViewById(R.id.textView_timestamp);
+        TextView assetTimestamp = findViewById(R.id.textInput_timestamp);
 
         ImageView imageView = findViewById(R.id.asset_image);
 

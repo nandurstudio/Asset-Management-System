@@ -85,31 +85,9 @@ import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTIMGLINK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.*;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.*;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.ASSET_EXIST;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
@@ -298,21 +276,47 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 } else {
                     clearSharedPref();
                     final Asset asset = assetList.get(position);
-                    String assetCode = asset.getAsset_code();
-                    String assetRfid = asset.getAsset_rfid();
-                    String assetDesc = asset.getAsset_desc();
-                    String assetPic = asset.getAsset_pic();
-                    String assetLocation = asset.getAsset_location();
-                    String assetStatus = asset.getAsset_status();
-                    String assetTimestamp = asset.getTimestamp();
+                    String txtFixedAssetCode = asset.getTxtFixedAssetCode();
+                    String txtNamaAsset = asset.getTxtNamaAsset();
+                    String intUnitSistem = asset.getIntUnitSistem();
+                    String dtmTanggalBeli = asset.getDtmTanggalBeli();
+                    String intNilaiBeli = asset.getIntNilaiBeli();
+                    String intUnitAktual = asset.getIntUnitAktual();
+                    String intUnitSelisih = asset.getIntUnitSelisih();
+                    String txtStatus = asset.getTxtStatus();
+                    String txtDeptLob = asset.getTxtDeptLob();
+                    String txtDeptLobUpdate = asset.getTxtDeptLobUpdate();
+                    String txtLokasiAssetBySystem = asset.getTxtLokasiAssetBySystem();
+                    String txtLokasiUpdate = asset.getTxtLokasiUpdate();
+                    String txtNamaPengguna = asset.getTxtNamaPengguna();
+                    String txtNamaPenggunaUpdate = asset.getTxtNamaPenggunaUpdate();
+                    String txtNamaPenanggungJawab = asset.getTxtNamaPenanggungJawab();
+                    String txtNamaPenanggungJawabUpdate = asset.getTxtNamaPenanggungJawabUpdate();
+                    String txtKeterangan = asset.getTxtKeterangan();
+                    String txtRfid = asset.getTxtRfid();
+                    String txtImageLink = asset.getTxtImageLink();
+                    String timestamp = asset.getTimestamp();
 
-                    editor.putString(COLUMN_ASSET_CODE, assetCode);
-                    editor.putString(COLUMN_ASSET_RFID, assetRfid);
-                    editor.putString(COLUMN_ASSET_DESC, assetDesc);
-                    editor.putString(COLUMN_ASSET_PIC, assetPic);
-                    editor.putString(COLUMN_ASSET_LOCATION, assetLocation);
-                    editor.putString(COLUMN_ASSET_STATUS, assetStatus);
-                    editor.putString(COLUMN_TIMESTAMP, assetTimestamp);
+                    editor.putString(COLUMN_FIXED_ASSET_CODE, txtFixedAssetCode);
+                    editor.putString(COLUMN_NAMA_ASSET, txtNamaAsset);
+                    editor.putString(COLUMN_UNIT_SISTEM, intUnitSistem);
+                    editor.putString(COLUMN_TANGGAL_BELI, dtmTanggalBeli);
+                    editor.putString(COLUMN_NILAI_BELI, intNilaiBeli);
+                    editor.putString(COLUMN_UNIT_AKTUAL, intUnitAktual);
+                    editor.putString(COLUMN_UNIT_SELISIH, intUnitSelisih);
+                    editor.putString(COLUMN_STATUS, txtStatus);
+                    editor.putString(COLUMN_DEPT_LOB, txtDeptLob);
+                    editor.putString(COLUMN_DEPT_LOB_UPDATE, txtDeptLobUpdate);
+                    editor.putString(COLUMN_LOKASI_ASSET_BY_SYSTEM, txtLokasiAssetBySystem);
+                    editor.putString(COLUMN_LOKASI_UPDATE, txtLokasiUpdate);
+                    editor.putString(COLUMN_NAMA_PENGGUNA, txtNamaPengguna);
+                    editor.putString(COLUMN_NAMA_PENGGUNA_UPDATE, txtNamaPenggunaUpdate);
+                    editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB, txtNamaPenanggungJawab);
+                    editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, txtNamaPenanggungJawabUpdate);
+                    editor.putString(COLUMN_KETERANGAN, txtKeterangan);
+                    editor.putString(COLUMN_RFID, txtRfid);
+                    editor.putString(COLUMN_IMAGE_LINK, txtImageLink);
+                    editor.putString(COLUMN_TIMESTAMP, timestamp);
                 }
                 editor.apply();
                 goToDetail();
@@ -372,12 +376,25 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     }
 
     private void clearSharedPref() {
-        preferences.edit().remove(COLUMN_ASSET_CODE).apply();
-        preferences.edit().remove(COLUMN_ASSET_RFID).apply();
-        preferences.edit().remove(COLUMN_ASSET_DESC).apply();
-        preferences.edit().remove(COLUMN_ASSET_PIC).apply();
-        preferences.edit().remove(COLUMN_ASSET_LOCATION).apply();
-        preferences.edit().remove(COLUMN_ASSET_STATUS).apply();
+        preferences.edit().remove(COLUMN_FIXED_ASSET_CODE).apply();
+        preferences.edit().remove(COLUMN_NAMA_ASSET).apply();
+        preferences.edit().remove(COLUMN_UNIT_SISTEM).apply();
+        preferences.edit().remove(COLUMN_TANGGAL_BELI).apply();
+        preferences.edit().remove(COLUMN_NILAI_BELI).apply();
+        preferences.edit().remove(COLUMN_UNIT_AKTUAL).apply();
+        preferences.edit().remove(COLUMN_UNIT_SELISIH).apply();
+        preferences.edit().remove(COLUMN_STATUS).apply();
+        preferences.edit().remove(COLUMN_DEPT_LOB).apply();
+        preferences.edit().remove(COLUMN_DEPT_LOB_UPDATE).apply();
+        preferences.edit().remove(COLUMN_LOKASI_ASSET_BY_SYSTEM).apply();
+        preferences.edit().remove(COLUMN_LOKASI_UPDATE).apply();
+        preferences.edit().remove(COLUMN_NAMA_PENGGUNA).apply();
+        preferences.edit().remove(COLUMN_NAMA_PENGGUNA_UPDATE).apply();
+        preferences.edit().remove(COLUMN_NAMA_PENANGGUNG_JAWAB).apply();
+        preferences.edit().remove(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE).apply();
+        preferences.edit().remove(COLUMN_KETERANGAN).apply();
+        preferences.edit().remove(COLUMN_RFID).apply();
+        preferences.edit().remove(COLUMN_IMAGE_LINK).apply();
         preferences.edit().remove(COLUMN_TIMESTAMP).apply();
     }
 
@@ -662,7 +679,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private void updateAsset(String rfid, int position) {
         Asset a = assetList.get(position);
         // updating asset text
-        a.setAsset_rfid(rfid);
+        a.setTxtRfid(rfid);
 
         // updating asset in db
         db.updateAsset(a);
@@ -700,7 +717,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private void updateStatusAsset(int position, String rfid) {
         Asset asset = assetList.get(position);
         // updating asset text
-        asset.setAsset_status(ASSET_EXIST);
+        asset.setTxtStatus(ASSET_EXIST);
 
         // updating asset in db
         db.updateStatusByRfid(asset, rfid);
@@ -791,7 +808,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     assetTag = assetV2.getTxtRfid();
                 } else {
                     final Asset asset = assetList.get(position);
-                    assetCode = asset.getAsset_code();
+                    assetCode = asset.getTxtFixedAssetCode();
                 }
                 if (assetTag.equals("")) {
                     toaster(this, getResources().getString(R.string.message_asset_no_tag), 0);
@@ -840,7 +857,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         alertDialogBuilderUserInput.setView(view);
 
         //final EditText inputRfidAsset = view.findViewById(R.id.editText_assetRfid);
-        final TextInputEditText inputPic = view.findViewById(R.id.textInput_assetPic);
+        final TextInputEditText inputPic = view.findViewById(R.id.textInput_txtNamaPengguna);
         final TextInputEditText inputRfidNumber = view.findViewById(R.id.textInput_rfid_tag_number);
         inputPic.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
@@ -850,18 +867,18 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         //Cek apakah aset tidak null
         if (asset != null) {
             //Jika asset null atau "",
-            if (!asset.getAsset_rfid().equals("")) {
+            if (!asset.getTxtRfid().equals("")) {
                 //Dapatkan no RFID dari database
-                inputRfidNumber.setText(asset.getAsset_rfid());
-                Log.d(TAG, "showAssetDialog: !null " + asset.getAsset_rfid());
-                Log.d(TAG, "showAssetDialog: " + asset.getAsset_pic());
+                inputRfidNumber.setText(asset.getTxtRfid());
+                Log.d(TAG, "showAssetDialog: !null " + asset.getTxtRfid());
+                Log.d(TAG, "showAssetDialog: " + asset.getTxtNamaPengguna());
             } else {
                 Log.d(TAG, "showAssetDialog: null " + sharedTag);
                 //Dapatkan no RFID dari sharedTag/RFID tag yang belum terdaftar pada asset
                 inputRfidNumber.setText(sharedTag);
             }
             //Dapatkan nama nick PIC dari database. contoh: NDU
-            inputPic.setText(asset.getAsset_pic());
+            inputPic.setText(asset.getTxtNamaPengguna());
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -940,7 +957,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         alertDialogBuilderUserInput.setView(view);
 
         //final EditText inputRfidAsset = view.findViewById(R.id.editText_assetRfid);
-        final TextInputEditText inputPic = view.findViewById(R.id.textInput_assetPic);
+        final TextInputEditText inputPic = view.findViewById(R.id.textInput_txtNamaPengguna);
         final TextInputEditText inputRfidNumber = view.findViewById(R.id.textInput_rfid_tag_number);
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
         dialogTitle.setText(getResources().getString(R.string.lbl_edit_asset_title));
@@ -1263,14 +1280,29 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     if (nList.item(0).getNodeType() == Node.ELEMENT_NODE) {
                         asset = new HashMap<>();
                         Element elm = (Element) nList.item(i);
-                        asset.put(COLUMN_ASSET_CODE, getNodeValue(COLUMN_ASSET_CODE, elm));
-                        asset.put(COLUMN_ASSET_RFID, getNodeValue(COLUMN_ASSET_RFID, elm));
-                        asset.put(COLUMN_ASSET_DESC, getNodeValue(COLUMN_ASSET_DESC, elm));
-                        asset.put(COLUMN_ASSET_PIC, getNodeValue(COLUMN_ASSET_PIC, elm));
-                        asset.put(COLUMN_ASSET_LOCATION, getNodeValue(COLUMN_ASSET_LOCATION, elm));
+                        asset.put(COLUMN_FIXED_ASSET_CODE, getNodeValue(COLUMN_FIXED_ASSET_CODE, elm));
+                        asset.put(COLUMN_NAMA_ASSET, getNodeValue(COLUMN_NAMA_ASSET, elm));
+                        asset.put(COLUMN_UNIT_SISTEM, getNodeValue(COLUMN_UNIT_SISTEM, elm));
+                        asset.put(COLUMN_TANGGAL_BELI, getNodeValue(COLUMN_TANGGAL_BELI, elm));
+                        asset.put(COLUMN_NILAI_BELI, getNodeValue(COLUMN_NILAI_BELI, elm));
+                        asset.put(COLUMN_UNIT_AKTUAL, getNodeValue(COLUMN_UNIT_AKTUAL, elm));
+                        asset.put(COLUMN_UNIT_SELISIH, getNodeValue(COLUMN_UNIT_SELISIH, elm));
+                        asset.put(COLUMN_STATUS, getNodeValue(COLUMN_STATUS, elm));
+                        asset.put(COLUMN_DEPT_LOB, getNodeValue(COLUMN_DEPT_LOB, elm));
+                        asset.put(COLUMN_DEPT_LOB_UPDATE, getNodeValue(COLUMN_DEPT_LOB_UPDATE, elm));
+                        asset.put(COLUMN_LOKASI_ASSET_BY_SYSTEM, getNodeValue(COLUMN_LOKASI_ASSET_BY_SYSTEM, elm));
+                        asset.put(COLUMN_LOKASI_UPDATE, getNodeValue(COLUMN_LOKASI_UPDATE, elm));
+                        asset.put(COLUMN_NAMA_PENGGUNA, getNodeValue(COLUMN_NAMA_PENGGUNA, elm));
+                        asset.put(COLUMN_NAMA_PENGGUNA_UPDATE, getNodeValue(COLUMN_NAMA_PENGGUNA_UPDATE, elm));
+                        asset.put(COLUMN_NAMA_PENANGGUNG_JAWAB, getNodeValue(COLUMN_NAMA_PENANGGUNG_JAWAB, elm));
+                        asset.put(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, getNodeValue(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, elm));
+                        asset.put(COLUMN_KETERANGAN, getNodeValue(COLUMN_KETERANGAN, elm));
+                        asset.put(COLUMN_RFID, getNodeValue(COLUMN_RFID, elm));
+                        asset.put(COLUMN_IMAGE_LINK, getNodeValue(COLUMN_IMAGE_LINK, elm));
+                        asset.put(COLUMN_TIMESTAMP, getNodeValue(COLUMN_TIMESTAMP, elm));
                         userList.add(asset);
                         //scan get position
-                        if (db.checkIsItemCodeInDb(asset.put(COLUMN_ASSET_CODE, getNodeValue(COLUMN_ASSET_CODE, elm)))) {
+                        if (db.checkIsItemCodeInDb(asset.put(COLUMN_FIXED_ASSET_CODE, getNodeValue(COLUMN_FIXED_ASSET_CODE, elm)))) {
                             Log.d(TAG, "onReceive: Exist");
                             Log.d(TAG, "loadAssetList: ");
                         } else {

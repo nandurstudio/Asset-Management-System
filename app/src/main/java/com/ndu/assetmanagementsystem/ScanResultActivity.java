@@ -75,13 +75,26 @@ import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DA
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_DESC;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_LOCATION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_PIC;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_IMAGE_LINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_KETERANGAN;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_ASSET_BY_SYSTEM;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_ASSET;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NILAI_BELI;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TANGGAL_BELI;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
@@ -706,7 +719,7 @@ public class ScanResultActivity extends AppCompatActivity {
                     c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
                 } else {
                     database = db.getWritableDatabase();
-                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ASSET_LOCATION + " LIKE '" + assetLocation + "'", null);
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_LOKASI_ASSET_BY_SYSTEM + " LIKE '" + assetLocation + "'", null);
                 }
                 Document document = new Document(PageSize.A4.rotate());  // create the document
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -781,36 +794,74 @@ public class ScanResultActivity extends AppCompatActivity {
                         publishProgress(i);
                     }
                 } else {
-                    table = new PdfPTable(8);
+                    table = new PdfPTable(21);
                     table.addCell("NO");
-                    table.addCell(COLUMN_ASSET_CODE);
-                    table.addCell(COLUMN_ASSET_RFID);
-                    table.addCell(COLUMN_ASSET_DESC);
-                    table.addCell(COLUMN_ASSET_PIC);
-                    table.addCell(COLUMN_ASSET_LOCATION);
-                    table.addCell(COLUMN_ASSET_STATUS);
+                    table.addCell(COLUMN_FIXED_ASSET_CODE);
+                    table.addCell(COLUMN_NAMA_ASSET);
+                    table.addCell(COLUMN_UNIT_SISTEM);
+                    table.addCell(COLUMN_TANGGAL_BELI);
+                    table.addCell(COLUMN_NILAI_BELI);
+                    table.addCell(COLUMN_UNIT_AKTUAL); //EDIT
+                    table.addCell(COLUMN_UNIT_SELISIH);
+                    table.addCell(COLUMN_STATUS); //EDIT
+                    table.addCell(COLUMN_DEPT_LOB);
+                    table.addCell(COLUMN_DEPT_LOB_UPDATE); //EDIT
+                    table.addCell(COLUMN_LOKASI_ASSET_BY_SYSTEM);
+                    table.addCell(COLUMN_LOKASI_UPDATE);
+                    table.addCell(COLUMN_NAMA_PENGGUNA);
+                    table.addCell(COLUMN_NAMA_PENGGUNA_UPDATE); //EDIT
+                    table.addCell(COLUMN_NAMA_PENANGGUNG_JAWAB);
+                    table.addCell(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE); //EDIT
+                    table.addCell(COLUMN_KETERANGAN);
+                    table.addCell(COLUMN_RFID);
+                    table.addCell(COLUMN_IMAGE_LINK);
                     table.addCell(COLUMN_TIMESTAMP);
                     table.setWidthPercentage(100);
-                    table.setWidths(new int[]{1, 4, 4, 5, 2, 3, 2, 3});
+                    table.setWidths(new int[]{2, 4, 5, 4, 2, 4, 2, 4, 2, 4, 4, 4, 4, 3, 5, 4, 4, 4, 4, 2, 2});
                     table.setHeaderRows(1);
                     for (int i = 0; i < totalAssetLoc; i++) {
                         if (c1.moveToNext()) {
-                            String asset_code = c1.getString(0);
-                            String asset_rfid = c1.getString(1);
-                            String asset_desc = c1.getString(2);
-                            String asset_pic = c1.getString(3);
-                            String asset_location = c1.getString(4);
-                            String asset_status = c1.getString(5);
-                            String asset_timestamp = c1.getString(6);
-
+                            String fixedAssetCode = c1.getString(0);
+                            String namaAsset = c1.getString(1);
+                            String unitSistem = c1.getString(2);
+                            String tanggalBeli = c1.getString(3);
+                            String nilaiBeli = c1.getString(4);
+                            String unitAktual = c1.getString(5);
+                            String unitSelisih = c1.getString(6);
+                            String status = c1.getString(7);
+                            String deptLob = c1.getString(8);
+                            String deptLobUpdate = c1.getString(9);
+                            String lokasiAssetBySystem = c1.getString(10);
+                            String lokasiUpdate = c1.getString(11);
+                            String namaPengguna = c1.getString(12);
+                            String namaPenggunaUpdate = c1.getString(13);
+                            String namaPenanggungJawab = c1.getString(14);
+                            String namaPenanggungJawabUpdate = c1.getString(15);
+                            String keterangan = c1.getString(16);
+                            String rfid = c1.getString(17);
+                            String imageLink = c1.getString(18);
+                            String timestamp = c1.getString(19);
                             table.addCell(String.valueOf(i + 1));
-                            table.addCell(asset_code);
-                            table.addCell(asset_rfid);
-                            table.addCell(asset_desc);
-                            table.addCell(asset_pic);
-                            table.addCell(asset_location);
-                            table.addCell(asset_status);
-                            table.addCell(asset_timestamp);
+                            table.addCell(fixedAssetCode);
+                            table.addCell(namaAsset);
+                            table.addCell(unitSistem);
+                            table.addCell(tanggalBeli);
+                            table.addCell(nilaiBeli);
+                            table.addCell(unitAktual);
+                            table.addCell(unitSelisih);
+                            table.addCell(status);
+                            table.addCell(deptLob);
+                            table.addCell(deptLobUpdate);
+                            table.addCell(lokasiAssetBySystem);
+                            table.addCell(lokasiUpdate);
+                            table.addCell(namaPengguna);
+                            table.addCell(namaPenggunaUpdate);
+                            table.addCell(namaPenanggungJawab);
+                            table.addCell(namaPenanggungJawabUpdate);
+                            table.addCell(keterangan);
+                            table.addCell(rfid);
+                            table.addCell(imageLink);
+                            table.addCell(timestamp);
                         }
                         publishProgress(i);
                     }
