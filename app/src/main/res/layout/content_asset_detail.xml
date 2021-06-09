@@ -101,7 +101,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:focusable="false"
-                    android:inputType="textShortMessage" />
+                    android:inputType="date" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

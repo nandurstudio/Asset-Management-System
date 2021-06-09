@@ -132,7 +132,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
             text = text.toLowerCase();
             try {
                 for (Asset asset : db.getAllAssetsByDept(assetLocation)) {
-                    if (asset.getTxtNamaPengguna().toLowerCase().contains(text) ||
+                    if (
                             asset.getTxtFixedAssetCode().toLowerCase().contains(text) ||
                             asset.getTxtNamaAsset().toLowerCase().contains(text) ||
                             asset.getIntUnitSistem().toLowerCase().contains(text) ||

@@ -85,9 +85,44 @@ import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.*;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.*;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_IMAGE_LINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_KETERANGAN;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_ASSET_BY_SYSTEM;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_ASSET;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NILAI_BELI;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TANGGAL_BELI;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.ASSET_EXIST;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTIMGLINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
@@ -110,10 +145,10 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private Drawable dialogIcon;
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
-    private String sharedTag;
     private String sharedDBVersion;
     private String assetArea;
     private String assetCode;
+    private String sharedTag;
     private String assetTag;
     private TextView registeredText;
     private TextView scannedText;
@@ -249,6 +284,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         String assetArea = assetV2.getTxtArea();
                         String assetRfid = assetV2.getTxtRfid();
                         String assetStatus = assetV2.getTxtStatus();
+
                         String assetImgLink = assetV2.getTxtImgLink();
                         String assetNotes = assetV2.getTxtNotes();
                         String assetTimestamp = assetV2.getDtmTimestamp();
@@ -777,6 +813,14 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssetsV2();
     }
 
+    private void deleteTagByItemCode1(int position) {
+        Asset asset = assetList.get(position);
+        asset.setTxtRfid("");
+        db.deleteTagByItemCode(asset.getTxtFixedAssetCode());
+        mAdapter.notifyDataSetChanged();
+        toggleEmptyAssets();
+    }
+
     private void deleteStatusByItemCode(int position) {
         AssetV2 assetV2 = assetListV2.get(position);
         assetV2.setTxtStatus("");
@@ -809,6 +853,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 } else {
                     final Asset asset = assetList.get(position);
                     assetCode = asset.getTxtFixedAssetCode();
+                    assetTag = asset.getTxtRfid();
                 }
                 if (assetTag.equals("")) {
                     toaster(this, getResources().getString(R.string.message_asset_no_tag), 0);
@@ -831,7 +876,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                                         liveCount();
                                         toaster(this, getResources().getString(R.string.message_asset_tag_removed) + " " + assetCode, 0);
                                     } else {
-                                        deleteAsset(position);
+                                        deleteTagByItemCode1(position);
+                                        //deleteAsset(position);
                                     }
                                     //progressDialog.dismiss();
                                 }
