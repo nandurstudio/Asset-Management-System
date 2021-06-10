@@ -114,7 +114,7 @@
         <item>Engineering Maintenace</item>
     </string-array>
 
-    <string-array name="shp_array">
+    <string-array name="div_array">
         <item>Plant</item>
         <item>KN</item>
     </string-array>

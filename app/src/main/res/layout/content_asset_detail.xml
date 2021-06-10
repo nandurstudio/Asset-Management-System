@@ -383,12 +383,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textView_timestamp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/nav_header_vertical_spacing"
-                android:text="@string/last_sync" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -399,7 +393,7 @@
                 android:hint="@string/hint_asset_area">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textInput_assetArea"
+                    android:id="@+id/textInput_txtAssetArea"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -408,6 +402,12 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/textView_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/nav_header_vertical_spacing"
+                android:text="@string/last_sync" />
         </LinearLayout>
     </ScrollView>
 

@@ -134,21 +134,22 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
                 for (Asset asset : db.getAllAssetsByDept(assetLocation)) {
                     if (
                             asset.getTxtFixedAssetCode().toLowerCase().contains(text) ||
-                            asset.getTxtNamaAsset().toLowerCase().contains(text) ||
-                            asset.getDtmTanggalBeli().toLowerCase().contains(text) ||
-                            asset.getTxtStatus().toLowerCase().contains(text) ||
-                            asset.getTxtDeptLob().toLowerCase().contains(text) ||
-                            asset.getTxtDeptLobUpdate().toLowerCase().contains(text) ||
-                            asset.getTxtLokasiAssetBySystem().toLowerCase().contains(text) ||
-                            asset.getTxtLokasiUpdate().toLowerCase().contains(text) ||
-                            asset.getTxtNamaPengguna().toLowerCase().contains(text) ||
-                            asset.getTxtNamaPenggunaUpdate().toLowerCase().contains(text) ||
-                            asset.getTxtNamaPenanggungJawab().toLowerCase().contains(text) ||
-                            asset.getTxtNamaPenanggungJawabUpdate().toLowerCase().contains(text) ||
-                            asset.getTxtKeterangan().toLowerCase().contains(text) ||
-                            asset.getTxtRfid().toLowerCase().contains(text) ||
-                            asset.getTxtImageLink().toLowerCase().contains(text) ||
-                            asset.getTimestamp().toLowerCase().contains(text)) {
+                                    asset.getTxtNamaAsset().toLowerCase().contains(text) ||
+                                    asset.getDtmTanggalBeli().toLowerCase().contains(text) ||
+                                    asset.getTxtStatus().toLowerCase().contains(text) ||
+                                    asset.getTxtDeptLob().toLowerCase().contains(text) ||
+                                    asset.getTxtDeptLobUpdate().toLowerCase().contains(text) ||
+                                    asset.getTxtLokasiAssetBySystem().toLowerCase().contains(text) ||
+                                    asset.getTxtLokasiUpdate().toLowerCase().contains(text) ||
+                                    asset.getTxtNamaPengguna().toLowerCase().contains(text) ||
+                                    asset.getTxtNamaPenggunaUpdate().toLowerCase().contains(text) ||
+                                    asset.getTxtNamaPenanggungJawab().toLowerCase().contains(text) ||
+                                    asset.getTxtNamaPenanggungJawabUpdate().toLowerCase().contains(text) ||
+                                    asset.getTxtKeterangan().toLowerCase().contains(text) ||
+                                    asset.getTxtRfid().toLowerCase().contains(text) ||
+                                    asset.getTxtImageLink().toLowerCase().contains(text) ||
+                                    asset.getTxtAssetArea().toLowerCase().contains(text) ||
+                                    asset.getTimestamp().toLowerCase().contains(text)) {
                         assetList.add(asset);
                     }
                 }

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
@@ -66,6 +67,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         TextInputEditText txtKeterangan = findViewById(R.id.textInput_txtKeterangan);
         TextInputEditText txtRfid = findViewById(R.id.textInput_txtRfid);
         TextInputEditText txtImageLink = findViewById(R.id.textInput_txtImageLink);
+        TextInputEditText txtAssetArea = findViewById(R.id.textInput_txtAssetArea);
         TextView timestamp = findViewById(R.id.textView_timestamp);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -102,6 +104,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         String _txtKeteranganSh = sharedPreferences.getString(COLUMN_KETERANGAN, "");
         String _txtRfidSh = sharedPreferences.getString(COLUMN_RFID, "");
         String _txtImageLinkSh = sharedPreferences.getString(COLUMN_IMAGE_LINK, "");
+        String _txtAssetAreaSh = sharedPreferences.getString(COLUMN_ASSET_AREA, "");
         String _timestampSh = sharedPreferences.getString(COLUMN_TIMESTAMP, "");
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -136,6 +139,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         txtKeterangan.setText(_txtKeteranganSh);
         txtRfid.setText(_txtRfidSh);
         txtImageLink.setText(_txtImageLinkSh);
+        txtAssetArea.setText(_txtAssetAreaSh);
         timestamp.setText("Last sync: " + _timestampSh);
 
     }

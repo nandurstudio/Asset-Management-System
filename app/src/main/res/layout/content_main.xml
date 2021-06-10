@@ -48,7 +48,7 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/spinnerShp"
+                android:id="@+id/spinner_div"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -63,7 +63,7 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/spinner_dynamic"
+                android:id="@+id/spinner_dept"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

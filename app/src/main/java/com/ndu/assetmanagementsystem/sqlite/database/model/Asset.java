@@ -26,6 +26,7 @@ public class Asset {
     public static final String COLUMN_KETERANGAN = "txtKeterangan";
     public static final String COLUMN_RFID = "txtRfid";
     public static final String COLUMN_IMAGE_LINK = "txtImageLink";
+    public static final String COLUMN_ASSET_AREA = "tstAssetArea";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
     //private int id;
@@ -49,7 +50,21 @@ public class Asset {
     private String txtKeterangan;
     private String txtRfid;
     private String txtImageLink;
+    private String txtAssetArea;
     private String timestamp;
+
+
+    public static String getColumnAssetArea() {
+        return COLUMN_ASSET_AREA;
+    }
+
+    public String getTxtAssetArea() {
+        return txtAssetArea;
+    }
+
+    public void setTxtAssetArea(String txtAssetArea) {
+        this.txtAssetArea = txtAssetArea;
+    }
 
     public static String getColumnRfid() {
         return COLUMN_RFID;
@@ -334,6 +349,7 @@ public class Asset {
                     + COLUMN_KETERANGAN + " TEXT,"
                     + COLUMN_RFID + " TEXT,"
                     + COLUMN_IMAGE_LINK + " TEXT,"
+                    + COLUMN_ASSET_AREA + " TEXT,"
                     + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                     + ")";
 
@@ -360,6 +376,7 @@ public class Asset {
             String txt_rfid,
             String txt_keterangan,
             String txt_image_link,
+            String txt_asset_area,
             String timestamp) {
         //this.id = id;
         this.txtFixedAssetCode = txt_fixed_asset_code;
@@ -381,6 +398,7 @@ public class Asset {
         this.txtRfid = txt_rfid;
         this.txtKeterangan = txt_keterangan;
         this.txtImageLink = txt_image_link;
+        this.txtAssetArea = txt_asset_area;
         this.timestamp = timestamp;
     }
 }

@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_ADMOB = "Admob";
     static final String DEPT_NAME = "dept_name";
     static final String ASSET_AREA = "asset_area";
+    static final String DIV_AREA = "div_area";
     private static final String DEPT_GENERAL = "General";
     private static final String DEPT_PRD = "Production";
     private static final String DEPT_QA = "QA";
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private static final String DEPT_HRGA = "HRGA";
     // --Commented out by Inspection (14-Jan-21 15:17):private static final String ALL_DEPT = "All Dept";
     private static final String DIV_PLANT = "Plant";
+    private static final String DIV_KN = "KN";
     // --Commented out by Inspection (14-Jan-21 15:25):private static final String DIV_KN = "KN";
     private static final String AREA_OFFICE_PLANT = "Office Plant";
     private static final String AREA_PRODUKSI_BASIC_CARE = "Produksi Basic Care";
@@ -55,9 +57,9 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private Handler handler;
     private final String TAG = "MainActivity";
-    private Spinner spinnerDynamic;
     private String deptName;
     private String floorStage;
+    private String divArea;
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -82,9 +84,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Spinner https://stackoverflow.com/a/29778386/7772358
-        Spinner spinnerShp = findViewById(R.id.spinnerShp);
+        Spinner spinnerDiv = findViewById(R.id.spinner_div);
         Spinner spinnerArea = findViewById(R.id.spinner_area);
-        spinnerDynamic = findViewById(R.id.spinner_dynamic);
+        Spinner spinnerDept = findViewById(R.id.spinner_dept);
 
 
         ArrayAdapter<CharSequence> arrayAdapterFloor = ArrayAdapter
@@ -92,8 +94,8 @@ public class MainActivity extends AppCompatActivity
                         R.layout.spinner_row);
 
         // Create an ArrayAdapter using the string array and a default spinner
-        ArrayAdapter<CharSequence> arrayAdapterShp = ArrayAdapter
-                .createFromResource(this, R.array.shp_array,
+        ArrayAdapter<CharSequence> arrayAdapterDiv = ArrayAdapter
+                .createFromResource(this, R.array.div_array,
 //                        android.R.layout.simple_spinner_item
                         R.layout.spinner_row);
 
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                         R.layout.spinner_row);
 
         // Specify the layout to use when the list of choices appears
-        arrayAdapterShp
+        arrayAdapterDiv
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 /*        String[] items = new String[]{"Chai Latte", "Green Tea", "Black Tea"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -142,15 +144,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        spinnerShp.setAdapter(arrayAdapterShp);
-        spinnerShp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerDiv.setAdapter(arrayAdapterDiv);
+        spinnerDiv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (adapterView.getItemAtPosition(i).equals(DIV_PLANT)) {
                     Log.d(TAG, "onItemSelected: " + DIV_PLANT);
-                    spinnerDynamic.setAdapter(arrayAdapterPlant);
+                    spinnerDept.setAdapter(arrayAdapterPlant);
+                    divArea = DIV_PLANT;
+                } else if (adapterView.getItemAtPosition(i).equals(DIV_KN)) {
+                    spinnerDept.setAdapter(arrayAdapterKN);
+                    divArea = DIV_KN;
                 } else {
-                    spinnerDynamic.setAdapter(arrayAdapterKN);
+                    spinnerDept.setAdapter(arrayAdapterPlant);
+                    divArea = DIV_PLANT;
                 }
             }
 
@@ -160,7 +167,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        spinnerDynamic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerDept.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
@@ -253,6 +260,7 @@ public class MainActivity extends AppCompatActivity
                 Intent(MainActivity.this, ScanAssetActivity.class);
         intent.putExtra(DEPT_NAME, deptName);
         intent.putExtra(ASSET_AREA, floorStage);
+        intent.putExtra(DIV_AREA, divArea);
         startActivity(intent);
     }
 

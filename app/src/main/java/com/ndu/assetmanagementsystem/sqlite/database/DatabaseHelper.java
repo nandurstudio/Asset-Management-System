@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
@@ -108,7 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         COLUMN_TANGGAL_BELI, COLUMN_NILAI_BELI, COLUMN_UNIT_AKTUAL, COLUMN_UNIT_SELISIH, COLUMN_STATUS,
                         COLUMN_DEPT_LOB, COLUMN_LOKASI_ASSET_BY_SYSTEM, COLUMN_LOKASI_UPDATE,
                         COLUMN_NAMA_PENGGUNA, COLUMN_NAMA_PENGGUNA_UPDATE, COLUMN_NAMA_PENANGGUNG_JAWAB, COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE,
-                        COLUMN_RFID, COLUMN_KETERANGAN, COLUMN_IMAGE_LINK, COLUMN_TIMESTAMP},
+                        COLUMN_RFID, COLUMN_KETERANGAN, COLUMN_IMAGE_LINK, COLUMN_ASSET_AREA, COLUMN_TIMESTAMP},
                 /*COLUMN_ID + "=?",*/
                 COLUMN_FIXED_ASSET_CODE,
                 new String[]{String.valueOf(code)}, null, null, null, null);
@@ -138,6 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(COLUMN_RFID)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_KETERANGAN)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_LINK)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_AREA)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
         // close the db connection
@@ -181,6 +183,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 asset.setTxtRfid(cursor.getString(cursor.getColumnIndex(COLUMN_RFID)));
                 asset.setTxtKeterangan(cursor.getString(cursor.getColumnIndex(COLUMN_KETERANGAN)));
                 asset.setTxtImageLink(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_LINK)));
+                asset.setTxtAssetArea(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_AREA)));
                 asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
                 assets.add(asset);
@@ -228,6 +231,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 asset.setTxtRfid(cursor.getString(cursor.getColumnIndex(COLUMN_RFID)));
                 asset.setTxtKeterangan(cursor.getString(cursor.getColumnIndex(COLUMN_KETERANGAN)));
                 asset.setTxtImageLink(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_LINK)));
+                asset.setTxtAssetArea(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_AREA)));
                 asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
 
                 assets.add(asset);
@@ -325,6 +329,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_STATUS, asset.getTxtStatus());
+        values.put(COLUMN_UNIT_AKTUAL, asset.getIntUnitAktual());
+        values.put(COLUMN_UNIT_SELISIH, asset.getIntUnitSelisih());
+        values.put(COLUMN_DEPT_LOB_UPDATE, asset.getTxtDeptLobUpdate());
+        values.put(COLUMN_LOKASI_UPDATE, asset.getTxtLokasiUpdate());
+        values.put(COLUMN_ASSET_AREA, asset.getTxtAssetArea());
 
         // updating row
         db.update(TABLE_NAME, values, COLUMN_RFID + " = ?",
@@ -421,6 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_RFID, Vi.get(COLUMN_RFID));
         values.put(COLUMN_KETERANGAN, Vi.get(COLUMN_KETERANGAN));
         values.put(COLUMN_IMAGE_LINK, Vi.get(COLUMN_IMAGE_LINK));
+        values.put(COLUMN_ASSET_AREA, Vi.get(COLUMN_ASSET_AREA));
         values.put(COLUMN_TIMESTAMP, Vi.get(COLUMN_TIMESTAMP));
 
         //etc
@@ -439,6 +449,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_RFID, "");
+
+        // updating row
+        db.update(TABLE_NAME, values, COLUMN_FIXED_ASSET_CODE + " = ?",
+                new String[]{itemCode});
+    }
+
+    public int getAssetsCountByTag(String assetLocation) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_RFID + " IS NOT NULL AND " + COLUMN_RFID + " != \"\" AND " + COLUMN_DEPT_LOB + " LIKE '" + assetLocation + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    public void deleteStatusByItemCode(String itemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS, "");
 
         // updating row
         db.update(TABLE_NAME, values, COLUMN_FIXED_ASSET_CODE + " = ?",

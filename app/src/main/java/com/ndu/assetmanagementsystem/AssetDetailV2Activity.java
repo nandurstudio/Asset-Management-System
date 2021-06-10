@@ -53,7 +53,7 @@ public class AssetDetailV2Activity extends AppCompatActivity {
         TextInputEditText assetUser = findViewById(R.id.textInput_assetUser);
         TextInputEditText assetLocation = findViewById(R.id.textInput_txtLokasiAssetBySystem);
         TextInputEditText assetLob = findViewById(R.id.textInput_assetLOB);
-        TextInputEditText assetArea = findViewById(R.id.textInput_assetArea);
+        TextInputEditText assetArea = findViewById(R.id.textInput_txtAssetArea);
         TextInputEditText assetRfid = findViewById(R.id.textInput_txtRfid);
         TextInputEditText assetStatus = findViewById(R.id.textInput_txtStatus);
         TextInputEditText assetImgLink = findViewById(R.id.textInput_assetImageLink);
