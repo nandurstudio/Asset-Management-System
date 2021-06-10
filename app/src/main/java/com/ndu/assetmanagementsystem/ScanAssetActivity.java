@@ -393,9 +393,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         } else {
             registeredText.setText(getResources().getString(R.string.asset_with_rfid_tag) + ": " + db.getAssetsCountByTag("%"));
-            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db.getAssetsCountByExist("%", ASSET_EXIST));
+            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db.getAssetsCountByExist("%", Asset.ASSET_EXIST));
             double totalAssetInt = db.getAssetsCountByTag("%");
-            double readAbleAssetInt = db.getAssetsCountByExist("%", ASSET_EXIST);
+            double readAbleAssetInt = db.getAssetsCountByExist("%", Asset.ASSET_EXIST);
             try {
                 double percenTage = (readAbleAssetInt / totalAssetInt) * 100;
                 BigDecimal bd = new BigDecimal(percenTage).setScale(0, RoundingMode.HALF_EVEN);
@@ -753,7 +753,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                                    String deptLob, String locationUpdate, String areaAsset) {
         Asset asset = assetList.get(position);
         // updating asset text
-        asset.setTxtStatus(ASSET_EXIST);
+        asset.setTxtStatus(Asset.ASSET_EXIST);
         asset.setIntUnitAktual(unitActual);
         asset.setIntUnitSelisih(unitActual - unitSelisih);
         asset.setTxtDeptLobUpdate(deptLob);

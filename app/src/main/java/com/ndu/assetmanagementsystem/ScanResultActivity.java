@@ -409,7 +409,7 @@ public class ScanResultActivity extends AppCompatActivity {
                 if (sharedDBVersion.equals(AMEN_MODE)) {
                     curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME_V2 + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
                 } else {
-                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
+                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + COLUMN_DEPT_LOB + " LIKE '" + assetLocation + "'", null);
                 }
                 csvWrite.writeNext(curCSV.getColumnNames());
                 while (curCSV.moveToNext()) {
@@ -421,7 +421,10 @@ public class ScanResultActivity extends AppCompatActivity {
                             curCSV.getString(8), curCSV.getString(9),
                             curCSV.getString(10), curCSV.getString(11),
                             curCSV.getString(12), curCSV.getString(13),
-                            curCSV.getString(14), curCSV.getString(15)};
+                            curCSV.getString(14), curCSV.getString(15),
+                            curCSV.getString(16), curCSV.getString(17),
+                            curCSV.getString(18), curCSV.getString(19),
+                            curCSV.getString(20)};
                     /*curCSV.getString(3),curCSV.getString(4)};*/
                     csvWrite.writeNext(arrStr);
                 }
