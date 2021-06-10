@@ -314,11 +314,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     final Asset asset = assetList.get(position);
                     String txtFixedAssetCode = asset.getTxtFixedAssetCode();
                     String txtNamaAsset = asset.getTxtNamaAsset();
-                    String intUnitSistem = asset.getIntUnitSistem();
+                    int intUnitSistem = asset.getIntUnitSistem();
                     String dtmTanggalBeli = asset.getDtmTanggalBeli();
-                    String intNilaiBeli = asset.getIntNilaiBeli();
-                    String intUnitAktual = asset.getIntUnitAktual();
-                    String intUnitSelisih = asset.getIntUnitSelisih();
+                    int intNilaiBeli = asset.getIntNilaiBeli();
+                    int intUnitAktual = asset.getIntUnitAktual();
+                    int intUnitSelisih = asset.getIntUnitSelisih();
                     String txtStatus = asset.getTxtStatus();
                     String txtDeptLob = asset.getTxtDeptLob();
                     String txtDeptLobUpdate = asset.getTxtDeptLobUpdate();
@@ -335,11 +335,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
                     editor.putString(COLUMN_FIXED_ASSET_CODE, txtFixedAssetCode);
                     editor.putString(COLUMN_NAMA_ASSET, txtNamaAsset);
-                    editor.putString(COLUMN_UNIT_SISTEM, intUnitSistem);
+                    editor.putInt(COLUMN_UNIT_SISTEM, intUnitSistem);
                     editor.putString(COLUMN_TANGGAL_BELI, dtmTanggalBeli);
-                    editor.putString(COLUMN_NILAI_BELI, intNilaiBeli);
-                    editor.putString(COLUMN_UNIT_AKTUAL, intUnitAktual);
-                    editor.putString(COLUMN_UNIT_SELISIH, intUnitSelisih);
+                    editor.putInt(COLUMN_NILAI_BELI, intNilaiBeli);
+                    editor.putInt(COLUMN_UNIT_AKTUAL, intUnitAktual);
+                    editor.putInt(COLUMN_UNIT_SELISIH, intUnitSelisih);
                     editor.putString(COLUMN_STATUS, txtStatus);
                     editor.putString(COLUMN_DEPT_LOB, txtDeptLob);
                     editor.putString(COLUMN_DEPT_LOB_UPDATE, txtDeptLobUpdate);
@@ -455,15 +455,15 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     }
 
     private void goToDetail() {
+        Intent intent;
         if (sharedDBVersion.equals(AMEN_MODE)) {
-            Intent intent = new
+            intent = new
                     Intent(ScanAssetActivity.this, AssetDetailV2Activity.class);
-            startActivity(intent);
         } else {
-            Intent intent = new
+            intent = new
                     Intent(ScanAssetActivity.this, AssetDetailActivity.class);
-            startActivity(intent);
         }
+        startActivity(intent);
     }
 
     private void runDexter() {

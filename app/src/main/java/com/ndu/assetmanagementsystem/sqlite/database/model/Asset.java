@@ -32,11 +32,11 @@ public class Asset {
     //sesuai asset
     private String txtFixedAssetCode;
     private String txtNamaAsset;
-    private String intUnitSistem;
+    private int intUnitSistem;
     private String dtmTanggalBeli;
-    private String intNilaiBeli;
-    private String intUnitAktual;
-    private String intUnitSelisih;
+    private int intNilaiBeli;
+    private int intUnitAktual;
+    private int intUnitSelisih;
     private String txtStatus;
     private String txtDeptLob;
     private String txtDeptLobUpdate;
@@ -171,11 +171,11 @@ public class Asset {
         this.txtNamaAsset = txtNamaAsset;
     }
 
-    public String getIntUnitSistem() {
+    public int getIntUnitSistem() {
         return intUnitSistem;
     }
 
-    public void setIntUnitSistem(String intUnitSistem) {
+    public void setIntUnitSistem(int intUnitSistem) {
         this.intUnitSistem = intUnitSistem;
     }
 
@@ -187,27 +187,27 @@ public class Asset {
         this.dtmTanggalBeli = dtmTanggalBeli;
     }
 
-    public String getIntNilaiBeli() {
+    public int getIntNilaiBeli() {
         return intNilaiBeli;
     }
 
-    public void setIntNilaiBeli(String intNilaiBeli) {
+    public void setIntNilaiBeli(int intNilaiBeli) {
         this.intNilaiBeli = intNilaiBeli;
     }
 
-    public String getIntUnitAktual() {
+    public int getIntUnitAktual() {
         return intUnitAktual;
     }
 
-    public void setIntUnitAktual(String intUnitAktual) {
+    public void setIntUnitAktual(int intUnitAktual) {
         this.intUnitAktual = intUnitAktual;
     }
 
-    public String getIntUnitSelisih() {
+    public int getIntUnitSelisih() {
         return intUnitSelisih;
     }
 
-    public void setIntUnitSelisih(String intUnitSelisih) {
+    public void setIntUnitSelisih(int intUnitSelisih) {
         this.intUnitSelisih = intUnitSelisih;
     }
 
@@ -343,11 +343,11 @@ public class Asset {
     public Asset(
             String txt_fixed_asset_code,
             String txt_nama_asset,
-            String int_unit_sistem,
+            int int_unit_sistem,
             String dtm_tanggal_beli,
-            String int_nilai_beli,
-            String int_unit_aktual,
-            String int_unit_selisih,
+            int int_nilai_beli,
+            int int_unit_aktual,
+            int int_unit_selisih,
             String txt_status,
             String txt_dept_lob,
             String txt_dept_lob_update,

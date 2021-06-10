@@ -121,11 +121,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                Objects.requireNonNull(cursor).getInt(cursor.getColumnIndex(COLUMN_ID)),
                 Objects.requireNonNull(cursor).getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)),
-                cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TANGGAL_BELI)),
-                cursor.getString(cursor.getColumnIndex(COLUMN_NILAI_BELI)),
-                cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)),
-                cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_NILAI_BELI)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB_UPDATE)),
@@ -164,11 +164,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                asset.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 asset.setTxtFixedAssetCode(cursor.getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)));
                 asset.setTxtNamaAsset(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)));
-                asset.setIntUnitSistem(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
+                asset.setIntUnitSistem(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
                 asset.setDtmTanggalBeli(cursor.getString(cursor.getColumnIndex(COLUMN_TANGGAL_BELI)));
-                asset.setIntNilaiBeli(cursor.getString(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
-                asset.setIntUnitAktual(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
-                asset.setIntUnitSelisih(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
+                asset.setIntNilaiBeli(cursor.getInt(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
+                asset.setIntUnitAktual(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
+                asset.setIntUnitSelisih(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
                 asset.setTxtStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
                 asset.setTxtDeptLob(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB)));
                 asset.setTxtDeptLobUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB_UPDATE)));
@@ -211,11 +211,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Asset asset = new Asset();
                 asset.setTxtFixedAssetCode(cursor.getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)));
                 asset.setTxtNamaAsset(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)));
-                asset.setIntUnitSistem(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
+                asset.setIntUnitSistem(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
                 asset.setDtmTanggalBeli(cursor.getString(cursor.getColumnIndex(COLUMN_TANGGAL_BELI)));
-                asset.setIntNilaiBeli(cursor.getString(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
-                asset.setIntUnitAktual(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
-                asset.setIntUnitSelisih(cursor.getString(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
+                asset.setIntNilaiBeli(cursor.getInt(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
+                asset.setIntUnitAktual(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
+                asset.setIntUnitSelisih(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
                 asset.setTxtStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
                 asset.setTxtDeptLob(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB)));
                 asset.setTxtDeptLobUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB_UPDATE)));

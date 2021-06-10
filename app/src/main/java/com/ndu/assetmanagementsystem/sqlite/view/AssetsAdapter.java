@@ -135,11 +135,7 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
                     if (
                             asset.getTxtFixedAssetCode().toLowerCase().contains(text) ||
                             asset.getTxtNamaAsset().toLowerCase().contains(text) ||
-                            asset.getIntUnitSistem().toLowerCase().contains(text) ||
                             asset.getDtmTanggalBeli().toLowerCase().contains(text) ||
-                            asset.getIntNilaiBeli().toLowerCase().contains(text) ||
-                            asset.getIntUnitAktual().toLowerCase().contains(text) ||
-                            asset.getIntUnitSelisih().toLowerCase().contains(text) ||
                             asset.getTxtStatus().toLowerCase().contains(text) ||
                             asset.getTxtDeptLob().toLowerCase().contains(text) ||
                             asset.getTxtDeptLobUpdate().toLowerCase().contains(text) ||

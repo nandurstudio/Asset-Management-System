@@ -12,6 +12,13 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
@@ -35,7 +42,7 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_U
 
 public class AssetDetailActivity extends AppCompatActivity {
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +85,11 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         String _txtFixedAssetCodeSh = sharedPreferences.getString(COLUMN_FIXED_ASSET_CODE, "");
         String _txtNamaAssetSh = sharedPreferences.getString(COLUMN_NAMA_ASSET, "");
-        String _intUnitSistemSh = sharedPreferences.getString(COLUMN_UNIT_SISTEM, "");
+        int _intUnitSistemSh = sharedPreferences.getInt(COLUMN_UNIT_SISTEM, 0);
         String _dtmTanggalBeliSh = sharedPreferences.getString(COLUMN_TANGGAL_BELI, "");
-        String _intNilaiBeliSh = sharedPreferences.getString(COLUMN_NILAI_BELI, "");
-        String _intUnitAktualSh = sharedPreferences.getString(COLUMN_UNIT_AKTUAL, "");
-        String _intUnitSelisihSh = sharedPreferences.getString(COLUMN_UNIT_SELISIH, "");
+        int _intNilaiBeliSh = sharedPreferences.getInt(COLUMN_NILAI_BELI, 0);
+        int _intUnitAktualSh = sharedPreferences.getInt(COLUMN_UNIT_AKTUAL, 0);
+        int _intUnitSelisihSh = sharedPreferences.getInt(COLUMN_UNIT_SELISIH, 0);
         String _txtStatusSh = sharedPreferences.getString(COLUMN_STATUS, "");
         String _txtDeptLobSh = sharedPreferences.getString(COLUMN_DEPT_LOB, "");
         String _txtDeptLobUpdateSh = sharedPreferences.getString(COLUMN_DEPT_LOB_UPDATE, "");
@@ -97,13 +104,26 @@ public class AssetDetailActivity extends AppCompatActivity {
         String _txtImageLinkSh = sharedPreferences.getString(COLUMN_IMAGE_LINK, "");
         String _timestampSh = sharedPreferences.getString(COLUMN_TIMESTAMP, "");
 
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = formatter.parse(_dtmTanggalBeliSh);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        System.out.println("Date :" + formatter.format(Objects.requireNonNull(date)));
+
+        Locale localeID = new Locale("in", "ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+
         txtFixedAssetCode.setText(_txtFixedAssetCodeSh);
         txtNamaAsset.setText(_txtNamaAssetSh);
-        intUnitSistem.setText(_intUnitSistemSh);
-        dtmTanggalBeli.setText(_dtmTanggalBeliSh);
-        intNilaiBeli.setText(_intNilaiBeliSh);
-        intUnitAktual.setText(_intUnitAktualSh);
-        intUnitSelisih.setText(_intUnitSelisihSh);
+        intUnitSistem.setText(String.valueOf(_intUnitSistemSh));
+        dtmTanggalBeli.setText(formatter.format(date));
+        intNilaiBeli.setText(formatRupiah.format((double) _intNilaiBeliSh));
+        intUnitAktual.setText(String.valueOf(_intUnitAktualSh));
+        intUnitSelisih.setText(String.valueOf(_intUnitSelisihSh));
         txtStatus.setText(_txtStatusSh);
         txtDeptLob.setText(_txtDeptLobSh);
         txtDeptLobUpdate.setText(_txtDeptLobUpdateSh);
