@@ -26,6 +26,15 @@
             android:orientation="vertical"
             android:padding="25dp">
 
+            <ImageView
+                android:id="@+id/asset_image"
+                android:layout_width="166dp"
+                android:layout_height="166dp"
+                android:layout_gravity="center"
+                android:contentDescription="TODO"
+                android:paddingTop="15dp"
+                app:srcCompat="@drawable/kalbe_nutritionals_logo" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

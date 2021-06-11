@@ -149,4 +149,6 @@
     <string name="hint_nama_penanggung_jawab_update" translatable="false">Responsibility Update</string>
     <string name="hint_image_link" translatable="false">Image Link</string>
     <string name="hint_lokasi_update" translatable="false">Location Update</string>
+    <string name="action_sort_by_scanned" translatable="false">Sort By Scanned Asset</string>
+    <string name="action_sort_by_unscanned" translatable="false">Sort By Unscanned Asset</string>
 </resources>

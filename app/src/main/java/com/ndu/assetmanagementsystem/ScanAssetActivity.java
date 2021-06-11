@@ -573,9 +573,49 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     showAllAssetsInDb();
                 }
                 return true;
+
+            case R.id.action_sort_by_scanned:
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    shortByScannedV2();
+                } else {
+                    sortByScanned();
+                }
+                return true;
+
+            case R.id.action_sort_by_unscanned:
+                if (sharedDBVersion.equals(AMEN_MODE)) {
+                    shortByunScannedV2();
+                } else {
+                    sortByUnScanned();
+                }
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shortByunScannedV2() {
+
+    }
+
+    private void shortByScannedV2() {
+
+    }
+
+    private void sortByScanned() {
+        assetList.clear();
+        assetList.addAll(db.getAllAssetsByScanned());
+        mAdapter.notifyDataSetChanged();
+        toggleEmptyAssets();
+        liveCountAll();
+    }
+
+    private void sortByUnScanned() {
+        assetList.clear();
+        assetList.addAll(db.getAllAssetsByUnscanned());
+        mAdapter.notifyDataSetChanged();
+        toggleEmptyAssets();
+        liveCountAll();
     }
 
     private void openFilePicker() {
@@ -1202,6 +1242,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
                         updateStatusAsset(tagPos, EPC, 1, 1, dept, div, assetArea);
                         recyclerView.scrollToPosition(tagPos);
+                        assetList.clear();
+                        assetList.addAll(db.getAllAssetsByUnscanned());
 
                         Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
                         Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
@@ -1218,6 +1260,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         //createAsset(EPC);
                     }
                     mAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "onReceive: stepNotify");
                     toggleEmptyAssets();
                 }
 //                if (this.dialog.isShowing()) {

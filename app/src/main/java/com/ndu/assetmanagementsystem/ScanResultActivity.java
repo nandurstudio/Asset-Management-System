@@ -106,7 +106,7 @@ public class ScanResultActivity extends AppCompatActivity {
     private static final String MAIL_BUTTON = "mail_button";
     private DatabaseHelper db;
     private DatabaseHelperV2 db_v2;
-    private String assetLocation;
+    private String dept;
     private SharedPreferences sharedPrefs;
     private File file;
     private String fileNameTxt;
@@ -140,8 +140,9 @@ public class ScanResultActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         if (bundle != null) {
-            assetLocation = (String) bundle.get(DEPT_NAME);
-            toolbarTitle = getResources().getString(R.string.asset_result) + " Of Asset " + assetLocation.substring(1);
+            dept = (String) bundle.get(DEPT_NAME);
+            Log.d(TAG, "onCreate: dept" + dept);
+            toolbarTitle = getResources().getString(R.string.asset_result) + " Of Asset " + dept.substring(1);
             toolbar.setTitle(toolbarTitle);
         }
 
@@ -160,11 +161,11 @@ public class ScanResultActivity extends AppCompatActivity {
         getResources().getDrawable(R.drawable.ic_info_outline_black_24dp);
 
         if (sharedDBVersion.equals(AMEN_MODE)) {
-            totalAsset.setText(String.valueOf(db_v2.getAssetsCountByLocation(assetLocation)));
-            readAbleAsset.setText(String.valueOf(db_v2.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
+            totalAsset.setText(String.valueOf(db_v2.getAssetsCountByDeptLob(dept)));
+            readAbleAsset.setText(String.valueOf(db_v2.getAssetsCountByExist(dept, ASSET_EXIST)));
         } else {
-            totalAsset.setText(String.valueOf(db.getAssetsCountByLocation(assetLocation)));
-            readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(assetLocation, ASSET_EXIST)));
+            totalAsset.setText(String.valueOf(db.getAssetsCountByDeptLob(dept)));
+            readAbleAsset.setText(String.valueOf(db.getAssetsCountByExist(dept, ASSET_EXIST)));
         }
 
         try {
@@ -407,9 +408,9 @@ public class ScanResultActivity extends AppCompatActivity {
                 //SQLiteDatabase db = dbhelper.getWritableDatabase();
                 Cursor curCSV;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME_V2 + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
+                    curCSV = db_v2.getReadableDatabase().rawQuery("select * from " + TABLE_NAME_V2 + " where " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + dept + "'", null);
                 } else {
-                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + COLUMN_DEPT_LOB + " LIKE '" + assetLocation + "'", null);
+                    curCSV = db.getReadableDatabase().rawQuery("select * from " + TABLE_NAME + " where " + COLUMN_DEPT_LOB + " LIKE '" + dept + "'", null);
                 }
                 csvWrite.writeNext(curCSV.getColumnNames());
                 while (curCSV.moveToNext()) {
@@ -658,7 +659,7 @@ public class ScanResultActivity extends AppCompatActivity {
             editTextMail.setError(getString(R.string.email_empty_error_message));
         } else {
             String[] mailto = {Objects.requireNonNull(editTextMail.getText()).toString()};
-            String fileName = TABLE_NAME_V2 + " " + assetLocation.substring(1) + ".pdf";
+            String fileName = TABLE_NAME_V2 + " " + dept.substring(1) + ".pdf";
             File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + TABLE_NAME_V2 + File.separator + fileName);
             Uri uri = Uri.fromFile(fileLocation);
             Log.d(TAG, "sendToEmail: " + uri);
@@ -683,8 +684,8 @@ public class ScanResultActivity extends AppCompatActivity {
         /*https://stackoverflow.com/questions/6450275/android-how-to-work-with-asynctasks-progressdialog*/
         private final ProgressDialog dialog = new ProgressDialog(ScanResultActivity.this);
         //long totalAsset = DatabaseUtils.queryNumEntries(db.getReadableDatabase(), TABLE_NAME);
-        final long totalAssetLocV2 = db_v2.getAssetsCountByLocation(assetLocation);
-        final long totalAssetLoc = db.getAssetsCountByLocation(assetLocation);
+        final long totalAssetLocV2 = db_v2.getAssetsCountByDeptLob(dept);
+        final long totalAssetLoc = db.getAssetsCountByDeptLob(dept);
 
         // -- run intensive processes here
         // -- notice that the datatype of the first param in the class definition matches the param passed to this
@@ -711,18 +712,18 @@ public class ScanResultActivity extends AppCompatActivity {
                 folder.mkdirs();
                 File file;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    file = new File(dir, TABLE_NAME_V2 + " " + assetLocation.substring(1) + ".pdf");
+                    file = new File(dir, TABLE_NAME_V2 + " " + dept.substring(1) + ".pdf");
                 } else {
-                    file = new File(dir, TABLE_NAME + " " + assetLocation.substring(1) + ".pdf");
+                    file = new File(dir, TABLE_NAME + " " + dept.substring(1) + ".pdf");
                 }
                 SQLiteDatabase database;
                 @SuppressLint("Recycle") Cursor c1;
                 if (sharedDBVersion.equals(AMEN_MODE)) {
                     database = db_v2.getWritableDatabase();
-                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'", null);
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + dept + "'", null);
                 } else {
                     database = db.getWritableDatabase();
-                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_LOKASI_ASSET_BY_SYSTEM + " LIKE '" + assetLocation + "'", null);
+                    c1 = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_DEPT_LOB + " LIKE '" + dept + "'", null);
                 }
                 Document document = new Document(PageSize.A4.rotate());  // create the document
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -746,10 +747,10 @@ public class ScanResultActivity extends AppCompatActivity {
 
                 Paragraph p3 = new Paragraph();
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    p3.add("List of " + TABLE_NAME_V2 + " " + assetLocation.substring(1) + "\n");
+                    p3.add("List of " + TABLE_NAME_V2 + " " + dept.substring(1) + "\n");
                     p3.add("Total " + totalAssetLocV2 + " Assets\n");
                 } else {
-                    p3.add("List of " + TABLE_NAME + " " + assetLocation.substring(1) + "\n");
+                    p3.add("List of " + TABLE_NAME + " " + dept.substring(1) + "\n");
                     p3.add("Total " + totalAssetLoc + " Assets\n");
                 }
                 document.add(p3);
@@ -824,6 +825,28 @@ public class ScanResultActivity extends AppCompatActivity {
                     table.setHeaderRows(1);
                     for (int i = 0; i < totalAssetLoc; i++) {
                         if (c1.moveToNext()) {
+/*                            String fixedAssetCode = c1.getString(0);
+                            String namaAsset = c1.getString(1);
+                            String unitSistem = c1.getString(2);
+                            String tanggalBeli = c1.getString(3);
+                            String nilaiBeli = c1.getString(4);
+                            String unitAktual = c1.getString(5);
+                            String unitSelisih = c1.getString(6);
+                            String status = c1.getString(7);
+                            String deptLob = c1.getString(8);
+                            String deptLobUpdate = c1.getString(9);
+                            String lokasiAssetBySystem = c1.getString(10);
+                            String lokasiUpdate = c1.getString(11);
+                            String namaPengguna = c1.getString(12);
+                            String namaPenggunaUpdate = c1.getString(13);
+                            String namaPenanggungJawab = c1.getString(14);
+                            String namaPenanggungJawabUpdate = c1.getString(15);
+                            String keterangan = c1.getString(16);
+                            String rfid = c1.getString(17);
+                            String imageLink = c1.getString(18);
+                            String assetArea = c1.getString(19);
+                            String timestamp = c1.getString(20);*/
+
                             String fixedAssetCode = c1.getString(0);
                             String namaAsset = c1.getString(1);
                             String unitSistem = c1.getString(2);
@@ -843,7 +866,8 @@ public class ScanResultActivity extends AppCompatActivity {
                             String keterangan = c1.getString(16);
                             String rfid = c1.getString(17);
                             String imageLink = c1.getString(18);
-                            String timestamp = c1.getString(19);
+                            String assetArea = c1.getString(19);
+                            String timestamp = c1.getString(20);
                             table.addCell(String.valueOf(i + 1));
                             table.addCell(fixedAssetCode);
                             table.addCell(namaAsset);
@@ -864,6 +888,7 @@ public class ScanResultActivity extends AppCompatActivity {
                             table.addCell(keterangan);
                             table.addCell(rfid);
                             table.addCell(imageLink);
+                            table.addCell(assetArea);
                             table.addCell(timestamp);
                         }
                         publishProgress(i);

@@ -303,8 +303,8 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getAssetsCountByLocation(String assetLocation) {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'";
+    public int getAssetsCountByDeptLob(String dept) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + dept + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 
@@ -315,8 +315,8 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getAssetsCountByTag(String assetLocation) {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTRFID + " IS NOT NULL AND " + COLUMN_TXTRFID + " != \"\" AND " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + assetLocation + "'";
+    public int getAssetsCountByTag(String dept) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME_V2 + " WHERE " + COLUMN_TXTRFID + " IS NOT NULL AND " + COLUMN_TXTRFID + " != \"\" AND " + COLUMN_TXTLOBPENGGUNA + " LIKE '" + dept + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 

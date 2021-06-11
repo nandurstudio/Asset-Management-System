@@ -40,6 +40,20 @@
         android:title="@string/action_sort_show_all"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_sort_by_scanned"
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:orderInCategory="14"
+        android:title="@string/action_sort_by_scanned"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_by_unscanned"
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:orderInCategory="14"
+        android:title="@string/action_sort_by_unscanned"
+        app:showAsAction="never" />
+
 
     <!--    <item
             android:id="@+id/action_settings"

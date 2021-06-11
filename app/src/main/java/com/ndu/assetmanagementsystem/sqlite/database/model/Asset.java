@@ -26,7 +26,7 @@ public class Asset {
     public static final String COLUMN_KETERANGAN = "txtKeterangan";
     public static final String COLUMN_RFID = "txtRfid";
     public static final String COLUMN_IMAGE_LINK = "txtImageLink";
-    public static final String COLUMN_ASSET_AREA = "tstAssetArea";
+    public static final String COLUMN_ASSET_AREA = "txtAssetArea";
     public static final String COLUMN_TIMESTAMP = "timestamp";
 
     //private int id;

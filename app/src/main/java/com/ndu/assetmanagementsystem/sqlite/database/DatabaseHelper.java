@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
@@ -197,14 +198,110 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return assets;
     }
 
-    public List<Asset> getAllAssetsByDept(String assetLocation) {
+    public List<Asset> getAllAssetsByDept(String department) {
         List<Asset> assets = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_LOKASI_ASSET_BY_SYSTEM + " LIKE '" + assetLocation + "' " + " ORDER BY " +
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_DEPT_LOB + " LIKE '" + department + "' " + " ORDER BY " +
 //                Asset.COLUMN_TIMESTAMP + " DESC";
                 /*COLUMN_ID*/COLUMN_NAMA_PENGGUNA + " ASC";
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Asset asset = new Asset();
+                asset.setTxtFixedAssetCode(cursor.getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)));
+                asset.setTxtNamaAsset(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)));
+                asset.setIntUnitSistem(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
+                asset.setDtmTanggalBeli(cursor.getString(cursor.getColumnIndex(COLUMN_TANGGAL_BELI)));
+                asset.setIntNilaiBeli(cursor.getInt(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
+                asset.setIntUnitAktual(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
+                asset.setIntUnitSelisih(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
+                asset.setTxtStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                asset.setTxtDeptLob(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB)));
+                asset.setTxtDeptLobUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB_UPDATE)));
+                asset.setTxtLokasiAssetBySystem(cursor.getString(cursor.getColumnIndex(COLUMN_LOKASI_ASSET_BY_SYSTEM)));
+                asset.setTxtLokasiUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_LOKASI_UPDATE)));
+                asset.setTxtNamaPengguna(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENGGUNA)));
+                asset.setTxtNamaPenggunaUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENGGUNA_UPDATE)));
+                asset.setTxtNamaPenanggungJawab(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENANGGUNG_JAWAB)));
+                asset.setTxtNamaPenanggungJawabUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE)));
+                asset.setTxtRfid(cursor.getString(cursor.getColumnIndex(COLUMN_RFID)));
+                asset.setTxtKeterangan(cursor.getString(cursor.getColumnIndex(COLUMN_KETERANGAN)));
+                asset.setTxtImageLink(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_LINK)));
+                asset.setTxtAssetArea(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_AREA)));
+                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
+
+                assets.add(asset);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return assets list
+        return assets;
+    }
+
+    public List<Asset> getAllAssetsByUnscanned() {
+        List<Asset> assets = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_STATUS + " IS NULL OR " + COLUMN_STATUS + " = ''";
+//                Asset.COLUMN_TIMESTAMP + " DESC";
+        /*COLUMN_ID*/
+//select * from Asset where txtStatus is null or txtStatus = ''
+        SQLiteDatabase db = this.getWritableDatabase();
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Asset asset = new Asset();
+                asset.setTxtFixedAssetCode(cursor.getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)));
+                asset.setTxtNamaAsset(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)));
+                asset.setIntUnitSistem(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SISTEM)));
+                asset.setDtmTanggalBeli(cursor.getString(cursor.getColumnIndex(COLUMN_TANGGAL_BELI)));
+                asset.setIntNilaiBeli(cursor.getInt(cursor.getColumnIndex(COLUMN_NILAI_BELI)));
+                asset.setIntUnitAktual(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_AKTUAL)));
+                asset.setIntUnitSelisih(cursor.getInt(cursor.getColumnIndex(COLUMN_UNIT_SELISIH)));
+                asset.setTxtStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                asset.setTxtDeptLob(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB)));
+                asset.setTxtDeptLobUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_DEPT_LOB_UPDATE)));
+                asset.setTxtLokasiAssetBySystem(cursor.getString(cursor.getColumnIndex(COLUMN_LOKASI_ASSET_BY_SYSTEM)));
+                asset.setTxtLokasiUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_LOKASI_UPDATE)));
+                asset.setTxtNamaPengguna(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENGGUNA)));
+                asset.setTxtNamaPenggunaUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENGGUNA_UPDATE)));
+                asset.setTxtNamaPenanggungJawab(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENANGGUNG_JAWAB)));
+                asset.setTxtNamaPenanggungJawabUpdate(cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE)));
+                asset.setTxtRfid(cursor.getString(cursor.getColumnIndex(COLUMN_RFID)));
+                asset.setTxtKeterangan(cursor.getString(cursor.getColumnIndex(COLUMN_KETERANGAN)));
+                asset.setTxtImageLink(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_LINK)));
+                asset.setTxtAssetArea(cursor.getString(cursor.getColumnIndex(COLUMN_ASSET_AREA)));
+                asset.setTimestamp(cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
+
+                assets.add(asset);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return assets list
+        return assets;
+    }
+
+    public List<Asset> getAllAssetsByScanned() {
+        List<Asset> assets = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_STATUS + " LIKE '%" + ASSET_EXIST + "'";
+//                Asset.COLUMN_TIMESTAMP + " DESC";
+        /*COLUMN_ID*/
+//select * from Asset where txtStatus like '%Asset Ada'
         SQLiteDatabase db = this.getWritableDatabase();
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -257,8 +354,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getAssetsCountByLocation(String assetLocation) {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_LOKASI_ASSET_BY_SYSTEM + " LIKE '" + assetLocation + "'";
+    public int getAssetsCountByDeptLob(String dept) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_DEPT_LOB + " LIKE '" + dept + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 
@@ -269,8 +366,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getAssetsCountByExist(String assetLocation, String assetExist) {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_LOKASI_ASSET_BY_SYSTEM + " LIKE '" + assetLocation + "' AND " + COLUMN_STATUS + " LIKE '" + assetExist + "'";
+    public int getAssetsCountByExist(String dept, String assetExist) {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_DEPT_LOB + " LIKE '" + dept + "' AND " + COLUMN_STATUS + " LIKE '" + assetExist + "'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 

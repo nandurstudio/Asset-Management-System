@@ -3,6 +3,7 @@ package com.ndu.assetmanagementsystem;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -11,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -69,7 +71,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         TextInputEditText txtImageLink = findViewById(R.id.textInput_txtImageLink);
         TextInputEditText txtAssetArea = findViewById(R.id.textInput_txtAssetArea);
         TextView timestamp = findViewById(R.id.textView_timestamp);
-
+        ImageView imageView = findViewById(R.id.asset_image);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         toolbar.setTitle(R.string.asset_detail);
@@ -119,6 +121,14 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         Locale localeID = new Locale("in", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+
+        try {
+            Picasso picasso = Picasso.get();
+            picasso.setIndicatorsEnabled(true);
+            picasso.load(_txtImageLinkSh).into(imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         txtFixedAssetCode.setText(_txtFixedAssetCodeSh);
         txtNamaAsset.setText(_txtNamaAssetSh);
