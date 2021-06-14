@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
@@ -294,11 +293,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return assets;
     }
 
-    public List<Asset> getAllAssetsByScanned() {
+    public List<Asset> getAllAssetsByScanned(String scanResult) {
         List<Asset> assets = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_STATUS + " LIKE '%" + ASSET_EXIST + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + COLUMN_STATUS + " LIKE '%" + scanResult + "'";
 //                Asset.COLUMN_TIMESTAMP + " DESC";
         /*COLUMN_ID*/
 //select * from Asset where txtStatus like '%Asset Ada'
@@ -395,7 +394,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 // --Commented out by Inspection START (14-Jan-21 15:26):
 //    public int getScannedAssetsCount() {
 //        String countQuery = "SELECT  COUNT (*) FROM " + TABLE_NAME +
-//                " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + ASSET_EXIST + "'";
+//                " WHERE " + COLUMN_ASSET_STATUS + " = " + "'" + scanResult + "'";
 //        SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor cursor = db.rawQuery(countQuery, null);
 //
@@ -431,6 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DEPT_LOB_UPDATE, asset.getTxtDeptLobUpdate());
         values.put(COLUMN_LOKASI_UPDATE, asset.getTxtLokasiUpdate());
         values.put(COLUMN_ASSET_AREA, asset.getTxtAssetArea());
+        values.put(COLUMN_TIMESTAMP, asset.getTimestamp());
 
         // updating row
         db.update(TABLE_NAME, values, COLUMN_RFID + " = ?",

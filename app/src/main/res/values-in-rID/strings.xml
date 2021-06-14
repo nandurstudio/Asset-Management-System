@@ -53,7 +53,7 @@
     <string name="asset_detail">Rincian Asset</string>
     <string name="remove_rfid_tag">Hapus Tag RFID</string>
     <string name="choose_area">Pilih Area</string>
-    <string name="last_sync">Sinkronisasi Terakhir</string>
+    <string name="last_scan_time">Waktu Scan Terakhir</string>
     <string name="hint_asset_area">Area Asset</string>
     <string name="hint_asset_category">Kategori Asset</string>
     <string name="hint_asset_supervisorid">Nomor NIK Pengguna</string>
@@ -86,4 +86,20 @@
     <string name="pattern_mailbody">\n\n-----------------------------\nJangan hapus bagian ini\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
     <string name="database_summary">Penyesuaian database dan format file .xml yang digunakan</string>
     <string name="database_title">Versi Database</string>
+    <string name="scan_result_summary">Kondisi Asset, berdasarkan hasil asset opname</string>
+    <string name="scan_result_title">Indikator Hasil Scan</string>
+    <string name="scan_config_header">Pengaturan Scan</string>
+    <string name="hint_unit_sistem">Unit Sistem</string>
+    <string name="hint_tanggal_beli">Tanggal Beli</string>
+    <string name="hint_buy_value">Harga</string>
+    <string name="hint_unit_actual">Unit Aktual</string>
+    <string name="hint_unit_selisih">Unit Selisih</string>
+    <string name="hint_nama_pengguna_update">Nama Pengguna Update</string>
+    <string name="hint_nama_penanggung_jawab">Penanggung Jawab</string>
+    <string name="hint_nama_penanggung_jawab_update">Penanggung Jawab Update</string>
+    <string name="hint_image_link">Tautan Gambar</string>
+    <string name="hint_lokasi_update">Lokasi Update</string>
+    <string name="message_edit_tag">Ubah Tag</string>
+    <string name="message_remove_tag">Hapus Tag</string>
+    <string name="message_choose_option">Ubah PengaturanTag</string>
 </resources>

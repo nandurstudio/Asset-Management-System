@@ -34,7 +34,7 @@ import static com.ndu.assetmanagementsystem.NandurLibs.versName;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG_ADMOB = "Admob";
+//    private static final String TAG_ADMOB = "Admob";
     static final String DEPT_NAME = "dept_name";
     static final String ASSET_AREA = "asset_area";
     static final String DIV_AREA = "div_area";
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         handler = new Handler();
         Button buttAms = findViewById(R.id.buttonAms);
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
+        sharedPrefs.edit();
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 

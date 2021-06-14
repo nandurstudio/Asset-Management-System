@@ -68,7 +68,8 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.AssetViewH
         if (s.length() <= 23) {
             holder.nama_asset.setText(s);
         } else {
-            holder.nama_asset.setText(s.substring(0, Math.min(s.length(), 23)).concat("..."));
+//            holder.nama_asset.setText(s.substring(0, Math.min(s.length(), 23)).concat("..."));
+            holder.nama_asset.setText(s.substring(0, 23).concat("..."));
         }
         //holder.asset_pic.setText(asset.getAsset_pic());
         //holder.asset_location.setText(asset.getAsset_location());

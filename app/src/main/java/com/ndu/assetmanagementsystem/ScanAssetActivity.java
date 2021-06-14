@@ -68,9 +68,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -86,6 +90,7 @@ import static com.ndu.assetmanagementsystem.MainActivity.DIV_AREA;
 import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
 import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
@@ -107,7 +112,6 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_T
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
@@ -157,9 +161,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private TextView percentageText;
     private String dept;
     private String div;
+    private String scanResult;
+    private String formattedDate;
 //    private ProgressBar spinner;
 
-    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n", "SimpleDateFormat"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,6 +188,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
+        scanResult = preferences.getString(SCAN_RESULT_INDICATOR, "B");
+        Log.d(TAG, "onCreate: SCAN_RESULTINDICATOR: " + scanResult);
 
         toolbar.setTitle(getResources().getString(R.string.assets_list));
         setSupportActionBar(toolbar);
@@ -212,6 +220,12 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             Log.d(TAG, "onCreate div: " + div);
             Log.d(TAG, "onCreate dept: " + dept);
         }
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault());
+        formattedDate = df.format(c);
 
         /*Storage permission*/
         runDexter();
@@ -378,9 +392,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private void liveCountAll() {
         if (sharedDBVersion.equals(AMEN_MODE)) {
             registeredText.setText(getResources().getString(R.string.asset_with_rfid_tag) + ": " + db_v2.getAssetsCountByTag("%"));
-            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db_v2.getAssetsCountByExist("%", ASSET_EXIST));
+            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db_v2.getAssetsCountByExist("%", scanResult));
             double totalAssetInt = db_v2.getAssetsCountByTag("%");
-            double readAbleAssetInt = db_v2.getAssetsCountByExist("%", ASSET_EXIST);
+            double readAbleAssetInt = db_v2.getAssetsCountByExist("%", scanResult);
             try {
                 double percenTage = (readAbleAssetInt / totalAssetInt) * 100;
                 BigDecimal bd = new BigDecimal(percenTage).setScale(0, RoundingMode.HALF_EVEN);
@@ -393,9 +407,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         } else {
             registeredText.setText(getResources().getString(R.string.asset_with_rfid_tag) + ": " + db.getAssetsCountByTag("%"));
-            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db.getAssetsCountByExist("%", Asset.ASSET_EXIST));
+            scannedText.setText(getResources().getString(R.string.scanned_asset) + ": " + db.getAssetsCountByExist("%", scanResult));
             double totalAssetInt = db.getAssetsCountByTag("%");
-            double readAbleAssetInt = db.getAssetsCountByExist("%", Asset.ASSET_EXIST);
+            double readAbleAssetInt = db.getAssetsCountByExist("%", scanResult);
             try {
                 double percenTage = (readAbleAssetInt / totalAssetInt) * 100;
                 BigDecimal bd = new BigDecimal(percenTage).setScale(0, RoundingMode.HALF_EVEN);
@@ -604,7 +618,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
     private void sortByScanned() {
         assetList.clear();
-        assetList.addAll(db.getAllAssetsByScanned());
+        assetList.addAll(db.getAllAssetsByScanned(scanResult));
         mAdapter.notifyDataSetChanged();
         toggleEmptyAssets();
         liveCountAll();
@@ -790,15 +804,16 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     }
 
     private void updateStatusAsset(int position, String rfid, int unitActual, int unitSelisih,
-                                   String deptLob, String locationUpdate, String areaAsset) {
+                                   String deptLob, String locationUpdate, String areaAsset, String timestamp) {
         Asset asset = assetList.get(position);
         // updating asset text
-        asset.setTxtStatus(Asset.ASSET_EXIST);
+        asset.setTxtStatus(scanResult);
         asset.setIntUnitAktual(unitActual);
         asset.setIntUnitSelisih(unitActual - unitSelisih);
         asset.setTxtDeptLobUpdate(deptLob);
         asset.setTxtLokasiUpdate(locationUpdate);
         asset.setTxtAssetArea(areaAsset);
+        asset.setTimestamp(timestamp);
 
         // updating asset in db
         db.updateStatusByRfid(asset, rfid);
@@ -812,7 +827,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
     private void updateStatusAssetV2(int position, String rfid) {
         AssetV2 asset = assetListV2.get(position);
-        asset.setTxtStatus(ASSET_EXIST);
+        asset.setTxtStatus(scanResult);
         db_v2.updateStatusByRfid(asset, rfid);
         assetListV2.set(position, asset);
         mAdapterV2.notifyItemChanged(position);
@@ -888,9 +903,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Delete - 0
      */
     private void showActionsDialog(final int position) {
-        CharSequence[] colors = new CharSequence[]{"Edit Tag", "Remove Tag"};
+        CharSequence[] colors = new CharSequence[]{getResources().getString(R.string.message_edit_tag), getResources().getString(R.string.message_remove_tag)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose option");
+        builder.setTitle(getResources().getString(R.string.message_choose_option));
         builder.setItems(colors, (dialog, which) -> {
             if (which == 0) {
                 if (sharedDBVersion.equals(AMEN_MODE)) {
@@ -1240,7 +1255,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
                         Log.d(TAG, "Rfid Tag Position: " + tagPos);
 
-                        updateStatusAsset(tagPos, EPC, 1, 1, dept, div, assetArea);
+                        updateStatusAsset(tagPos, EPC, 1, 1, dept, div, assetArea, formattedDate);
                         recyclerView.scrollToPosition(tagPos);
                         assetList.clear();
                         assetList.addAll(db.getAllAssetsByUnscanned());
@@ -1250,6 +1265,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         Log.d(TAG, "Asset Dept: " + dept);
                         Log.d(TAG, "Asset Div: " + div);
                         Log.d(TAG, "Asset Area: " + assetArea);
+                        Log.d(TAG, "Timestamp: " + formattedDate);
                         Log.d(TAG, "end =============================================== ");
                     } else {
                         // Inserting record to sharedPref

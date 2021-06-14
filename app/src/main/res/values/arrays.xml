@@ -8,4 +8,19 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="scanIndicator">
+        <item>Baik</item>
+        <item>Rusak Dapat Diperbaiki</item>
+        <item>Rusak Tidak Dapat Diperbaiki</item>
+        <item>Tidak Ketemu</item>
+        <item>Idle (Baik Tidak Dapat Digunakan)</item>
+    </string-array>
+    <string-array name="scanIndicatorValue">
+        <item>B</item>
+        <item>RA</item>
+        <item>RD</item>
+        <item>TK</item>
+        <item>I</item>
+    </string-array>
 </resources>

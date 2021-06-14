@@ -389,7 +389,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/nav_header_vertical_spacing"
-                android:text="@string/last_sync" />
+                android:text="@string/last_scan_time" />
 
         </LinearLayout>
 

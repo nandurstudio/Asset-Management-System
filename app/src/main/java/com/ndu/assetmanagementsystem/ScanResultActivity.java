@@ -73,28 +73,9 @@ import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.ScanAssetActivity.AMEN_MODE;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
 import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.ASSET_EXIST;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_IMAGE_LINK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_KETERANGAN;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_ASSET_BY_SYSTEM;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_ASSET;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NILAI_BELI;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_STATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TANGGAL_BELI;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
@@ -115,6 +96,7 @@ public class ScanResultActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private String sharedDBVersion;
     private String toolbarTitle;
+    public static String ASSET_EXIST;
 
     public ScanResultActivity() {
     }
@@ -151,6 +133,7 @@ public class ScanResultActivity extends AppCompatActivity {
         editor = sharedPrefs.edit();
 
         sharedDBVersion = sharedPrefs.getString(DATABASE_VERSION, "1");
+        ASSET_EXIST = sharedPrefs.getString(SCAN_RESULT_INDICATOR,"B");
 
         //Initializing
         TextView totalAsset = findViewById(R.id.textView_total_asset);
@@ -798,9 +781,9 @@ public class ScanResultActivity extends AppCompatActivity {
                         publishProgress(i);
                     }
                 } else {
-                    table = new PdfPTable(21);
+                    table = new PdfPTable(18);
                     table.addCell("NO");
-                    table.addCell(COLUMN_FIXED_ASSET_CODE);
+/*                    table.addCell(COLUMN_FIXED_ASSET_CODE);
                     table.addCell(COLUMN_NAMA_ASSET);
                     table.addCell(COLUMN_UNIT_SISTEM);
                     table.addCell(COLUMN_TANGGAL_BELI);
@@ -816,37 +799,35 @@ public class ScanResultActivity extends AppCompatActivity {
                     table.addCell(COLUMN_NAMA_PENGGUNA_UPDATE); //EDIT
                     table.addCell(COLUMN_NAMA_PENANGGUNG_JAWAB);
                     table.addCell(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE); //EDIT
-                    table.addCell(COLUMN_KETERANGAN);
-                    table.addCell(COLUMN_RFID);
-                    table.addCell(COLUMN_IMAGE_LINK);
-                    table.addCell(COLUMN_TIMESTAMP);
+                    table.addCell(COLUMN_KETERANGAN);*/
+//                    table.addCell(COLUMN_RFID);
+//                    table.addCell(COLUMN_IMAGE_LINK);
+//                    table.addCell(COLUMN_ASSET_AREA);
+//                    table.addCell(COLUMN_TIMESTAMP);
+
+                    table.addCell("Fixed Asset Code");
+                    table.addCell("Nama Asset");
+                    table.addCell("Unit Sistem");
+                    table.addCell("Tanggal Beli");
+                    table.addCell("Nilai Beli");
+                    table.addCell("Unit Aktual");
+                    table.addCell("Unit Selisih");
+                    table.addCell("Status");
+                    table.addCell("Departmen/LOB");
+                    table.addCell("Departmen/LOB Update");
+                    table.addCell("Lokasi Asset By Sistem");
+                    table.addCell("Lokasi Update");
+                    table.addCell("Nama Pengguna");
+                    table.addCell("Nama Pengguna Update");
+                    table.addCell("Nama Penanggung Jawab");
+                    table.addCell("Nama Penanggung Jawab Update");
+                    table.addCell("Keterangan");
+
                     table.setWidthPercentage(100);
-                    table.setWidths(new int[]{2, 4, 5, 4, 2, 4, 2, 4, 2, 4, 4, 4, 4, 3, 5, 4, 4, 4, 4, 2, 2});
+                    table.setWidths(new int[]{2, 4, 5, 2, 4, 4, 2, 2, 2, 4, 4, 4, 4, 3, 5, 4, 4, 4/*, 4, 2, 2*/});
                     table.setHeaderRows(1);
                     for (int i = 0; i < totalAssetLoc; i++) {
                         if (c1.moveToNext()) {
-/*                            String fixedAssetCode = c1.getString(0);
-                            String namaAsset = c1.getString(1);
-                            String unitSistem = c1.getString(2);
-                            String tanggalBeli = c1.getString(3);
-                            String nilaiBeli = c1.getString(4);
-                            String unitAktual = c1.getString(5);
-                            String unitSelisih = c1.getString(6);
-                            String status = c1.getString(7);
-                            String deptLob = c1.getString(8);
-                            String deptLobUpdate = c1.getString(9);
-                            String lokasiAssetBySystem = c1.getString(10);
-                            String lokasiUpdate = c1.getString(11);
-                            String namaPengguna = c1.getString(12);
-                            String namaPenggunaUpdate = c1.getString(13);
-                            String namaPenanggungJawab = c1.getString(14);
-                            String namaPenanggungJawabUpdate = c1.getString(15);
-                            String keterangan = c1.getString(16);
-                            String rfid = c1.getString(17);
-                            String imageLink = c1.getString(18);
-                            String assetArea = c1.getString(19);
-                            String timestamp = c1.getString(20);*/
-
                             String fixedAssetCode = c1.getString(0);
                             String namaAsset = c1.getString(1);
                             String unitSistem = c1.getString(2);
@@ -886,10 +867,10 @@ public class ScanResultActivity extends AppCompatActivity {
                             table.addCell(namaPenanggungJawab);
                             table.addCell(namaPenanggungJawabUpdate);
                             table.addCell(keterangan);
-                            table.addCell(rfid);
-                            table.addCell(imageLink);
-                            table.addCell(assetArea);
-                            table.addCell(timestamp);
+//                            table.addCell(rfid);
+//                            table.addCell(imageLink);
+//                            table.addCell(assetArea);
+//                            table.addCell(timestamp);
                         }
                         publishProgress(i);
                     }

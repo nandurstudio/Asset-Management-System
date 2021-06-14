@@ -7,7 +7,7 @@
     <string name="action_search">Search</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">© VBN 2020</string>
+    <string name="nav_header_title" translatable="false">© VBN 2020 - 2021</string>
     <string name="nav_header_subtitle" translatable="false">nandang.duryat@kalbenutritionals.com</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
 
@@ -68,7 +68,7 @@
     <string name="asset_detail">Asset Detail</string>
     <string name="remove_rfid_tag">Remove RFID Tag</string>
     <string name="choose_area">Choose Area</string>
-    <string name="last_sync">Last Sync</string>
+    <string name="last_scan_time">Last Scan Time</string>
     <string name="hint_nama_pengguna">User Name</string>
     <string name="hint_enter_email">Mail Destination</string>
     <string name="hint_fixed_asset_code">Fixed Asset Code</string>
@@ -135,20 +135,25 @@
     </string-array>
     <string name="message_refresh_notice">This will refresh asset list and all unimpoerted scan data will be lost!</string>
     <string name="database_title">Database Version</string>
-    <string name="database_header" translatable="false">Database</string>
+    <string name="scan_config_header">Scan Configuration</string>
     <string name="database_summary">Adjustments to the database and the .xml file format used</string>
-    <string name="hint_unit_sistem" translatable="false">Unit System</string>
-    <string name="hint_tanggal_beli" translatable="false">Buy Date</string>
-    <string name="hint_buy_value" translatable="false">Price</string>
-    <string name="hint_unit_actual" translatable="false">Unit Actual</string>
-    <string name="hint_unit_selisih" translatable="false">Unit Gap</string>
+    <string name="hint_unit_sistem">Unit System</string>
+    <string name="hint_tanggal_beli">Buy Date</string>
+    <string name="hint_buy_value">Price</string>
+    <string name="hint_unit_actual">Unit Actual</string>
+    <string name="hint_unit_selisih">Unit Gap</string>
     <string name="hint_dept_lob" translatable="false">Department LOB</string>
     <string name="hint_dept_lob_update" translatable="false">Department LOB Update</string>
-    <string name="hint_nama_pengguna_update" translatable="false">User Name Update</string>
-    <string name="hint_nama_penanggung_jawab" translatable="false">Responsibility</string>
-    <string name="hint_nama_penanggung_jawab_update" translatable="false">Responsibility Update</string>
-    <string name="hint_image_link" translatable="false">Image Link</string>
-    <string name="hint_lokasi_update" translatable="false">Location Update</string>
+    <string name="hint_nama_pengguna_update">User Name Update</string>
+    <string name="hint_nama_penanggung_jawab">Responsibility</string>
+    <string name="hint_nama_penanggung_jawab_update">Responsibility Update</string>
+    <string name="hint_image_link">Image Link</string>
+    <string name="hint_lokasi_update">Location Update</string>
     <string name="action_sort_by_scanned" translatable="false">Sort By Scanned Asset</string>
     <string name="action_sort_by_unscanned" translatable="false">Sort By Unscanned Asset</string>
+    <string name="scan_result_summary">Asset condition, based on the result of asset taking</string>
+    <string name="scan_result_title">Scan Result Indicator</string>
+    <string name="message_choose_option">Choose Option</string>
+    <string name="message_edit_tag">Edit Tag</string>
+    <string name="message_remove_tag">Remove Tag</string>
 </resources>

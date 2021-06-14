@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
         public static final String KEY_EXPORT_FILE_DIRECTORY = "file_directory";
         public static final String DATABASE_VERSION = "database_version";
+        public static final String SCAN_RESULT_INDICATOR = "scan_result_indicator";
         public SharedPreferences sharedPrefs;
         public SharedPreferences.Editor editor;
 
@@ -71,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
             Preference prefSendFeedback = findPreference("feedback");
             Preference prefFilePicker = findPreference("file_location");
             ListPreference listDatabase = findPreference(DATABASE_VERSION);
+            ListPreference scanResultIndicator = findPreference(SCAN_RESULT_INDICATOR);
 
             //update value
             sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -80,6 +82,15 @@ public class SettingsActivity extends AppCompatActivity {
                 listDatabase.setValue(sharedPrefs.getString(DATABASE_VERSION, "1"));
                 listDatabase.setOnPreferenceChangeListener((preference, newValue) -> {
                     editor.putString(DATABASE_VERSION, newValue.toString());
+                    editor.apply();
+                    return true;
+                });
+            }
+
+            if (scanResultIndicator != null) {
+                scanResultIndicator.setValue(sharedPrefs.getString(SCAN_RESULT_INDICATOR, "B"));
+                scanResultIndicator.setOnPreferenceChangeListener((preference, newValue) -> {
+                    editor.putString(SCAN_RESULT_INDICATOR, newValue.toString());
                     editor.apply();
                     return true;
                 });

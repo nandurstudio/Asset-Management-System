@@ -4,8 +4,6 @@ package com.ndu.assetmanagementsystem.sqlite.database.model;
 public class AssetV2 {
     public static final String TABLE_NAME_V2 = "AssetV2";
 
-    public static final String ASSET_EXIST = "B";
-
     //public static final String COLUMN_ID = "id";
     public static final String COLUMN_TXTFIXEDASSETCODE = "txtFixedAssetCode";
     public static final String COLUMN_TXTASSETDESCRIPTION = "txtAssetDescription";
@@ -174,10 +172,6 @@ public class AssetV2 {
 
     public static String getTableNameV2() {
         return TABLE_NAME_V2;
-    }
-
-    public static String getAssetExist() {
-        return ASSET_EXIST;
     }
 
     public static String getColumnTxtfixedassetcode() {

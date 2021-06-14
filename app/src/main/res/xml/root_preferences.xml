@@ -59,7 +59,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/database_header"
+        android:title="@string/scan_config_header"
         app:iconSpaceReserved="false">
 
         <ListPreference
@@ -69,6 +69,15 @@
             android:key="database_version"
             android:summary="@string/database_summary"
             android:title="@string/database_title"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/scanIndicator"
+            android:entryValues="@array/scanIndicatorValue"
+            android:key="scan_result_indicator"
+            android:summary="@string/scan_result_summary"
+            android:title="@string/scan_result_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
