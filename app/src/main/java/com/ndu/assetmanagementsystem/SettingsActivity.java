@@ -20,14 +20,14 @@ import androidx.preference.PreferenceManager;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
+import com.ndu.showinstalledappdetail.SystemPackageDetail;
 
 import ir.androidexception.filepicker.dialog.DirectoryPickerDialog;
 
-import static com.ndu.assetmanagementsystem.NandurLibs.sendFeedback;
-import static com.ndu.assetmanagementsystem.NandurLibs.showInstalledAppDetails;
-import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
 import static com.ndu.assetmanagementsystem.NandurLibs.versName;
+import static com.ndu.sendfeedback.SendFeedback.sendFeedback;
+import static com.ndu.simpletoaster.SimpleToaster.toaster;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String build = getResources().getString(R.string.build_title);
                 prefVersion.setSummary(versi + " " + versName + " " + build + " " + versCode);
                 prefVersion.setOnPreferenceClickListener(preference -> {
-                    showInstalledAppDetails(getContext(), requireActivity().getPackageName());
+                    SystemPackageDetail.showInstalledAppDetails(getContext(), requireActivity().getPackageName());
                     return true;
                 });
             }

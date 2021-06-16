@@ -55,6 +55,7 @@ import com.ndu.assetmanagementsystem.sqlite.utils.MyDividerItemDecoration;
 import com.ndu.assetmanagementsystem.sqlite.utils.RecyclerTouchListener;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapter;
 import com.ndu.assetmanagementsystem.sqlite.view.AssetsAdapterV2;
+import com.ndu.simpledialog.SimpleDialog;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -87,8 +88,6 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.ASSET_AREA;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
 import static com.ndu.assetmanagementsystem.MainActivity.DIV_AREA;
-import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
-import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
@@ -129,6 +128,7 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
+import static com.ndu.simpletoaster.SimpleToaster.toaster;
 
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
@@ -562,7 +562,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
             case R.id.action_pull_assets:
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
-                nduDialog(this,
+                SimpleDialog.showDialog(this,
                         getResources().getString(R.string.action_refresh_assets) + "?",
                         getResources().getString(R.string.message_refresh_notice),
                         true,
@@ -926,7 +926,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 if (assetTag.equals("")) {
                     toaster(this, getResources().getString(R.string.message_asset_no_tag), 0);
                 } else {
-                    nduDialog(this,
+                    SimpleDialog.showDialog(this,
                             getResources().getString(R.string.remove_rfid_tag) + "?",
                             getResources().getString(R.string.message_asset_tag_delete) + " " + assetCode + "!",
                             true,
@@ -1175,6 +1175,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
                 Toast.makeText(ScanAssetActivity.this, "Intent_RFIDSERVICE_CONNECTED", Toast.LENGTH_SHORT).show();
                 startSound();
+                toaster(ScanAssetActivity.this, "Hello", 0);
             } else if (intent.getAction().equals(GeneralString.Intent_RFIDSERVICE_TAG_DATA)) {
                 /*
                  * type :0=Normal scan (Press Trigger Key to receive the data) ; 1=Inventory EPC ; 2=Inventory ECP TID ; 3=Reader tag ; 5=Write tag

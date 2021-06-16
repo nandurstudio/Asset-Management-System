@@ -102,4 +102,6 @@
     <string name="message_edit_tag">Ubah Tag</string>
     <string name="message_remove_tag">Hapus Tag</string>
     <string name="message_choose_option">Ubah PengaturanTag</string>
+    <string name="action_sort_by_scanned">Tampilkan Asset Terscan</string>
+    <string name="action_sort_by_unscanned">Tampilkan Asset Belum Terscan</string>
 </resources>

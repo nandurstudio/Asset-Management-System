@@ -25,9 +25,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ndu.dialoginfoappversion.AppVersionDetail;
+import com.ndu.shareappvia.ShareAppVia;
 
-import static com.ndu.assetmanagementsystem.NandurLibs.dialogInfoVersionName;
-import static com.ndu.assetmanagementsystem.NandurLibs.shareApp;
 import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
 import static com.ndu.assetmanagementsystem.NandurLibs.versName;
 
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_share:
                 closeDrawer();
-                handler.postDelayed(() -> shareApp(this,
+                handler.postDelayed(() -> ShareAppVia.shareApp(this,
                         getResources().getString(R.string.menu_send),
                         getResources().getString(R.string.app_name),
                         getResources().getString(R.string.version_title),
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_version_name:
                 closeDrawer();
-                handler.postDelayed(() -> dialogInfoVersionName(MainActivity.this), 250);
+                handler.postDelayed(() -> AppVersionDetail.showDialogAppVersionDetail(MainActivity.this), 250);
                 break;
         }
 

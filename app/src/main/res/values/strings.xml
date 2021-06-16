@@ -149,8 +149,8 @@
     <string name="hint_nama_penanggung_jawab_update">Responsibility Update</string>
     <string name="hint_image_link">Image Link</string>
     <string name="hint_lokasi_update">Location Update</string>
-    <string name="action_sort_by_scanned" translatable="false">Sort By Scanned Asset</string>
-    <string name="action_sort_by_unscanned" translatable="false">Sort By Unscanned Asset</string>
+    <string name="action_sort_by_scanned">Sort By Scanned Asset</string>
+    <string name="action_sort_by_unscanned">Sort By Unscanned Asset</string>
     <string name="scan_result_summary">Asset condition, based on the result of asset taking</string>
     <string name="scan_result_title">Scan Result Indicator</string>
     <string name="message_choose_option">Choose Option</string>

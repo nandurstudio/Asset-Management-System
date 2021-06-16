@@ -66,13 +66,19 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.github.salehyarahmadi:FileAndFolderPicker:1.0.4'
-    testImplementation 'junit:junit:4.13.1'
+    implementation 'com.github.nandur93.nandur-android-libs:packagedetail:v2.0.1'
+    implementation 'com.github.nandur93.nandur-android-libs:appversion:2.0.0'
+    implementation 'com.github.nandur93.nandur-android-libs:sendfeedback:2.0.0'
+    implementation 'com.github.nandur93.nandur-android-libs:shareappvia:2.0.0'
+    implementation 'com.github.nandur93.nandur-android-libs:simpledialog:2.0.0'
+    implementation 'com.github.nandur93.nandur-android-libs:simpletoaster:2.0.0'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //permission https://github.com/Karumi/Dexter
     implementation 'com.karumi:dexter:6.2.2'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     // For control over item selection of both touch and mouse driven selection
     implementation 'androidx.recyclerview:recyclerview-selection:1.2.0-alpha01'

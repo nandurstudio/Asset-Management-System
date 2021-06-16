@@ -40,6 +40,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper;
 import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelperV2;
+import com.ndu.simpledialog.SimpleDialog;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -68,8 +69,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
-import static com.ndu.assetmanagementsystem.NandurLibs.nduDialog;
-import static com.ndu.assetmanagementsystem.NandurLibs.toaster;
 import static com.ndu.assetmanagementsystem.ScanAssetActivity.AMEN_MODE;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
 import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
@@ -79,6 +78,7 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_D
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
+import static com.ndu.simpletoaster.SimpleToaster.toaster;
 
 public class ScanResultActivity extends AppCompatActivity {
 
@@ -207,7 +207,7 @@ public class ScanResultActivity extends AppCompatActivity {
             case R.id.action_export_xls:
                 String title = getResources().getString(R.string.action_export_csv) + "?";
                 String msg = "Mungkin agak lama, tunggu saja!";
-                nduDialog(this,
+                SimpleDialog.showDialog(this,
                         title,
                         msg,
                         true,
@@ -223,7 +223,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
             case R.id.action_export_pdf:
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
-                nduDialog(this,
+                SimpleDialog.showDialog(this,
                         getResources().getString(R.string.action_export_pdf) + "?",
                         "Mungkin agak lama, tunggu saja!",
                         true,
