@@ -564,11 +564,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
                 SimpleDialog.showDialog(this,
                         getResources().getString(R.string.action_refresh_assets) + "?",
-                        getResources().getString(R.string.message_refresh_notice),
+                        getResources().getString(R.string.msg_refresh_notice),
                         true,
                         dialogIcon,
-                        "Yes",
-                        "Cancel",
+                        getResources().getString(R.string.button_yes),
+                        getResources().getString(R.string.button_cancel),
                         (DialogInterface dialog, int which) -> {
                             if (which == BUTTON_POSITIVE) {
                                 dialog.cancel();
@@ -641,7 +641,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         if (permissionGranted()) {
             SingleFilePickerDialog singleFilePickerDialog = new SingleFilePickerDialog(this,
-                    () -> toaster(ScanAssetActivity.this, getResources().getString(R.string.canceled), 0),
+                    () -> toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_canceled), 0),
                     files -> {
                         toaster(ScanAssetActivity.this, files[0].getPath(), 0);
                         editor.putString(XML_PATH, files[0].getPath());
@@ -903,9 +903,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Delete - 0
      */
     private void showActionsDialog(final int position) {
-        CharSequence[] colors = new CharSequence[]{getResources().getString(R.string.message_edit_tag), getResources().getString(R.string.message_remove_tag)};
+        CharSequence[] colors = new CharSequence[]{getResources().getString(R.string.msg_edit_tag), getResources().getString(R.string.msg_remove_tag)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.message_choose_option));
+        builder.setTitle(getResources().getString(R.string.msg_choose_option));
         builder.setItems(colors, (dialog, which) -> {
             if (which == 0) {
                 if (sharedDBVersion.equals(AMEN_MODE)) {
@@ -924,11 +924,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     assetTag = asset.getTxtRfid();
                 }
                 if (assetTag.equals("")) {
-                    toaster(this, getResources().getString(R.string.message_asset_no_tag), 0);
+                    toaster(this, getResources().getString(R.string.msg_asset_no_tag), 0);
                 } else {
                     SimpleDialog.showDialog(this,
                             getResources().getString(R.string.remove_rfid_tag) + "?",
-                            getResources().getString(R.string.message_asset_tag_delete) + " " + assetCode + "!",
+                            getResources().getString(R.string.msg_asset_tag_delete) + " " + assetCode + "!",
                             true,
                             dialogIcon,
                             getResources().getString(R.string.button_yes),
@@ -947,7 +947,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                                         //deleteAsset(position);
                                     }
                                     liveCountAll();
-                                    toaster(this, getResources().getString(R.string.message_asset_tag_removed) + " " + assetCode, 0);
+                                    toaster(this, getResources().getString(R.string.msg_asset_tag_removed) + " " + assetCode, 0);
                                     //progressDialog.dismiss();
                                 }
                                 dialogInterface.cancel();
@@ -1032,14 +1032,14 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         //Update Area
                         //Update PIC nick
                         updateAssetV2(inputRfidNumber.getText().toString(), position, assetArea, Objects.requireNonNull(inputPic.getText()).toString().toUpperCase());
-                        toaster(ScanAssetActivity.this, getResources().getString(R.string.message_tag_pic_updated), 0);
+                        toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_tag_pic_updated), 0);
                     } else {
                         //Jika sudah terdaftar, munculkan peringatan "Tag sudah terpakai!"
-                        toaster(ScanAssetActivity.this, getResources().getString(R.string.message_tag_in_use), 0);
+                        toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_tag_in_use), 0);
                         //Update PIC saja
                         updateNickPic(inputRfidNumber.getText().toString(), position, Objects.requireNonNull(inputPic.getText()).toString().toUpperCase());
                         Log.d(TAG, "showAssetDialog: " + inputPic.getText().toString());
-                        toaster(ScanAssetActivity.this, getResources().getString(R.string.message_pic_updated), 0);
+                        toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_pic_updated), 0);
                         alertDialog.dismiss();
                     }
                 } else {
@@ -1052,7 +1052,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         // update asset by it's id
                         updateAsset(inputRfidNumber.getText().toString(), position);
                     } else {
-                        toaster(ScanAssetActivity.this, getResources().getString(R.string.message_tag_in_use), 0);
+                        toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_tag_in_use), 0);
                         alertDialog.dismiss();
                     }
                 } else {
@@ -1093,7 +1093,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.button_update),
+                .setPositiveButton(getResources().getString(R.string.btn_update),
                         (dialogBox, id) -> {
 
                         })
@@ -1117,9 +1117,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 if (!db_v2.checkIsRfidInDB(sharedTag)) {
                     // update asset by it's id
                     updateAssetV2(inputRfidNumber.getText().toString(), position, assetArea, Objects.requireNonNull(inputPic.getText()).toString().toUpperCase());
-                    toaster(this, getResources().getString(R.string.message_tag_pic_updated), 0);
+                    toaster(this, getResources().getString(R.string.msg_tag_pic_updated), 0);
                 } else {
-                    toaster(ScanAssetActivity.this, getResources().getString(R.string.message_tag_in_use), 0);
+                    toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_tag_in_use), 0);
                     updateNickPic(inputRfidNumber.getText().toString(), position, Objects.requireNonNull(inputPic.getText()).toString().toUpperCase());
                     alertDialog.dismiss();
                 }
@@ -1175,9 +1175,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
                 Toast.makeText(ScanAssetActivity.this, "Intent_RFIDSERVICE_CONNECTED", Toast.LENGTH_SHORT).show();
                 startSound();
-                toaster(ScanAssetActivity.this, "Hello", 0);
             } else if (intent.getAction().equals(GeneralString.Intent_RFIDSERVICE_TAG_DATA)) {
-                /*
+                /*s
                  * type :0=Normal scan (Press Trigger Key to receive the data) ; 1=Inventory EPC ; 2=Inventory ECP TID ; 3=Reader tag ; 5=Write tag
                  * response : 0=RESPONSE_OPERATION_SUCCESS ; 1=RESPONSE_OPERATION_FINISH ; 2=RESPONSE_OPERATION_TIMEOUT_FAIL ; 6=RESPONSE_PASSWORD_FAIL ; 7=RESPONSE_OPERATION_FAIL ;251=DEVICE_BUSY
                  * */
@@ -1277,7 +1276,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         //createAsset(EPC);
                     }
                     mAdapter.notifyDataSetChanged();
-                    Log.d(TAG, "onReceive: stepNotify");
                     toggleEmptyAssets();
                 }
 //                if (this.dialog.isShowing()) {
@@ -1471,7 +1469,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
                 bd.doubleValue();
 //                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
-                this.dialog.setMessage(getResources().getString(R.string.importing_data_asset) + ", " + getResources().getString(R.string.message_please_wait));
+                this.dialog.setMessage(getResources().getString(R.string.importing_data_asset) + ", " + getResources().getString(R.string.msg_please_wait));
                 this.dialog.setMax(totalAsset);
                 this.dialog.setProgress((values[0]));
 
@@ -1485,7 +1483,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         protected void onCancelled() {
             super.onCancelled();
             Log.i(TAG, "onCancelled()");
-            this.dialog.setMessage(getResources().getString(R.string.canceled));
+            this.dialog.setMessage(getResources().getString(R.string.msg_canceled));
         }
 
         // -- called as soon as doInBackground method completes
@@ -1499,11 +1497,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             }
             if (result.equals("COMPLETE!")) {
                 this.dialog.setMessage(result);
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_import_complete), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_import_complete), 0);
             } else if (result.equals("No File")) {
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_no_asset_xml_in_directory), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_no_asset_xml_in_directory), 0);
             } else {
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_import_failed), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_import_failed), 0);
             }
             refreshAssetList();
         }
@@ -1613,7 +1611,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 BigDecimal bd = new BigDecimal(percenTage).setScale(2, RoundingMode.HALF_EVEN);
                 bd.doubleValue();
 //                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
-                this.dialog.setMessage(getResources().getString(R.string.importing_data_asset) + ", " + getResources().getString(R.string.message_please_wait));
+                this.dialog.setMessage(getResources().getString(R.string.importing_data_asset) + ", " + getResources().getString(R.string.msg_please_wait));
                 this.dialog.setMax(totalAsset);
                 this.dialog.setProgress((values[0]));
 
@@ -1641,11 +1639,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             }
             if (result.equals("COMPLETE!")) {
                 this.dialog.setMessage(result);
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_import_complete), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_import_complete), 0);
             } else if (result.equals("No File")) {
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_import_failed), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_import_failed), 0);
             } else {
-                toaster(ScanAssetActivity.this, getResources().getString(R.string.message_import_failed), 0);
+                toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_import_failed), 0);
             }
             refreshAssetListV2();
         }

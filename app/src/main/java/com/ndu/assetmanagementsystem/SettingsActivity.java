@@ -24,8 +24,8 @@ import com.ndu.showinstalledappdetail.SystemPackageDetail;
 
 import ir.androidexception.filepicker.dialog.DirectoryPickerDialog;
 
-import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
-import static com.ndu.assetmanagementsystem.NandurLibs.versName;
+import static com.ndu.assetmanagementsystem.MainActivity.versCode;
+import static com.ndu.assetmanagementsystem.MainActivity.versName;
 import static com.ndu.sendfeedback.SendFeedback.sendFeedback;
 import static com.ndu.simpletoaster.SimpleToaster.toaster;
 
@@ -141,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                 prefFilePicker.setOnPreferenceClickListener(preference -> {
                     if (permissionGranted()) {
                         DirectoryPickerDialog directoryPickerDialog = new DirectoryPickerDialog(getContext(),
-                                () -> toaster(getContext(), getResources().getString(R.string.canceled), 0),
+                                () -> toaster(getContext(), getResources().getString(R.string.msg_canceled), 0),
                                 files -> {
                                     toaster(getContext(), files[0].getPath(), 0);
                                     editor.putString(SettingsFragment.KEY_EXPORT_FILE_DIRECTORY, files[0].getPath());

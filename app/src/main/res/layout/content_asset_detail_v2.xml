@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/img_desc_logo_kalbe"
         android:paddingTop="15dp"
         app:srcCompat="@drawable/kalbe_nutritionals_logo" />
 
@@ -32,7 +32,7 @@
                 android:layout_width="166dp"
                 android:layout_height="166dp"
                 android:layout_gravity="center"
-                android:contentDescription="TODO"
+                android:contentDescription="@string/img_desc_logo_kalbe"
                 android:paddingTop="15dp"
                 app:srcCompat="@drawable/kalbe_nutritionals_logo" />
 
@@ -407,7 +407,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/img_desc_logo_vbn"
         android:padding="5dp"
         app:srcCompat="@drawable/ic_vbn_logo_with_tag_line" />
 </LinearLayout>

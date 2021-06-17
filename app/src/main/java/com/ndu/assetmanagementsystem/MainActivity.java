@@ -28,9 +28,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.ndu.dialoginfoappversion.AppVersionDetail;
 import com.ndu.shareappvia.ShareAppVia;
 
-import static com.ndu.assetmanagementsystem.NandurLibs.versCode;
-import static com.ndu.assetmanagementsystem.NandurLibs.versName;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     private static final String AREA_PREPARASI_BASIC_CARE = "Preparasi Basic Care";
     private static final String AREA_PREPARASI_HIGH_CARE = "Preparasi High Care";
     private static final String AREA_ENGINEERING_MAINTENANCE = "Engineering Maintenance";
+    static int versCode;
+    static String versName;
     private DrawerLayout drawer;
     private Handler handler;
     private final String TAG = "MainActivity";

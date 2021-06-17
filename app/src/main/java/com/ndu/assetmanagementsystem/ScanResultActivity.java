@@ -133,7 +133,7 @@ public class ScanResultActivity extends AppCompatActivity {
         editor = sharedPrefs.edit();
 
         sharedDBVersion = sharedPrefs.getString(DATABASE_VERSION, "1");
-        ASSET_EXIST = sharedPrefs.getString(SCAN_RESULT_INDICATOR,"B");
+        ASSET_EXIST = sharedPrefs.getString(SCAN_RESULT_INDICATOR, "B");
 
         //Initializing
         TextView totalAsset = findViewById(R.id.textView_total_asset);
@@ -206,7 +206,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
             case R.id.action_export_xls:
                 String title = getResources().getString(R.string.action_export_csv) + "?";
-                String msg = "Mungkin agak lama, tunggu saja!";
+                String msg = getResources().getString(R.string.msg_take_a_while_please_wait);
                 SimpleDialog.showDialog(this,
                         title,
                         msg,
@@ -225,7 +225,7 @@ public class ScanResultActivity extends AppCompatActivity {
                 //https://stackoverflow.com/questions/23408756/create-a-general-class-for-custom-dialog-in-java-android
                 SimpleDialog.showDialog(this,
                         getResources().getString(R.string.action_export_pdf) + "?",
-                        "Mungkin agak lama, tunggu saja!",
+                        getResources().getString(R.string.msg_take_a_while_please_wait),
                         true,
                         getDrawable(R.drawable.ic_pdf_24px),
                         "Yes",
@@ -450,7 +450,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            this.dialog.setMessage("Exporting to excel...");
+            this.dialog.setMessage(getResources().getString(R.string.msg_exporting_to_excel));
             this.dialog.show();
         }
 
@@ -531,9 +531,9 @@ public class ScanResultActivity extends AppCompatActivity {
                         System.out.println("file not Deleted :" + uri.getPath());
                     }
                 }
-                Toast.makeText(ScanResultActivity.this, "File " + fileNameTxt + ".xls is built!", Toast.LENGTH_LONG).show();
+                Toast.makeText(ScanResultActivity.this, String.format(getResources().getString(R.string.msg_file_build_success), fileNameTxt), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(ScanResultActivity.this, "File fail to build", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanResultActivity.this, getResources().getString(R.string.msg_file_build_fail), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -545,7 +545,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
         // can use UI thread here
         protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database...");
+            this.dialog.setMessage(getResources().getString(R.string.msg_exporting_database));
             this.dialog.show();
         }
 
@@ -577,9 +577,9 @@ public class ScanResultActivity extends AppCompatActivity {
                 this.dialog.dismiss();
             }
             if (success) {
-                Toast.makeText(ScanResultActivity.this, "Export successful!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanResultActivity.this, getResources().getString(R.string.msg_file_build_success), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ScanResultActivity.this, getResources().getString(R.string.msg_file_build_fail), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -597,7 +597,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
         // can use UI thread here
         protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database as XML...");
+            this.dialog.setMessage(getResources().getString(R.string.msg_exporting_to_excel));
             //this.dialog.show();
         }
 
@@ -610,7 +610,7 @@ public class ScanResultActivity extends AppCompatActivity {
                 database = db.getReadableDatabase();
             }
             DataXmlExporter dm = new DataXmlExporter(database);
-            Log.d("TAG", "doInBackground: " + Arrays.toString(args));
+            Log.d(TAG, "doInBackground: " + Arrays.toString(args));
             try {
                 String exportFileName = "args";
                 dm.export(DATABASE_NAME, exportFileName);
@@ -627,9 +627,9 @@ public class ScanResultActivity extends AppCompatActivity {
                 this.dialog.dismiss();
             }
             if (errMsg == null) {
-                toaster(ScanResultActivity.this, "Export succesful", 0);
+                toaster(ScanResultActivity.this, getResources().getString(R.string.msg_export_success), 0);
             } else {
-                Toast.makeText(ScanResultActivity.this, "Export failed - " + errMsg, Toast.LENGTH_SHORT).show();
+                toaster(ScanResultActivity.this, getResources().getString(R.string.msg_export_failed) + " - " + errMsg, 0);
             }
         }
     }
@@ -655,7 +655,7 @@ public class ScanResultActivity extends AppCompatActivity {
             emailIntent.setType("application/pdf");
             emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
-            startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+            startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.msg_send_mail_using)));
         }
     }
 
@@ -845,10 +845,10 @@ public class ScanResultActivity extends AppCompatActivity {
                             String namaPenanggungJawab = c1.getString(14);
                             String namaPenanggungJawabUpdate = c1.getString(15);
                             String keterangan = c1.getString(16);
-                            String rfid = c1.getString(17);
+/*                            String rfid = c1.getString(17);
                             String imageLink = c1.getString(18);
                             String assetArea = c1.getString(19);
-                            String timestamp = c1.getString(20);
+                            String timestamp = c1.getString(20);*/
                             table.addCell(String.valueOf(i + 1));
                             table.addCell(fixedAssetCode);
                             table.addCell(namaAsset);
@@ -891,8 +891,8 @@ public class ScanResultActivity extends AppCompatActivity {
         protected void onPreExecute() {
             Log.i(TAG, "onPreExecute()");
             super.onPreExecute();
-            this.dialog.setTitle("Export Asset To .pdf");
-            this.dialog.setMessage("Preparing asset, Please wait!");
+            this.dialog.setTitle(getResources().getString(R.string.msg_export_to_pdf));
+            this.dialog.setMessage(getResources().getString(R.string.msg_preparing_asset));
             this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             this.dialog.setIndeterminate(true);
             this.dialog.setCancelable(false);
@@ -922,13 +922,13 @@ public class ScanResultActivity extends AppCompatActivity {
                 Log.d(TAG, "onProgressUpdate: " + bd);
 //                this.dialog.setMessage("Importing data asset " + (values[0]) + "/" + totalAsset + " (" + bd + "%)");
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-                    this.dialog.setTitle("Exporting " + (int) totalAssetLocV2 + " Assets to .pdf");
+                    this.dialog.setTitle(String.format(getResources().getString(R.string.msg_exporting_asset_to), (int) totalAssetLocV2));
                     this.dialog.setMax((int) totalAssetLocV2);
                 } else {
-                    this.dialog.setTitle("Exporting " + (int) totalAssetLoc + " Assets to .pdf");
+                    this.dialog.setTitle(String.format(getResources().getString(R.string.msg_exporting_asset_to), (int) totalAssetLoc));
                     this.dialog.setMax((int) totalAssetLoc);
                 }
-                this.dialog.setMessage("It will take a while, Please wait!");
+                this.dialog.setMessage(getResources().getString(R.string.msg_take_a_while_please_wait));
                 this.dialog.setProgress(values[0]);
 
             } catch (Exception e) {
@@ -941,7 +941,7 @@ public class ScanResultActivity extends AppCompatActivity {
         protected void onCancelled() {
             super.onCancelled();
             Log.i(TAG, "onCancelled()");
-            this.dialog.setMessage("Cancelled!");
+            this.dialog.setMessage(getResources().getString(R.string.msg_canceled));
         }
 
         // -- called as soon as doInBackground method completes
@@ -957,15 +957,15 @@ public class ScanResultActivity extends AppCompatActivity {
                 this.dialog.setMessage(result);
                 String triggerFrom = sharedPrefs.getString(KEY_TRIGGER_FROM, "");
                 if (triggerFrom != null && triggerFrom.equals(EXPORT_MENU)) {
-                    Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+                    toaster(ScanResultActivity.this, getResources().getString(R.string.msg_export_complete), Toast.LENGTH_SHORT);
                 } else {
-                    Toast.makeText(ScanResultActivity.this, "Export complete", Toast.LENGTH_SHORT).show();
+                    toaster(ScanResultActivity.this, getResources().getString(R.string.msg_export_complete), Toast.LENGTH_SHORT);
                     sendToEmail();
                 }
             } else if (result.equals("No File")) {
-                Toast.makeText(ScanResultActivity.this, "No Asset file in the database", Toast.LENGTH_SHORT).show();
+                toaster(ScanResultActivity.this, getResources().getString(R.string.msg_no_asset), Toast.LENGTH_SHORT);
             } else {
-                Toast.makeText(ScanResultActivity.this, "Export failed", Toast.LENGTH_SHORT).show();
+                toaster(ScanResultActivity.this, getResources().getString(R.string.msg_export_failed), Toast.LENGTH_SHORT);
             }
         }
     }

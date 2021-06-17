@@ -1,5 +1,35 @@
 <resources>
-    <string name="app_name">SHP - AMS</string>
+
+    <string-array name="area_array">
+        <item>Office Plant</item>
+        <item>Produksi Basic Care</item>
+        <item>Produksi High Care</item>
+        <item>Preparasi Basic Care</item>
+        <item>Preparasi High Care</item>
+        <item>Engineering Maintenace</item>
+    </string-array>
+
+    <string-array name="div_array">
+        <item>Plant</item>
+        <item>KN</item>
+    </string-array>
+
+    <string-array name="plant_array">
+        <item>General</item>
+        <item>Production</item>
+        <item>Quality Assurance</item>
+        <item>PPC &amp; Preparation</item>
+        <item>Engineering Maintenace</item>
+        <item>HRGA</item>
+        <item>All Dept</item>
+    </string-array>
+
+    <string-array name="kn_array">
+        <item>MS</item>
+        <item>IT</item>
+    </string-array>
+
+    <string name="app_name" translatable="false">SHP - AMS</string>
     <string name="ams_name" translatable="false">Asset Management System</string>
     <string name="lbl_edit_asset_title">Edit Asset</string>
     <string name="hint_enter_rfid_tag">RFID Tag Number</string>
@@ -43,14 +73,14 @@
 
     <!-- Update Preferences -->
     <string name="update_title">Check for update</string>
-    <string name="total_asset">Total Asset</string>
-    <string name="units">Units</string>
+    <string name="total_asset" translatable="false">Total Asset</string>
+    <string name="units" translatable="false">Units</string>
     <string name="asset_readable">Readable</string>
     <string name="asset_unreadable">Unreadable</string>
     <string name="asset_result">Result</string>
     <string name="percentage" translatable="false">%</string>
     <string name="asset_empty">No Asset</string>
-    <string name="copyright_title" translatable="false">Copyright</string>
+    <string name="copyright_title">Copyright</string>
     <string name="action_refresh_assets">Refresh Asset List</string>
     <string name="file_export_location_header" translatable="false">File</string>
     <string name="file_export_location_title">Export Location</string>
@@ -61,7 +91,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="loading_exporting_database">Exporting database…</string>
     <string name="action_export_pdf">Export To PDF</string>
-    <string name="action_mailto">Send Result By Email</string>
+    <string name="action_mailto">Send result by e-mail</string>
     <string name="lbl_reg_asset_title">Asset Registration</string>
     <string name="rfid_empty_error_message">RFID Tag Number Can\'t Be Empty</string>
     <string name="email_empty_error_message">Email Address Can\'t Be Empty</string>
@@ -80,7 +110,7 @@
     <string name="hint_asset_category">Asset Category</string>
     <string name="hint_asset_supervisorid">Asset Supervisor ID</string>
     <string name="hint_asset_pic_name">PIC Name</string>
-    <string name="hint_asset_pic_email">PIC Email</string>
+    <string name="hint_asset_pic_email">PIC E-mail</string>
     <string name="hint_asset_pic_user">Asset User</string>
     <string name="hint_asset_lob">LOB User</string>
     <string name="hint_asset_img">Asset Image</string>
@@ -91,49 +121,38 @@
     <string name="percentage_text">Percentage</string>
     <string name="storage_granted">Storage Granted</string>
     <string name="storage_denied">Storage Denied</string>
-    <string name="canceled">Canceled!!</string>
-    <string name="button_update">Update</string>
+    <string name="btn_update">Update</string>
+    <string name="btn_asset_map" translatable="false">Asset Map</string>
+    <string name="btn_start_ams" translatable="false">Start AMS</string>
     <string name="importing_data_asset">Importing data asset…</string>
-    <string name="message_asset_no_tag">This asset doesn\'t have tag yet</string>
-    <string name="message_asset_tag_removed">Tag was removed from</string>
-    <string name="message_please_wait">Please wait!</string>
-    <string name="message_import_complete">Import complete!</string>
-    <string name="message_no_asset_xml_in_directory">No Asset.xml file in the directory</string>
-    <string name="message_import_failed">Import failed!</string>
-    <string name="message_asset_tag_delete">This will remove tag from Asset</string>
-    <string name="message_tag_pic_updated">Tag and PIC has been updated</string>
-    <string name="message_tag_in_use">Tag is used for another asset</string>
-    <string name="message_pic_updated">PIC has been updated</string>
-
-    <string-array name="area_array">
-        <item>Office Plant</item>
-        <item>Produksi Basic Care</item>
-        <item>Produksi High Care</item>
-        <item>Preparasi Basic Care</item>
-        <item>Preparasi High Care</item>
-        <item>Engineering Maintenace</item>
-    </string-array>
-
-    <string-array name="div_array">
-        <item>Plant</item>
-        <item>KN</item>
-    </string-array>
-
-    <string-array name="plant_array">
-        <item>General</item>
-        <item>Production</item>
-        <item>Quality Assurance</item>
-        <item>PPC &amp; Preparation</item>
-        <item>Engineering Maintenace</item>
-        <item>HRGA</item>
-        <item>All Dept</item>
-    </string-array>
-
-    <string-array name="kn_array">
-        <item>MS</item>
-        <item>IT</item>
-    </string-array>
-    <string name="message_refresh_notice">This will refresh asset list and all unimpoerted scan data will be lost!</string>
+    <string name="msg_canceled">Canceled!</string>
+    <string name="msg_asset_no_tag">This asset doesn\'t have tag yet</string>
+    <string name="msg_asset_tag_removed">Tag was removed from</string>
+    <string name="msg_please_wait">Please wait!</string>
+    <string name="msg_import_complete">Import complete!</string>
+    <string name="msg_no_asset_xml_in_directory">No Asset.xml file in the directory</string>
+    <string name="msg_import_failed">Import failed!</string>
+    <string name="msg_asset_tag_delete">This will remove tag from Asset</string>
+    <string name="msg_tag_pic_updated">Tag and PIC has been updated</string>
+    <string name="msg_tag_in_use">Tag is used for another asset</string>
+    <string name="msg_pic_updated">PIC has been updated</string>
+    <string name="msg_choose_option">Choose Option</string>
+    <string name="msg_edit_tag">Edit Tag</string>
+    <string name="msg_remove_tag">Remove Tag</string>
+    <string name="msg_take_a_while_please_wait">It will take a while, Please wait!</string>
+    <string name="msg_exporting_to_excel">Exporting to Excel…</string>
+    <string name="msg_file_build_success">File %s.xls is built!</string>
+    <string name="msg_file_build_fail">File fail to build!</string>
+    <string name="msg_exporting_database">Exporting database…</string>
+    <string name="msg_export_success">Export successful</string>
+    <string name="msg_export_failed">Export failed</string>
+    <string name="msg_send_mail_using">Send email using:</string>
+    <string name="msg_preparing_asset">Preparing asset, Please wait!</string>
+    <string name="msg_export_to_pdf">Export Asset To .pdf</string>
+    <string name="msg_exporting_asset_to">Exporting %d Assets to .pdf</string>
+    <string name="msg_export_complete">Export complete</string>
+    <string name="msg_no_asset">No Asset file in the database</string>
+    <string name="msg_refresh_notice">This will refresh asset list and all unimported scan data will be lost!</string>
     <string name="database_title">Database Version</string>
     <string name="scan_config_header">Scan Configuration</string>
     <string name="database_summary">Adjustments to the database and the .xml file format used</string>
@@ -149,11 +168,13 @@
     <string name="hint_nama_penanggung_jawab_update">Responsibility Update</string>
     <string name="hint_image_link">Image Link</string>
     <string name="hint_lokasi_update">Location Update</string>
-    <string name="action_sort_by_scanned">Sort By Scanned Asset</string>
-    <string name="action_sort_by_unscanned">Sort By Unscanned Asset</string>
+    <string name="action_sort_by_scanned">Scanned Asset</string>
+    <string name="action_sort_by_unscanned">Unscanned Asset</string>
     <string name="scan_result_summary">Asset condition, based on the result of asset taking</string>
     <string name="scan_result_title">Scan Result Indicator</string>
-    <string name="message_choose_option">Choose Option</string>
-    <string name="message_edit_tag">Edit Tag</string>
-    <string name="message_remove_tag">Remove Tag</string>
+    <string name="img_desc_logo_kalbe" translatable="false">Logo Kalbe Nutritionals</string>
+    <string name="img_desc_logo_vbn" translatable="false">Logo VBN</string>
+    <string name="txt_registered" translatable="false">Registered: 50</string>
+    <string name="txt_scanned" translatable="false">Scanned: 25</string>
+    <string name="txt_percentage" translatable="false">Presentase: 100%</string>
 </resources>
