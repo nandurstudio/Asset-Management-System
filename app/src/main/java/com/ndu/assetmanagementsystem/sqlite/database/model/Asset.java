@@ -322,7 +322,7 @@ public class Asset {
 
     // Create table SQL query
     public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + "("
+            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "("
                     //+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_FIXED_ASSET_CODE + " TEXT PRIMARY KEY,"
                     + COLUMN_NAMA_ASSET + " TEXT,"

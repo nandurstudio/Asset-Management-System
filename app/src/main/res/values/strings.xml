@@ -15,12 +15,14 @@
     </string-array>
 
     <string-array name="plant_array">
-        <item>General</item>
-        <item>Production</item>
-        <item>Quality Assurance</item>
-        <item>PPC &amp; Preparation</item>
-        <item>Engineering Maintenace</item>
-        <item>HRGA</item>
+        <item>MNF MANUFACTURING GENERAL</item>
+        <item>MNF PLANT SHP INDIRECT</item>
+        <item>MNF PLANT SHP DIRECT</item>
+        <item>MNF QA PLANT</item>
+        <item>MNF PREPARATION PLANT</item>
+        <item>MNF PLANT SHP MAINTENANCE</item>
+        <item>MNF KN GENERAL AFFAIR</item>
+        <item>MNF KN HRD</item>
         <item>All Dept</item>
     </string-array>
 
@@ -33,7 +35,6 @@
     <string name="ams_name" translatable="false">Asset Management System</string>
     <string name="lbl_edit_asset_title">Edit Asset</string>
     <string name="hint_enter_rfid_tag">RFID Tag Number</string>
-    <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -41,10 +42,6 @@
     <string name="nav_header_subtitle" translatable="false">nandang.duryat@kalbenutritionals.com</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
 
-    <string name="menu_send">Send</string>
-    <string name="build_title" translatable="false">Build</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_title_communicate">Communicate</string>
     <string name="assets_list">Assets List</string>
     <string name="action_sort_show_all">Show All Assets</string>
     <string name="action_export_csv">Export To Excel</string>
@@ -52,16 +49,21 @@
     <string name="choose_dept">Choose Department</string>
 
     <!-- Version Preferences -->
+    <string name="action_settings">Settings</string>
+    <string name="menu_title_communicate">Communicate</string>
+    <string name="menu_share">Share</string>
     <string name="version_title">Version</string>
+    <string name="menu_send">Send</string>
     <string name="version_summary" translatable="false">1.0.0</string>
+    <string name="build_title" translatable="false">Build</string>
     <string name="update_summary">Tap here to check for updates</string>
     <string name="feedback_summary">Report technical issues or suggest new features</string>
 
     <!-- Feedback Preferences -->
     <string name="feedback_title">Feedback</string>
-    <string name="choose_email_client">Choose mailing client</string>
-    <string name="feedback_body">Feedback for</string>
     <string name="pattern_mailbody">\n\n-----------------------------\nPlease do not delete this section\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
+    <string name="feedback_body">Feedback for</string>
+    <string name="choose_email_client">Choose mailing client</string>
 
     <!-- Preference Titles -->
     <string name="about_title">About</string>

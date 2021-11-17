@@ -35,12 +35,14 @@ public class MainActivity extends AppCompatActivity
     static final String DEPT_NAME = "dept_name";
     static final String ASSET_AREA = "asset_area";
     static final String DIV_AREA = "div_area";
-    private static final String DEPT_GENERAL = "General";
-    private static final String DEPT_PRD = "Production";
-    private static final String DEPT_QA = "QA";
-    private static final String DEPT_PPC_PREP = "Preparation";
-    private static final String DEPT_EM = "EM";
-    private static final String DEPT_HRGA = "HRGA";
+    private static final String DEPT_GENERAL = "MNF MANUFACTURING GENERAL";
+    private static final String DEPT_PRD_DIRECT = "MNF PLANT SHP INDIRECT";
+    private static final String DEPT_PRD_INDIRECT = "MNF PLANT SHP DIRECT";
+    private static final String DEPT_QA = "MNF QA PLANT";
+    private static final String DEPT_PPC_PREP = "MNF PREPARATION PLANT";
+    private static final String DEPT_MAINTENANCE = "MNF PLANT SHP MAINTENANCE";
+    private static final String DEPT_GA = "MNF KN GENERAL AFFAIR";
+    private static final String DEPT_HR = "MNF KN HRD";
     // --Commented out by Inspection (14-Jan-21 15:17):private static final String ALL_DEPT = "All Dept";
     private static final String DIV_PLANT = "Plant";
     private static final String DIV_KN = "KN";
@@ -171,18 +173,22 @@ public class MainActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
-                if (parent.getItemAtPosition(position).equals("General")) {
+                if (parent.getItemAtPosition(position).equals("MNF MANUFACTURING GENERAL")) {
                     deptName = DEPT_GENERAL;
-                } else if (parent.getItemAtPosition(position).equals("Production")) {
-                    deptName = DEPT_PRD;
-                } else if (parent.getItemAtPosition(position).equals("Quality Assurance")) {
+                } else if (parent.getItemAtPosition(position).equals("MNF PLANT SHP INDIRECT")) {
+                    deptName = DEPT_PRD_INDIRECT;
+                } else if (parent.getItemAtPosition(position).equals("MNF PLANT SHP DIRECT")) {
+                    deptName = DEPT_PRD_DIRECT;
+                } else if (parent.getItemAtPosition(position).equals("MNF QA PLANT")) {
                     deptName = DEPT_QA;
-                } else if (parent.getItemAtPosition(position).equals("PPC & Preparation")) {
+                } else if (parent.getItemAtPosition(position).equals("MNF PREPARATION PLANT")) {
                     deptName = DEPT_PPC_PREP;
-                } else if (parent.getItemAtPosition(position).equals("Engineering Maintenace")) {
-                    deptName = DEPT_EM;
-                } else if (parent.getItemAtPosition(position).equals("HRGA")) {
-                    deptName = DEPT_HRGA;
+                } else if (parent.getItemAtPosition(position).equals("MNF PLANT SHP MAINTENANCE")) {
+                    deptName = DEPT_MAINTENANCE;
+                } else if (parent.getItemAtPosition(position).equals("MNF KN GENERAL AFFAIR")) {
+                    deptName = DEPT_GA;
+                } else if (parent.getItemAtPosition(position).equals("MNF KN HRD")) {
+                    deptName = DEPT_HR;
                 } else {
                     deptName = "";
                 }
