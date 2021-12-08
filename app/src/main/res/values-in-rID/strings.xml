@@ -115,4 +115,11 @@
     <string name="msg_exporting_asset_to">Eksport %d Asset ke .pdf</string>
     <string name="msg_export_complete">Eksport komplit</string>
     <string name="msg_no_asset">Tidak ada file asset di database</string>
+    <string name="choose_status">Pilih Status</string>
+    <string name="choose_lob_update">Pilih Departemen LOB Update</string>
+    <string name="choose_loc_update">Pilih Lokasi Update</string>
+    <string name="hint_nama_pengguna_udpate">Nama Pengguna Update</string>
+    <string name="hint_nama_penanggung_jawab_udpate">Penangung Jawab Update</string>
+    <string name="hint_keterangan">Keterangan</string>
+    <string name="choose_location">Pilih Lokasi</string>
 </resources>

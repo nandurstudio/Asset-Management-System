@@ -1,5 +1,18 @@
 package com.ndu.assetmanagementsystem;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
+import static com.ndu.assetmanagementsystem.ScanAssetActivity.AMEN_MODE;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
+import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
+import static com.ndu.simpletoaster.SimpleToaster.toaster;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -66,19 +79,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import au.com.bytecode.opencsv.CSVWriter;
-
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
-import static com.ndu.assetmanagementsystem.ScanAssetActivity.AMEN_MODE;
-import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
-import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.KEY_EXPORT_FILE_DIRECTORY;
-import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
-import static com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelper.DATABASE_NAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
-import static com.ndu.simpletoaster.SimpleToaster.toaster;
 
 public class ScanResultActivity extends AppCompatActivity {
 
@@ -257,62 +257,66 @@ public class ScanResultActivity extends AppCompatActivity {
 
         ExportDataAsXmlTask task = new ExportDataAsXmlTask();
         task.execute();
-//        ExportDatabaseFileTask task = new ExportDatabaseFileTask();
-//        task.execute();
-        /*List<Asset> assets = new ArrayList<>();
-        XmlSerializer serializer = Xml.newSerializer();
-        File newxmlfile = new File("/storage/emulated/0/Podcasts/new.xml");
-        try {
-            newxmlfile.createNewFile();
-        } catch (IOException e) {
-            Log.e("IOException", "Exception in create new File(");
-        }
-        FileOutputStream fileos = null;
-        try {
-            fileos = new FileOutputStream(newxmlfile);
+/*
+ExportDatabaseFileTask task = new ExportDatabaseFileTask();
+ task.execute();
+*/
+/*
+        List<Asset> assets = new ArrayList<>();
+         XmlSerializer serializer = Xml.newSerializer();
+         File newxmlfile = new File("/storage/emulated/0/Podcasts/new.xml");
+         try {
+             newxmlfile.createNewFile();
+         } catch (IOException e) {
+             Log.e("IOException", "Exception in create new File(");
+         }
+         FileOutputStream fileos = null;
+         try {
+             fileos = new FileOutputStream(newxmlfile);
 
-        } catch (FileNotFoundException e) {
-            Log.e("FileNotFoundException", e.toString());
-        }
-        try {
-            serializer.setOutput(fileos, "UTF-8");
-            //<?xml version="1.0" encoding="UTF-8" standalone="true"?>
-            serializer.startDocument("UTF-8", true);
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            //<assets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            serializer.startTag("", "assets");
+         } catch (FileNotFoundException e) {
+             Log.e("FileNotFoundException", e.toString());
+         }
+         try {
+             serializer.setOutput(fileos, "UTF-8");
+             //<?xml version="1.0" encoding="UTF-8" standalone="true"?>
+             serializer.startDocument("UTF-8", true);
+             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+             //<assets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+             serializer.startTag("", "assets");
 
-            for (Asset asset : assets) {
-                serializer.startTag("", "asset");
-                serializer.attribute("", "date", asset.getTimestamp());
+             for (Asset asset : assets) {
+                 serializer.startTag("", "asset");
+                 serializer.attribute("", "date", asset.getTimestamp());
 
-                serializer.startTag("", COLUMN_ASSET_CODE);
-                serializer.text(asset.getAsset_code());
-                serializer.endTag("", COLUMN_ASSET_CODE);
+                 serializer.startTag("", COLUMN_ASSET_CODE);
+                 serializer.text(asset.getAsset_code());
+                 serializer.endTag("", COLUMN_ASSET_CODE);
 
-                serializer.startTag("", COLUMN_ASSET_DESC);
-                serializer.text(asset.getAsset_desc());
-                serializer.endTag("", COLUMN_ASSET_DESC);
+                 serializer.startTag("", COLUMN_ASSET_DESC);
+                 serializer.text(asset.getAsset_desc());
+                 serializer.endTag("", COLUMN_ASSET_DESC);
 
-                serializer.startTag("", COLUMN_ASSET_PIC);
-                serializer.text(asset.getAsset_pic());
-                serializer.endTag("", COLUMN_ASSET_PIC);
+                 serializer.startTag("", COLUMN_ASSET_PIC);
+                 serializer.text(asset.getAsset_pic());
+                 serializer.endTag("", COLUMN_ASSET_PIC);
 
-                serializer.startTag("", COLUMN_ASSET_LOCATION);
-                serializer.text(asset.getAsset_location());
-                serializer.endTag("", COLUMN_ASSET_LOCATION);
+                 serializer.startTag("", COLUMN_ASSET_LOCATION);
+                 serializer.text(asset.getAsset_location());
+                 serializer.endTag("", COLUMN_ASSET_LOCATION);
 
-                serializer.endTag("", "asset");
-            }
-            serializer.endTag("", "assets");
-            serializer.endDocument();
-            serializer.flush();
-            if (fileos != null) {
-                fileos.close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }*/
+                 serializer.endTag("", "asset");
+             }
+             serializer.endTag("", "assets");
+             serializer.endDocument();
+             serializer.flush();
+             if (fileos != null) {
+                 fileos.close();
+             }
+         } catch (Exception e) {
+             throw new RuntimeException(e);
+         }
+        */
     }
 
     @SuppressLint("SetTextI18n")

@@ -4,23 +4,62 @@
         <item>Default Mode</item>
         <item>Developer Mode</item>
     </string-array>
+
     <string-array name="databaseVersionValue">
         <item>1</item>
         <item>2</item>
     </string-array>
 
-    <string-array name="scanIndicator">
+    <string-array name="scanStatus">
         <item>Baik</item>
         <item>Rusak Dapat Diperbaiki</item>
         <item>Rusak Tidak Dapat Diperbaiki</item>
         <item>Tidak Ketemu</item>
         <item>Idle (Baik Tidak Dapat Digunakan)</item>
     </string-array>
-    <string-array name="scanIndicatorValue">
+
+    <string-array name="scanStatusValue">
         <item>B</item>
         <item>RA</item>
         <item>RD</item>
         <item>TK</item>
         <item>I</item>
+    </string-array>
+
+    <string-array name="array_loc_update">
+        <item>CIKAMPEK</item>
+        <item>CAKUNG</item>
+        <item>IDC</item>
+    </string-array>
+
+    <string-array name="area_array">
+        <item>Office Plant</item>
+        <item>Produksi Basic Care</item>
+        <item>Produksi High Care</item>
+        <item>Preparasi Basic Care</item>
+        <item>Preparasi High Care</item>
+        <item>Engineering Maintenace</item>
+    </string-array>
+
+    <string-array name="div_array">
+        <item>Plant</item>
+        <item>KN</item>
+    </string-array>
+
+    <string-array name="plant_array">
+        <item>MNF MANUFACTURING GENERAL</item>
+        <item>MNF PLANT SHP INDIRECT</item>
+        <item>MNF PLANT SHP DIRECT</item>
+        <item>MNF QA PLANT</item>
+        <item>MNF PREPARATION PLANT</item>
+        <item>MNF PLANT SHP MAINTENANCE</item>
+        <item>MNF KN GENERAL AFFAIR</item>
+        <item>MNF KN HRD</item>
+        <item>All Dept</item>
+    </string-array>
+
+    <string-array name="kn_array">
+        <item>MS</item>
+        <item>IT</item>
     </string-array>
 </resources>

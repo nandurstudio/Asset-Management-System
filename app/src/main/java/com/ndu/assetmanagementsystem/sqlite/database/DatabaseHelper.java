@@ -1,21 +1,5 @@
 package com.ndu.assetmanagementsystem.sqlite.database;
 
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
-
-import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
@@ -39,6 +23,22 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_U
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.CREATE_TABLE;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.TABLE_NAME;
+
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+import com.ndu.assetmanagementsystem.sqlite.database.model.Asset;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 //import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         // prepare asset object
-        Asset asset = new Asset(
+        @SuppressLint("Range") Asset asset = new Asset(
 //                Objects.requireNonNull(cursor).getInt(cursor.getColumnIndex(COLUMN_ID)),
                 Objects.requireNonNull(cursor).getString(cursor.getColumnIndex(COLUMN_FIXED_ASSET_CODE)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_NAMA_ASSET)),
@@ -148,6 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return asset;
     }
 
+    @SuppressLint("Range")
     public List<Asset> getAllAssets() {
         List<Asset> assets = new ArrayList<>();
 
@@ -197,6 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return assets;
     }
 
+    @SuppressLint("Range")
     public List<Asset> getAllAssetsByDept(String department) {
         List<Asset> assets = new ArrayList<>();
 
@@ -245,6 +247,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return assets;
     }
 
+    @SuppressLint("Range")
     public List<Asset> getAllAssetsByUnscanned() {
         List<Asset> assets = new ArrayList<>();
 
@@ -293,6 +296,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return assets;
     }
 
+    @SuppressLint("Range")
     public List<Asset> getAllAssetsByScanned(String scanResult) {
         List<Asset> assets = new ArrayList<>();
 
@@ -413,6 +417,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_RFID, asset.getTxtRfid());
+        values.put(COLUMN_UNIT_AKTUAL, asset.getIntUnitAktual());
+        values.put(COLUMN_STATUS,asset.getTxtStatus());
+        values.put(COLUMN_DEPT_LOB_UPDATE, asset.getTxtDeptLobUpdate());
+        values.put(COLUMN_LOKASI_UPDATE, asset.getTxtLokasiUpdate());
+        values.put(COLUMN_NAMA_PENGGUNA_UPDATE, asset.getTxtNamaPenggunaUpdate());
+        values.put(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, asset.getTxtNamaPenanggungJawabUpdate());
+        values.put(COLUMN_KETERANGAN, asset.getTxtKeterangan());
+
 
         // updating row
         db.update(TABLE_NAME, values, /*COLUMN_ID*/COLUMN_FIXED_ASSET_CODE + " = ?",
@@ -437,13 +449,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{rfid});
     }
 
-    public void deleteAsset(Asset asset) {
+/*    public void deleteAsset(Asset asset) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, /*COLUMN_ID*/COLUMN_FIXED_ASSET_CODE + " = ?",
+        db.delete(TABLE_NAME, *//*COLUMN_ID*//*COLUMN_FIXED_ASSET_CODE + " = ?",
 //                new String[]{String.valueOf(asset.getId())});
                 new String[]{asset.getTxtFixedAssetCode()});
         db.close();
-    }
+    }*/
 
     public long insertAsset(String asset) {
         // get writable database as we want to write data

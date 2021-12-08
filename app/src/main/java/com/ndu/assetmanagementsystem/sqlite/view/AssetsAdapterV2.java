@@ -1,5 +1,6 @@
 package com.ndu.assetmanagementsystem.sqlite.view;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,6 +130,7 @@ public class AssetsAdapterV2 extends RecyclerView.Adapter<AssetsAdapterV2.AssetV
     }
 
     /*https://stackoverflow.com/a/37562572/7772358*/
+    @SuppressLint("NotifyDataSetChanged")
     public void filter(String text, DatabaseHelperV2 db, String assetLocation) {
         assetList.clear();
         if (text.isEmpty()) {

@@ -1,36 +1,4 @@
 <resources>
-
-    <string-array name="area_array">
-        <item>Office Plant</item>
-        <item>Produksi Basic Care</item>
-        <item>Produksi High Care</item>
-        <item>Preparasi Basic Care</item>
-        <item>Preparasi High Care</item>
-        <item>Engineering Maintenace</item>
-    </string-array>
-
-    <string-array name="div_array">
-        <item>Plant</item>
-        <item>KN</item>
-    </string-array>
-
-    <string-array name="plant_array">
-        <item>MNF MANUFACTURING GENERAL</item>
-        <item>MNF PLANT SHP INDIRECT</item>
-        <item>MNF PLANT SHP DIRECT</item>
-        <item>MNF QA PLANT</item>
-        <item>MNF PREPARATION PLANT</item>
-        <item>MNF PLANT SHP MAINTENANCE</item>
-        <item>MNF KN GENERAL AFFAIR</item>
-        <item>MNF KN HRD</item>
-        <item>All Dept</item>
-    </string-array>
-
-    <string-array name="kn_array">
-        <item>MS</item>
-        <item>IT</item>
-    </string-array>
-
     <string name="app_name" translatable="false">SHP - AMS</string>
     <string name="ams_name" translatable="false">Asset Management System</string>
     <string name="lbl_edit_asset_title">Edit Asset</string>
@@ -179,4 +147,11 @@
     <string name="txt_registered" translatable="false">Registered: 50</string>
     <string name="txt_scanned" translatable="false">Scanned: 25</string>
     <string name="txt_percentage" translatable="false">Presentase: 100%</string>
+    <string name="choose_status">Choose Status</string>
+    <string name="choose_lob_update">Choose Department LOB Update</string>
+    <string name="choose_loc_update">Choose Location Update</string>
+    <string name="hint_nama_pengguna_udpate">Username Update</string>
+    <string name="hint_nama_penanggung_jawab_udpate">Responsibility Update</string>
+    <string name="hint_keterangan">Note</string>
+    <string name="choose_location">Choose Location</string>
 </resources>

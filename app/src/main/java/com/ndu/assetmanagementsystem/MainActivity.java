@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity
 //    private static final String TAG_ADMOB = "Admob";
     static final String DEPT_NAME = "dept_name";
     static final String ASSET_AREA = "asset_area";
+    static final String ASSET_LOCATION = "asset_location";
     static final String DIV_AREA = "div_area";
     private static final String DEPT_GENERAL = "MNF MANUFACTURING GENERAL";
     private static final String DEPT_PRD_DIRECT = "MNF PLANT SHP INDIRECT";
@@ -53,14 +54,18 @@ public class MainActivity extends AppCompatActivity
     private static final String AREA_PREPARASI_BASIC_CARE = "Preparasi Basic Care";
     private static final String AREA_PREPARASI_HIGH_CARE = "Preparasi High Care";
     private static final String AREA_ENGINEERING_MAINTENANCE = "Engineering Maintenance";
+    private static final String LOCATION_CIKAMPEK = "CIKAMPEK";
+    private static final String LOCATION_CAKUNG = "CAKUNG";
+    private static final String LOCATION_IDC = "IDC";
     static int versCode;
     static String versName;
     private DrawerLayout drawer;
     private Handler handler;
     private final String TAG = "MainActivity";
     private String deptName;
-    private String floorStage;
+    private String areaAsset;
     private String divArea;
+    private String locationAsset;
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -85,13 +90,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Spinner https://stackoverflow.com/a/29778386/7772358
-        Spinner spinnerDiv = findViewById(R.id.spinner_div);
         Spinner spinnerArea = findViewById(R.id.spinner_area);
+        Spinner spinnerLoc = findViewById(R.id.spinner_loc_main);
+        Spinner spinnerDiv = findViewById(R.id.spinner_div);
         Spinner spinnerDept = findViewById(R.id.spinner_dept);
 
 
-        ArrayAdapter<CharSequence> arrayAdapterFloor = ArrayAdapter
+        ArrayAdapter<CharSequence> arrayAdapterArea = ArrayAdapter
                 .createFromResource(this, R.array.area_array,
+                        R.layout.spinner_row);
+
+        ArrayAdapter<CharSequence> arrayAdapterLoc = ArrayAdapter
+                .createFromResource(this, R.array.array_loc_update,
                         R.layout.spinner_row);
 
         // Create an ArrayAdapter using the string array and a default spinner
@@ -117,25 +127,47 @@ public class MainActivity extends AppCompatActivity
                 android.R.layout.simple_spinner_item, items);*/
 
         // Apply the adapter to the spinner
-        spinnerArea.setAdapter(arrayAdapterFloor);
+        spinnerArea.setAdapter(arrayAdapterArea);
         spinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.v("floor", (String) parent.getItemAtPosition(position));
                 if (parent.getItemAtPosition(position).equals(AREA_OFFICE_PLANT)) {
-                    floorStage = AREA_OFFICE_PLANT;
+                    areaAsset = AREA_OFFICE_PLANT;
                 } else if (parent.getItemAtPosition(position).equals(AREA_PRODUKSI_BASIC_CARE)) {
-                    floorStage = AREA_PRODUKSI_BASIC_CARE;
+                    areaAsset = AREA_PRODUKSI_BASIC_CARE;
                 } else if (parent.getItemAtPosition(position).equals(AREA_PRODUKSI_HIGH_CARE)) {
-                    floorStage = AREA_PRODUKSI_HIGH_CARE;
+                    areaAsset = AREA_PRODUKSI_HIGH_CARE;
                 } else if (parent.getItemAtPosition(position).equals(AREA_PREPARASI_BASIC_CARE)) {
-                    floorStage = AREA_PREPARASI_BASIC_CARE;
+                    areaAsset = AREA_PREPARASI_BASIC_CARE;
                 } else if (parent.getItemAtPosition(position).equals(AREA_PREPARASI_HIGH_CARE)) {
-                    floorStage = AREA_PREPARASI_HIGH_CARE;
+                    areaAsset = AREA_PREPARASI_HIGH_CARE;
                 } else if (parent.getItemAtPosition(position).equals(AREA_ENGINEERING_MAINTENANCE)) {
-                    floorStage = AREA_ENGINEERING_MAINTENANCE;
+                    areaAsset = AREA_ENGINEERING_MAINTENANCE;
                 } else {
-                    floorStage = "";
+                    areaAsset = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinnerLoc.setAdapter(arrayAdapterLoc);
+        spinnerLoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.v("location", (String) parent.getItemAtPosition(position));
+                if (parent.getItemAtPosition(position).equals(LOCATION_CIKAMPEK)) {
+                    locationAsset = LOCATION_CIKAMPEK;
+                } else if (parent.getItemAtPosition(position).equals(LOCATION_CAKUNG)) {
+                    locationAsset = LOCATION_CAKUNG;
+                } else if (parent.getItemAtPosition(position).equals(LOCATION_IDC)) {
+                    locationAsset = LOCATION_IDC;
+                } else {
+                    locationAsset = "";
                 }
             }
 
@@ -264,7 +296,8 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new
                 Intent(MainActivity.this, ScanAssetActivity.class);
         intent.putExtra(DEPT_NAME, deptName);
-        intent.putExtra(ASSET_AREA, floorStage);
+        intent.putExtra(ASSET_AREA, areaAsset);
+        intent.putExtra(ASSET_LOCATION, locationAsset);
         intent.putExtra(DIV_AREA, divArea);
         startActivity(intent);
     }

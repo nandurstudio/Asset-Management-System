@@ -73,8 +73,8 @@
 
         <ListPreference
             android:defaultValue="1"
-            android:entries="@array/scanIndicator"
-            android:entryValues="@array/scanIndicatorValue"
+            android:entries="@array/scanStatus"
+            android:entryValues="@array/scanStatusValue"
             android:key="scan_result_indicator"
             android:summary="@string/scan_result_summary"
             android:title="@string/scan_result_title"

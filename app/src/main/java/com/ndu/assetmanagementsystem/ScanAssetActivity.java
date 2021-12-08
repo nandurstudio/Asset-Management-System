@@ -1,5 +1,52 @@
 package com.ndu.assetmanagementsystem;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+import static com.ndu.assetmanagementsystem.MainActivity.ASSET_AREA;
+import static com.ndu.assetmanagementsystem.MainActivity.ASSET_LOCATION;
+import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
+import static com.ndu.assetmanagementsystem.MainActivity.DIV_AREA;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
+import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_IMAGE_LINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_KETERANGAN;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_ASSET_BY_SYSTEM;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_ASSET;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA_UPDATE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NILAI_BELI;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_RFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_STATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TANGGAL_BELI;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTIMGLINK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
+import static com.ndu.simpletoaster.SimpleToaster.toaster;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -21,7 +68,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,58 +133,16 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import ir.androidexception.filepicker.dialog.SingleFilePickerDialog;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-import static com.ndu.assetmanagementsystem.MainActivity.ASSET_AREA;
-import static com.ndu.assetmanagementsystem.MainActivity.DEPT_NAME;
-import static com.ndu.assetmanagementsystem.MainActivity.DIV_AREA;
-import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.DATABASE_VERSION;
-import static com.ndu.assetmanagementsystem.SettingsActivity.SettingsFragment.SCAN_RESULT_INDICATOR;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ASSET_AREA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_DEPT_LOB_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_FIXED_ASSET_CODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_IMAGE_LINK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_KETERANGAN;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_ASSET_BY_SYSTEM;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_LOKASI_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_ASSET;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NAMA_PENGGUNA_UPDATE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_NILAI_BELI;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_RFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_STATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TANGGAL_BELI;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_TIMESTAMP;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_AKTUAL;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SELISIH;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_UNIT_SISTEM;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETCATEGORY;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTASSETDESCRIPTION;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTEMAIL;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTFIXEDASSETCODE;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTIMGLINK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOBPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTLOKASIPENGGUNA;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNAME;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNICK;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTNOTES;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTPENGGUNAID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTRFID;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSTATUS;
-import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
-import static com.ndu.simpletoaster.SimpleToaster.toaster;
-
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private static final String XML_PATH = "xml_path";
     private static final String KEY_RFID_TAG = "key_rfid_tag";
     // --Commented out by Inspection (14-Jan-21 15:25):private static final String DEMO_MODE = "1";
     public static final String AMEN_MODE = "2";
+    private static final String FILTER_STATE = "filter_state";
+    private static final String STATE_SHOW_ALL = "state_show_all";
+    private static final String STATE_SCANNED = "state_scanned";
+    private static final String STATE_UNSCANNED = "state_unscanned";
     private AssetsAdapter mAdapter;
     private AssetsAdapterV2 mAdapterV2;
     private final List<Asset> assetList = new ArrayList<>();
@@ -147,12 +154,12 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private DatabaseHelperV2 db_v2;
     //RFID
     RfidManager mRfidManager = null;
-    private String assetLocation;
     private Drawable dialogIcon;
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
     private String sharedDBVersion;
     private String assetArea;
+    private String assetLocation;
     private String assetCode;
     private String sharedTag;
     private String assetTag;
@@ -163,6 +170,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private String div;
     private String scanResult;
     private String formattedDate;
+    private String assetByDept;
+//    private SpinnerAdapter arrayStatus;
 //    private ProgressBar spinner;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n", "SimpleDateFormat"})
@@ -188,7 +197,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
-        scanResult = preferences.getString(SCAN_RESULT_INDICATOR, "B");
+        editor.putString(FILTER_STATE, STATE_SHOW_ALL);
+        editor.apply();
+        scanResult = preferences.getString(SCAN_RESULT_INDICATOR, "Baik");
         Log.d(TAG, "onCreate: SCAN_RESULTINDICATOR: " + scanResult);
 
         toolbar.setTitle(getResources().getString(R.string.assets_list));
@@ -213,10 +224,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             dept = (String) bundle.get(DEPT_NAME);
             div = (String) bundle.get(DIV_AREA);
             assetArea = (String) bundle.get(ASSET_AREA);
-            assetLocation = "%" + dept;
+            assetLocation = (String) bundle.get(ASSET_LOCATION);
+            assetByDept = "%"+dept;
             toolbar.setTitle(getResources().getString(R.string.assets_list) + " " + dept);
-            Log.d(TAG, "onCreate assetLocation: " + assetLocation);
             Log.d(TAG, "onCreate assetArea: " + assetArea);
+            Log.d(TAG, "onCreate assetLocation: " + assetLocation);
             Log.d(TAG, "onCreate div: " + div);
             Log.d(TAG, "onCreate dept: " + dept);
         }
@@ -243,11 +255,11 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         //Todo: Hidden scanned asset
         /*Add all assets in Asset.db to recyclerView*/
-        assetListV2.addAll(db_v2.getAllAssetsByDept(assetLocation));
+        assetListV2.addAll(db_v2.getAllAssetsByDept(assetByDept));
         //assetListV2.addAll(db_v2.getAllAssetsByExist());
         mAdapterV2 = new AssetsAdapterV2(assetListV2);
 
-        assetList.addAll(db.getAllAssetsByDept(assetLocation));
+        assetList.addAll(db.getAllAssetsByDept(assetByDept));
         mAdapter = new AssetsAdapter(assetList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -513,9 +525,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     public boolean onQueryTextChange(String query) {
         // Here is where we are going to implement the filter logic
         if (sharedDBVersion.equals(AMEN_MODE)) {
-            mAdapterV2.filter(query, db_v2, assetLocation);
+            mAdapterV2.filter(query, db_v2, assetByDept);
         } else {
-            mAdapter.filter(query, db, assetLocation);
+            mAdapter.filter(query, db, assetByDept);
         }
         return false;
     }
@@ -523,9 +535,9 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (sharedDBVersion.equals(AMEN_MODE)) {
-            mAdapterV2.filter(query, db_v2, assetLocation);
+            mAdapterV2.filter(query, db_v2, assetByDept);
         } else {
-            mAdapter.filter(query, db, assetLocation);
+            mAdapter.filter(query, db, assetByDept);
         }
         return false;
     }
@@ -586,13 +598,25 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 } else {
                     showAllAssetsInDb();
                 }
+                editor.putString(FILTER_STATE, STATE_SHOW_ALL);
+                editor.apply();
                 return true;
 
             case R.id.action_sort_by_scanned:
                 if (sharedDBVersion.equals(AMEN_MODE)) {
                     shortByScannedV2();
                 } else {
-                    sortByScanned();
+                    int totalScannedAsset = db.getAssetsCountByExist("%", scanResult);
+                    Log.d(TAG, "onOptionsItemSelected: " + totalScannedAsset);
+                    if (totalScannedAsset == 0) {
+                        toaster(ScanAssetActivity.this, "No scanned asset yet!", 0);
+                        editor.putString(FILTER_STATE, STATE_SHOW_ALL);
+                        editor.apply();
+                    } else {
+                        sortByScanned();
+                        editor.putString(FILTER_STATE, STATE_SCANNED);
+                        editor.apply();
+                    }
                 }
                 return true;
 
@@ -602,6 +626,8 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 } else {
                     sortByUnScanned();
                 }
+                editor.putString(FILTER_STATE, STATE_UNSCANNED);
+                editor.apply();
                 return true;
         }
 
@@ -616,6 +642,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void sortByScanned() {
         assetList.clear();
         assetList.addAll(db.getAllAssetsByScanned(scanResult));
@@ -624,6 +651,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         liveCountAll();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void sortByUnScanned() {
         assetList.clear();
         assetList.addAll(db.getAllAssetsByUnscanned());
@@ -672,18 +700,21 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void refreshAssetList() {
-        assetList.addAll(db.getAllAssetsByDept(assetLocation));
+        assetList.addAll(db.getAllAssetsByDept(assetByDept));
         mAdapter.notifyDataSetChanged();
         toggleEmptyAssets();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void refreshAssetListV2() {
-        assetListV2.addAll(db_v2.getAllAssetsByDept(assetLocation));
+        assetListV2.addAll(db_v2.getAllAssetsByDept(assetByDept));
         mAdapterV2.notifyDataSetChanged();
         toggleEmptyAssetsV2();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void showAllAssetsInDb() {
         assetList.clear();
         assetList.addAll(db.getAllAssets());
@@ -692,6 +723,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         liveCountAll();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void showAllAssetsInDbV2() {
         assetListV2.clear();
         assetListV2.addAll(db_v2.getAllAssets());
@@ -706,6 +738,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         startActivity(settingsIntent);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteAssetDatabase() {
         Log.d(TAG, "deleteAssetDatabase: true");
         db.dropTable();
@@ -714,6 +747,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteAssetDatabaseV2() {
         db_v2.dropTable();
         assetListV2.clear();
@@ -724,7 +758,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private void goToResult() {
         Intent intent = new
                 Intent(ScanAssetActivity.this, ScanResultActivity.class);
-        intent.putExtra(DEPT_NAME, assetLocation);
+        intent.putExtra(DEPT_NAME, assetByDept);
         startActivity(intent);
     }
 
@@ -732,6 +766,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Inserting new asset in db
      * and refreshing the list
      */
+    @SuppressLint("NotifyDataSetChanged")
     private void createAsset(String asset) {
         // inserting asset in db and getting
         // newly inserted asset id
@@ -765,10 +800,24 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Updating asset in db and updating
      * item in the list by its position
      */
-    private void updateAsset(String rfid, int position) {
+    private void updateAsset(String rfid, int position,
+                             int unitAktual,
+                             String status,
+                             String deptLobUpdate,
+                             String lokasiUpdate,
+                             String namaPenggunaUpdate,
+                             String namaPenanggungJawabUpdate,
+                             String keterangan) {
         Asset asset = assetList.get(position);
         // updating asset text
         asset.setTxtRfid(rfid);
+        asset.setIntUnitAktual(unitAktual);
+        asset.setTxtStatus(status);
+        asset.setTxtDeptLobUpdate(deptLobUpdate);
+        asset.setTxtLokasiUpdate(lokasiUpdate);
+        asset.setTxtNamaPenggunaUpdate(namaPenggunaUpdate);
+        asset.setTxtNamaPenanggungJawabUpdate(namaPenanggungJawabUpdate);
+        asset.setTxtKeterangan(keterangan);
 
         // updating asset in db
         db.updateAsset(asset);
@@ -803,16 +852,15 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssetsV2();
     }
 
-    private void updateStatusAsset(int position, String rfid, int unitActual, int unitSelisih,
-                                   String deptLob, String locationUpdate, String areaAsset, String timestamp) {
+    private void updateStatusAsset(int position, String rfid, String deptLob,
+                                   String assetLocation, String assetArea, String timestamp) {
         Asset asset = assetList.get(position);
         // updating asset text
         asset.setTxtStatus(scanResult);
-        asset.setIntUnitAktual(unitActual);
-        asset.setIntUnitSelisih(unitActual - unitSelisih);
+        asset.setIntUnitAktual(1);
         asset.setTxtDeptLobUpdate(deptLob);
-        asset.setTxtLokasiUpdate(locationUpdate);
-        asset.setTxtAssetArea(areaAsset);
+        asset.setTxtLokasiUpdate(assetLocation);
+        asset.setTxtAssetArea(assetArea);
         asset.setTimestamp(timestamp);
 
         // updating asset in db
@@ -847,7 +895,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * Deleting aaset from SQLite and removing the
      * item from the list by its position
      */
-    private void deleteAsset(int position) {
+/*    private void deleteAsset(int position) {
         // deleting the asset from db
         db.deleteAsset(assetList.get(position));
 
@@ -856,7 +904,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         mAdapter.notifyItemRemoved(position);
 
         toggleEmptyAssets();
-    }
+    }*/
 
 /*    private void deleteAssetV2(int position) {
         db_v2.deleteAsset(assetListV2.get(position));
@@ -864,7 +912,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         mAdapterV2.notifyItemRemoved(position);
         toggleEmptyAssetsV2();
     }*/
-
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteTagByItemCodeV2(int position) {
         AssetV2 assetV2 = assetListV2.get(position);
         assetV2.setTxtRfid("");
@@ -873,6 +921,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssetsV2();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteTagByItemCode(int position) {
         Asset asset = assetList.get(position);
         asset.setTxtRfid("");
@@ -881,6 +930,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteStatusByItemCode(int position) {
         Asset asset = assetList.get(position);
         asset.setTxtStatus("");
@@ -889,6 +939,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         toggleEmptyAssets();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deleteStatusByItemCodeV2(int position) {
         AssetV2 assetV2 = assetListV2.get(position);
         assetV2.setTxtStatus("");
@@ -964,6 +1015,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
      * when shouldUpdate=true, it automatically displays old asset and changes the
      * button text to UPDATE
      */
+    @SuppressLint("SetTextI18n")
     private void showAssetDialog(final Asset asset, final int position) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
         View view = layoutInflaterAndroid.inflate(R.layout.asset_dialog, null);
@@ -973,11 +1025,26 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
         //final EditText inputRfidAsset = view.findViewById(R.id.editText_assetRfid);
         final TextInputEditText inputPic = view.findViewById(R.id.textInput_txtNamaPengguna);
+        final TextInputEditText inputNamaPenggunaUpdate = view.findViewById(R.id.textInput_txtNamaPenggunaUpdate);
+        final TextInputEditText inputNamaPenanggungJawab = view.findViewById(R.id.textInput_txtNamaPenanggungJawabUpdate);
+        final TextInputEditText inputKeterangan = view.findViewById(R.id.textInput_txtKeterangan);
         final TextInputEditText inputRfidNumber = view.findViewById(R.id.textInput_rfid_tag_number);
+        final TextInputEditText inputUnitActual = view.findViewById(R.id.textInputDia_intUnitAktual);
         inputPic.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
         dialogTitle.setText(getResources().getString(R.string.lbl_edit_asset_title));
-
+        final Spinner spinnerStatus = view.findViewById(R.id.spinner_status);
+        final Spinner spinnerLobUpdate = view.findViewById(R.id.spinner_lob_update);
+        final Spinner spinnerLocUpdate = view.findViewById(R.id.spinner_loc_update);
+        ArrayAdapter<CharSequence> arrayStatus = ArrayAdapter
+                .createFromResource(this, R.array.scanStatus,
+                        R.layout.spinner_row);
+        ArrayAdapter<CharSequence> arrayLobUpdate = ArrayAdapter
+                .createFromResource(this, R.array.plant_array,
+                        R.layout.spinner_row);
+        ArrayAdapter<CharSequence> arrayLocUpdate = ArrayAdapter
+                .createFromResource(this, R.array.array_loc_update,
+                        R.layout.spinner_row);
         sharedTag = preferences.getString(KEY_RFID_TAG, "");
         //Cek apakah aset tidak null
         if (asset != null) {
@@ -985,8 +1052,16 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             if (!asset.getTxtRfid().equals("")) {
                 //Dapatkan no RFID dari database
                 inputRfidNumber.setText(asset.getTxtRfid());
-                Log.d(TAG, "showAssetDialog: !null " + asset.getTxtRfid());
-                Log.d(TAG, "showAssetDialog: " + asset.getTxtNamaPengguna());
+                Log.d(TAG, "showAssetDialog !null RFID Tag: " + asset.getTxtRfid());
+                Log.d(TAG, "showAssetDialog Nama pengguna: " + asset.getTxtNamaPengguna());
+                Log.d(TAG, "showAssetDialog Unit actual: " + asset.getIntUnitAktual());
+                Log.d(TAG, "showAssetDialog Status: " + asset.getTxtStatus());
+                Log.d(TAG, "showAssetDialog Dept LOB update: " + asset.getTxtDeptLobUpdate());
+                Log.d(TAG, "showAssetDialog Lokasi update: " + asset.getTxtLokasiUpdate());
+                Log.d(TAG, "showAssetDialog Nama pengguna update: " + asset.getTxtNamaPenggunaUpdate());
+                Log.d(TAG, "showAssetDialog Nama penanggung jawab: " + asset.getTxtNamaPenanggungJawab());
+                Log.d(TAG, "showAssetDialog Keterangan: " + asset.getTxtKeterangan());
+                Log.d(TAG, "showAssetDialog Link gambar: " + asset.getTxtImageLink());
             } else {
                 Log.d(TAG, "showAssetDialog: null " + sharedTag);
                 //Dapatkan no RFID dari sharedTag/RFID tag yang belum terdaftar pada asset
@@ -994,6 +1069,35 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
             }
             //Dapatkan nama nick PIC dari database. contoh: NDU
             inputPic.setText(asset.getTxtNamaPengguna());
+            inputUnitActual.setText(Integer.toString(asset.getIntUnitAktual()));
+            inputNamaPenggunaUpdate.setText(asset.getTxtNamaPenggunaUpdate());
+            inputNamaPenanggungJawab.setText(asset.getTxtNamaPenanggungJawabUpdate());
+            inputKeterangan.setText(asset.getTxtKeterangan());
+            spinnerStatus.setAdapter(arrayStatus);
+            String shortStatus = asset.getTxtStatus();
+            String statusLong;
+            switch (shortStatus) {
+                case "I":
+                    statusLong = "Idle (Baik Tidak Dapat Digunakan)";
+                    break;
+                case "RA":
+                    statusLong = "Rusak Dapat Diperbaiki";
+                    break;
+                case "RB":
+                    statusLong = "Rusak Tidak Dapat Diperbaiki";
+                    break;
+                case "TK":
+                    statusLong = "Tidak Ketemu";
+                    break;
+                default:
+                    statusLong = "Baik";
+                    break;
+            }
+            spinnerStatus.setSelection(arrayStatus.getPosition(statusLong));
+            spinnerLobUpdate.setAdapter(arrayLobUpdate);
+            spinnerLobUpdate.setSelection(arrayLobUpdate.getPosition(asset.getTxtDeptLobUpdate()));
+            spinnerLocUpdate.setAdapter(arrayLocUpdate);
+            spinnerLocUpdate.setSelection(arrayLocUpdate.getPosition(asset.getTxtLokasiUpdate()));
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -1050,7 +1154,34 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 if (asset != null) {
                     if (!db.checkIsRfidInDB(sharedTag)) {
                         // update asset by it's id
-                        updateAsset(inputRfidNumber.getText().toString(), position);
+                        String statusAsset = spinnerStatus.getSelectedItem().toString();
+                        String statusAssetShort;
+                        switch (statusAsset) {
+                            case "Baik":
+                                statusAssetShort = "B";
+                                break;
+                            case "Rusak Dapat Diperbaiki":
+                                statusAssetShort = "RA";
+                                break;
+                            case "Rusak Tidak Dapat Diperbaiki":
+                                statusAssetShort = "RB";
+                                break;
+                            case "Tidak Ketemu":
+                                statusAssetShort = "TK";
+                                break;
+                            default:
+                                statusAssetShort = "I";
+                                break;
+                        }
+                        updateAsset(inputRfidNumber.getText().toString(), position,
+                                Integer.parseInt(Objects.requireNonNull(inputUnitActual.getText()).toString()),
+                                statusAssetShort,
+                                spinnerLobUpdate.getSelectedItem().toString(),
+                                spinnerLocUpdate.getSelectedItem().toString(),
+                                Objects.requireNonNull(inputNamaPenggunaUpdate.getText()).toString(),
+                                Objects.requireNonNull(inputNamaPenanggungJawab.getText()).toString(),
+                                Objects.requireNonNull(inputKeterangan.getText()).toString());
+                        toaster(ScanAssetActivity.this, "Data updated", 0);
                     } else {
                         toaster(ScanAssetActivity.this, getResources().getString(R.string.msg_tag_in_use), 0);
                         alertDialog.dismiss();
@@ -1162,15 +1293,16 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
 //        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Objects.requireNonNull(intent.getAction()).equals(GeneralString.Intent_RFIDSERVICE_CONNECTED)) {
-                String PackageName = intent.getStringExtra("PackageName");
+                //String PackageName = intent.getStringExtra("PackageName");
 
                 // / make sure this AP does already connect with RFID service (after call RfidManager.InitInstance(this)
                 //String ver = "";
                 //ver = mRfidManager.GetServiceVersion();
-                String api_ver = mRfidManager.GetAPIVersion();
+                //String api_ver = mRfidManager.GetAPIVersion();
 //                tv1.setText(PackageName + "," + ver + " , " + api_ver);
 
                 Toast.makeText(ScanAssetActivity.this, "Intent_RFIDSERVICE_CONNECTED", Toast.LENGTH_SHORT).show();
@@ -1181,19 +1313,19 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                  * response : 0=RESPONSE_OPERATION_SUCCESS ; 1=RESPONSE_OPERATION_FINISH ; 2=RESPONSE_OPERATION_TIMEOUT_FAIL ; 6=RESPONSE_PASSWORD_FAIL ; 7=RESPONSE_OPERATION_FAIL ;251=DEVICE_BUSY
                  * */
 
-                int type = intent.getIntExtra(GeneralString.EXTRA_DATA_TYPE, -1);
-                int response = intent.getIntExtra(GeneralString.EXTRA_RESPONSE, -1);
-                double data_rssi = intent.getDoubleExtra(GeneralString.EXTRA_DATA_RSSI, 0);
+                //int type = intent.getIntExtra(GeneralString.EXTRA_DATA_TYPE, -1);
+                //int response = intent.getIntExtra(GeneralString.EXTRA_RESPONSE, -1);
+                //double data_rssi = intent.getDoubleExtra(GeneralString.EXTRA_DATA_RSSI, 0);
 
-                String PC = intent.getStringExtra(GeneralString.EXTRA_PC);
+                //String PC = intent.getStringExtra(GeneralString.EXTRA_PC);
                 String EPC = intent.getStringExtra(GeneralString.EXTRA_EPC);
-                String TID = intent.getStringExtra(GeneralString.EXTRA_TID);
-                String ReadData = intent.getStringExtra(GeneralString.EXTRA_ReadData);
-                int EPC_length = intent.getIntExtra(GeneralString.EXTRA_EPC_LENGTH, 0);
-                int TID_length = intent.getIntExtra(GeneralString.EXTRA_TID_LENGTH, 0);
-                int ReadData_length = intent.getIntExtra(GeneralString.EXTRA_ReadData_LENGTH, 0);
+                //String TID = intent.getStringExtra(GeneralString.EXTRA_TID);
+                //String ReadData = intent.getStringExtra(GeneralString.EXTRA_ReadData);
+                //int EPC_length = intent.getIntExtra(GeneralString.EXTRA_EPC_LENGTH, 0);
+                //int TID_length = intent.getIntExtra(GeneralString.EXTRA_TID_LENGTH, 0);
+                //int ReadData_length = intent.getIntExtra(GeneralString.EXTRA_ReadData_LENGTH, 0);
 
-                String Data = "response = " + response + " , EPC = " + EPC + "\r TID = " + TID;
+                //String Data = "response = " + response + " , EPC = " + EPC + "\r TID = " + TID;
 
 //                tv1.setText(Data);
 //                Log.w(TAG, "++++ [Intent_RFIDSERVICE_TAG_DATA] ++++");
@@ -1243,7 +1375,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                     liveCountAll();
                 } else {
                     if (db.checkIsRfidInDB(EPC)) {
-//
 //                    this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 //                    this.dialog.setMessage("Scanning Asset...");
 //                    this.dialog.show();
@@ -1255,10 +1386,23 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         Log.d(TAG, "Asset Status bfr: " + mAdapter.getAssetStatus(tagPos));
                         Log.d(TAG, "Rfid Tag Position: " + tagPos);
 
-                        updateStatusAsset(tagPos, EPC, 1, 1, dept, div, assetArea, formattedDate);
-                        recyclerView.scrollToPosition(tagPos);
-                        assetList.clear();
-                        assetList.addAll(db.getAllAssetsByUnscanned());
+                        updateStatusAsset(tagPos, EPC, dept, assetLocation, assetArea, formattedDate);
+                        String stateFilter = preferences.getString(FILTER_STATE, STATE_SHOW_ALL);
+                        String showAll = STATE_SHOW_ALL;
+                        if (stateFilter.equals(STATE_SCANNED)) {
+                            recyclerView.scrollToPosition(tagPos);
+                            assetList.clear();
+                            assetList.addAll(db.getAllAssetsByScanned(scanResult));
+                        } else if (stateFilter.equals(STATE_UNSCANNED)) {
+                            recyclerView.scrollToPosition(tagPos);
+                            assetList.clear();
+                            assetList.addAll(db.getAllAssetsByUnscanned());
+                        } else {
+                            recyclerView.scrollToPosition(tagPos);
+                            assetList.clear();
+                            assetList.addAll(db.getAllAssets());
+                        }
+
 
                         Log.d(TAG, "Asset Desc: " + mAdapter.getAssetDesc(tagPos));
                         Log.d(TAG, "Asset Status: " + mAdapter.getAssetStatus(tagPos));
@@ -1324,10 +1468,10 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         soundBeeps.start();
     }
 
-    /*https://stackoverflow.com/a/8018905/7772358*/
-    public void displayExceptionMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
+//    /*https://stackoverflow.com/a/8018905/7772358*/
+//    public void displayExceptionMessage(String msg) {
+//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+//    }
 
     @SuppressWarnings("LoopConditionNotUpdatedInsideLoop")
     protected String getNodeValue(String tag, Element element) {

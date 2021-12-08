@@ -154,6 +154,7 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
 //    }
 // --Commented out by Inspection STOP (14-Jan-21 15:26)
 
+    @SuppressLint("Range")
     public List<AssetV2> getAllAssets() {
         List<AssetV2> assets = new ArrayList<>();
 
@@ -199,6 +200,7 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
         return assets;
     }
 
+    @SuppressLint("Range")
     public List<AssetV2> getAllAssetsByDept(String assetLocation) {
         List<AssetV2> assets = new ArrayList<>();
 

@@ -36,7 +36,7 @@ public class DataXmlExporter {
         if (c.moveToFirst()) {
             do {
                 try {
-                    String tableName = c.getString(c.getColumnIndex("Asset"));
+                    @SuppressLint("Range") String tableName = c.getString(c.getColumnIndex("Asset"));
                     Log.d("MyApplication.APP_NAME", "table name " + tableName);
 
                     // skip metadata, sequence, and uidx (unique indexes)
