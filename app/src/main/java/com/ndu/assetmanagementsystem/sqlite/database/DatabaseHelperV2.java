@@ -1,20 +1,5 @@
 package com.ndu.assetmanagementsystem.sqlite.database;
 
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
-
-import com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DECACQUISITION;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_DTMTIMESTAMP;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTAREA;
@@ -34,6 +19,26 @@ import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.COLUMN_TXTSUPERVISORID;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.CREATE_TABLEV2;
 import static com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2.TABLE_NAME_V2;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Department.COLUMN_DEPT_CODE;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Department.COLUMN_DEPT_ID;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Department.COLUMN_DEPT_NAME;
+import static com.ndu.assetmanagementsystem.sqlite.database.model.Department.TABLE_NAME_DEPT;
+
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+import com.ndu.assetmanagementsystem.sqlite.database.model.AssetV2;
+import com.ndu.assetmanagementsystem.sqlite.database.model.Department;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 //import static com.ndu.assetmanagementsystem.sqlite.database.model.Asset.COLUMN_ID;
 
@@ -244,6 +249,36 @@ public class DatabaseHelperV2 extends SQLiteOpenHelper {
 
         // return assets list
         return assets;
+    }
+
+    public List<Department> getAllDept() {
+        List<Department> departmentList = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME_DEPT + " WHERE " + COLUMN_DEPT_NAME+ " ORDER BY " +
+//                Asset.COLUMN_TIMESTAMP + " DESC";
+                /*COLUMN_ID*/COLUMN_DEPT_ID + " ASC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Department dept = new Department();
+//                asset.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                dept.setTxtDepartementCode(String.valueOf(cursor.getColumnIndex(COLUMN_DEPT_CODE)));
+                dept.setTxtDepartementName(String.valueOf(cursor.getColumnIndex(COLUMN_DEPT_NAME)));
+
+                departmentList.add(dept);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return assets list
+        return departmentList;
     }
 
 // --Commented out by Inspection START (14-Jan-21 15:26):

@@ -39,6 +39,7 @@
         <item>Preparasi Basic Care</item>
         <item>Preparasi High Care</item>
         <item>Engineering Maintenace</item>
+        <item>All Area</item>
     </string-array>
 
     <string-array name="div_array">
@@ -52,6 +53,7 @@
         <item>MNF PLANT SHP DIRECT</item>
         <item>MNF QA PLANT</item>
         <item>MNF PREPARATION PLANT</item>
+        <item>MNF PPC PLANT</item>
         <item>MNF PLANT SHP MAINTENANCE</item>
         <item>MNF KN GENERAL AFFAIR</item>
         <item>MNF KN HRD</item>

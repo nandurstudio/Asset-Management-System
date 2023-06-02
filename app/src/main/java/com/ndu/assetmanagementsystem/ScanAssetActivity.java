@@ -133,6 +133,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import ir.androidexception.filepicker.dialog.SingleFilePickerDialog;
 
+// Untuk mencegah overthreading, adanya di ezconfig RFID Device
+// SCAN SETTING WORKMODE: COMPPREHENSIVE MODE, pakai CONTINOUS (dilarang pakai multi-tag)
+
+// TRIGGER KEY: ALTERNATE (akan scan terus-menerus meskipun di clikc trigger sekali)
+// TRIGGER KEY: ONCE (hanya bisa di trigger sekali meskipun di tahan trigger keynya)
+// TRIGGER KEY: CONTINOUS (Klik tahan untuk scan)
+
+
+
+
+
+
 public class ScanAssetActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "rfid";
     private static final String XML_PATH = "xml_path";
@@ -171,7 +183,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
     private String scanResult;
     private String formattedDate;
     private String assetByDept;
-//    private SpinnerAdapter arrayStatus;
+    //    private SpinnerAdapter arrayStatus;
 //    private ProgressBar spinner;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n", "SimpleDateFormat"})
@@ -343,51 +355,56 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         e.printStackTrace();
                     }
                 } else {
-                    clearSharedPref();
-                    final Asset asset = assetList.get(position);
-                    String txtFixedAssetCode = asset.getTxtFixedAssetCode();
-                    String txtNamaAsset = asset.getTxtNamaAsset();
-                    int intUnitSistem = asset.getIntUnitSistem();
-                    String dtmTanggalBeli = asset.getDtmTanggalBeli();
-                    int intNilaiBeli = asset.getIntNilaiBeli();
-                    int intUnitAktual = asset.getIntUnitAktual();
-                    int intUnitSelisih = asset.getIntUnitSelisih();
-                    String txtStatus = asset.getTxtStatus();
-                    String txtDeptLob = asset.getTxtDeptLob();
-                    String txtDeptLobUpdate = asset.getTxtDeptLobUpdate();
-                    String txtLokasiAssetBySystem = asset.getTxtLokasiAssetBySystem();
-                    String txtLokasiUpdate = asset.getTxtLokasiUpdate();
-                    String txtNamaPengguna = asset.getTxtNamaPengguna();
-                    String txtNamaPenggunaUpdate = asset.getTxtNamaPenggunaUpdate();
-                    String txtNamaPenanggungJawab = asset.getTxtNamaPenanggungJawab();
-                    String txtNamaPenanggungJawabUpdate = asset.getTxtNamaPenanggungJawabUpdate();
-                    String txtKeterangan = asset.getTxtKeterangan();
-                    String txtRfid = asset.getTxtRfid();
-                    String txtImageLink = asset.getTxtImageLink();
-                    String txtAssetArea = asset.getTxtAssetArea();
-                    String timestamp = asset.getTimestamp();
+                    try {
+                        clearSharedPref();
+                        final Asset asset = assetList.get(position);
+                        String txtFixedAssetCode = asset.getTxtFixedAssetCode();
+                        String txtNamaAsset = asset.getTxtNamaAsset();
+                        int intUnitSistem = asset.getIntUnitSistem();
+                        String dtmTanggalBeli = asset.getDtmTanggalBeli();
+                        int intNilaiBeli = asset.getIntNilaiBeli();
+                        int intUnitAktual = asset.getIntUnitAktual();
+                        int intUnitSelisih = asset.getIntUnitSelisih();
+                        String txtStatus = asset.getTxtStatus();
+                        String txtDeptLob = asset.getTxtDeptLob();
+                        String txtDeptLobUpdate = asset.getTxtDeptLobUpdate();
+                        String txtLokasiAssetBySystem = asset.getTxtLokasiAssetBySystem();
+                        String txtLokasiUpdate = asset.getTxtLokasiUpdate();
+                        String txtNamaPengguna = asset.getTxtNamaPengguna();
+                        String txtNamaPenggunaUpdate = asset.getTxtNamaPenggunaUpdate();
+                        String txtNamaPenanggungJawab = asset.getTxtNamaPenanggungJawab();
+                        String txtNamaPenanggungJawabUpdate = asset.getTxtNamaPenanggungJawabUpdate();
+                        String txtKeterangan = asset.getTxtKeterangan();
+                        String txtRfid = asset.getTxtRfid();
+                        String txtImageLink = asset.getTxtImageLink();
+                        String txtAssetArea = asset.getTxtAssetArea();
+                        String timestamp = asset.getTimestamp();
 
-                    editor.putString(COLUMN_FIXED_ASSET_CODE, txtFixedAssetCode);
-                    editor.putString(COLUMN_NAMA_ASSET, txtNamaAsset);
-                    editor.putInt(COLUMN_UNIT_SISTEM, intUnitSistem);
-                    editor.putString(COLUMN_TANGGAL_BELI, dtmTanggalBeli);
-                    editor.putInt(COLUMN_NILAI_BELI, intNilaiBeli);
-                    editor.putInt(COLUMN_UNIT_AKTUAL, intUnitAktual);
-                    editor.putInt(COLUMN_UNIT_SELISIH, intUnitSelisih);
-                    editor.putString(COLUMN_STATUS, txtStatus);
-                    editor.putString(COLUMN_DEPT_LOB, txtDeptLob);
-                    editor.putString(COLUMN_DEPT_LOB_UPDATE, txtDeptLobUpdate);
-                    editor.putString(COLUMN_LOKASI_ASSET_BY_SYSTEM, txtLokasiAssetBySystem);
-                    editor.putString(COLUMN_LOKASI_UPDATE, txtLokasiUpdate);
-                    editor.putString(COLUMN_NAMA_PENGGUNA, txtNamaPengguna);
-                    editor.putString(COLUMN_NAMA_PENGGUNA_UPDATE, txtNamaPenggunaUpdate);
-                    editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB, txtNamaPenanggungJawab);
-                    editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, txtNamaPenanggungJawabUpdate);
-                    editor.putString(COLUMN_KETERANGAN, txtKeterangan);
-                    editor.putString(COLUMN_RFID, txtRfid);
-                    editor.putString(COLUMN_IMAGE_LINK, txtImageLink);
-                    editor.putString(COLUMN_ASSET_AREA, txtAssetArea);
-                    editor.putString(COLUMN_TIMESTAMP, timestamp);
+                        editor.putString(COLUMN_FIXED_ASSET_CODE, txtFixedAssetCode);
+                        editor.putString(COLUMN_NAMA_ASSET, txtNamaAsset);
+                        editor.putInt(COLUMN_UNIT_SISTEM, intUnitSistem);
+                        editor.putString(COLUMN_TANGGAL_BELI, dtmTanggalBeli);
+                        editor.putInt(COLUMN_NILAI_BELI, intNilaiBeli);
+                        editor.putInt(COLUMN_UNIT_AKTUAL, intUnitAktual);
+                        editor.putInt(COLUMN_UNIT_SELISIH, intUnitSelisih);
+                        editor.putString(COLUMN_STATUS, txtStatus);
+                        editor.putString(COLUMN_DEPT_LOB, txtDeptLob);
+                        editor.putString(COLUMN_DEPT_LOB_UPDATE, txtDeptLobUpdate);
+                        editor.putString(COLUMN_LOKASI_ASSET_BY_SYSTEM, txtLokasiAssetBySystem);
+                        editor.putString(COLUMN_LOKASI_UPDATE, txtLokasiUpdate);
+                        editor.putString(COLUMN_NAMA_PENGGUNA, txtNamaPengguna);
+                        editor.putString(COLUMN_NAMA_PENGGUNA_UPDATE, txtNamaPenggunaUpdate);
+                        editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB, txtNamaPenanggungJawab);
+                        editor.putString(COLUMN_NAMA_PENANGGUNG_JAWAB_UPDATE, txtNamaPenanggungJawabUpdate);
+                        editor.putString(COLUMN_KETERANGAN, txtKeterangan);
+                        editor.putString(COLUMN_RFID, txtRfid);
+                        editor.putString(COLUMN_IMAGE_LINK, txtImageLink);
+                        editor.putString(COLUMN_ASSET_AREA, txtAssetArea);
+                        editor.putString(COLUMN_TIMESTAMP, timestamp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 editor.apply();
                 goToDetail();
@@ -1083,7 +1100,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                 case "RA":
                     statusLong = "Rusak Dapat Diperbaiki";
                     break;
-                case "RB":
+                case "RD":
                     statusLong = "Rusak Tidak Dapat Diperbaiki";
                     break;
                 case "TK":
@@ -1164,7 +1181,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                                 statusAssetShort = "RA";
                                 break;
                             case "Rusak Tidak Dapat Diperbaiki":
-                                statusAssetShort = "RB";
+                                statusAssetShort = "RD";
                                 break;
                             case "Tidak Ketemu":
                                 statusAssetShort = "TK";
@@ -1289,6 +1306,7 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
         }
     }
 
+    private ProgressDialog progressDoalog;
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
 
 //        private final ProgressDialog dialog = new ProgressDialog(ScanAssetActivity.this);
@@ -1341,7 +1359,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
 
                 //scan get position
                 if (sharedDBVersion.equals(AMEN_MODE)) {
-
                     if (db_v2.checkIsRfidInDB(EPC)) {
 //
 //                    this.dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -1367,7 +1384,6 @@ public class ScanAssetActivity extends AppCompatActivity implements SearchView.O
                         editor.putString(KEY_RFID_TAG, EPC);
                         editor.apply();
                         Log.d(TAG, "onReceive: Tag " + EPC + " unregistered, saved to sharedPref");
-
                         //createAsset(EPC);
                     }
                     mAdapterV2.notifyDataSetChanged();

@@ -25,8 +25,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ndu.assetmanagementsystem.sqlite.database.DatabaseHelperV2;
+import com.ndu.assetmanagementsystem.sqlite.database.model.Department;
 import com.ndu.dialoginfoappversion.AppVersionDetail;
 import com.ndu.shareappvia.ShareAppVia;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,7 +45,8 @@ public class MainActivity extends AppCompatActivity
     private static final String DEPT_PRD_DIRECT = "MNF PLANT SHP INDIRECT";
     private static final String DEPT_PRD_INDIRECT = "MNF PLANT SHP DIRECT";
     private static final String DEPT_QA = "MNF QA PLANT";
-    private static final String DEPT_PPC_PREP = "MNF PREPARATION PLANT";
+    private static final String DEPT_PREP = "MNF PREPARATION PLANT";
+    private static final String DEPT_PPC = "MNF PPC PLANT";
     private static final String DEPT_MAINTENANCE = "MNF PLANT SHP MAINTENANCE";
     private static final String DEPT_GA = "MNF KN GENERAL AFFAIR";
     private static final String DEPT_HR = "MNF KN HRD";
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity
     private String areaAsset;
     private String divArea;
     private String locationAsset;
+    private DatabaseHelperV2 db_v2;
+    private final List<Department> deptList = new ArrayList<>();
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -88,12 +96,18 @@ public class MainActivity extends AppCompatActivity
         sharedPrefs.edit();
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        db_v2 = new DatabaseHelperV2(this);
 
         //Spinner https://stackoverflow.com/a/29778386/7772358
         Spinner spinnerArea = findViewById(R.id.spinner_area);
         Spinner spinnerLoc = findViewById(R.id.spinner_loc_main);
         Spinner spinnerDiv = findViewById(R.id.spinner_div);
         Spinner spinnerDept = findViewById(R.id.spinner_dept);
+
+
+        /*Add all assets in Asset.db to recyclerView*/
+//        deptList.addAll(db_v2.getAllDept());
+//        Log.d("deptlist", String.valueOf(deptList));
 
 
         ArrayAdapter<CharSequence> arrayAdapterArea = ArrayAdapter
@@ -214,7 +228,9 @@ public class MainActivity extends AppCompatActivity
                 } else if (parent.getItemAtPosition(position).equals("MNF QA PLANT")) {
                     deptName = DEPT_QA;
                 } else if (parent.getItemAtPosition(position).equals("MNF PREPARATION PLANT")) {
-                    deptName = DEPT_PPC_PREP;
+                    deptName = DEPT_PREP;
+                } else if (parent.getItemAtPosition(position).equals("MNF PPC PLANT")) {
+                    deptName = DEPT_PPC;
                 } else if (parent.getItemAtPosition(position).equals("MNF PLANT SHP MAINTENANCE")) {
                     deptName = DEPT_MAINTENANCE;
                 } else if (parent.getItemAtPosition(position).equals("MNF KN GENERAL AFFAIR")) {
@@ -239,7 +255,7 @@ public class MainActivity extends AppCompatActivity
         } catch (
                 PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            Log.d("MyApp", "PackageManager Catch : " + e.toString());
+            Log.d("MyApp", "PackageManager Catch : " + e);
         }
 
         // get menu from navigationView
